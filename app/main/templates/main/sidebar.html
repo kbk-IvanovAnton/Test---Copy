@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+
+<nav id="sidebar" class="sidebar js-sidebar">
+    <div class="sidebar-content js-simplebar">
+        <a class="sidebar-brand" href="{{ url_for('main.index') }}">
+            <span class="align-middle">Keiyo Bend</span>
+        </a>
+
+        <ul class="sidebar-nav">
+            <li class="sidebar-header">
+                Pages
+            </li>
+
+            <li class="sidebar-item">
+                <a class="sidebar-link" href="{{ url_for('main.index') }}">
+                    <i class="align-middle" data-feather="sliders"></i> <span class="align-middle">Dashboard</span>
+                </a>
+            </li>
+
+            <li class="sidebar-item">
+                <a class="sidebar-link" href="{{ url_for('main.create_order') }}">
+                    <i class="align-middle" data-feather="file"></i> <span class="align-middle">Orders</span>
+                </a>
+            </li>
+
+            <li class="sidebar-item">
+                <a class="sidebar-link" href="{{ url_for('main.create_task') }}">
+                    <i class="align-middle" data-feather="list"></i> <span class="align-middle">Tasks</span>
+                </a>
+            </li>
+
+            <li class="sidebar-item">
+                <a class="sidebar-link" href="{{ url_for('auth.login') }}">
+                    <i class="align-middle" data-feather="log-in"></i> <span class="align-middle">Sign In</span>
+                </a>
+            </li>
+
+            <li class="sidebar-item">
+                <a class="sidebar-link" href="{{ url_for('auth.register') }}">
+                    <i class="align-middle" data-feather="user-plus"></i> <span class="align-middle">Sign
+                        Up</span>
+                </a>
+            </li>
+
+            <li class="sidebar-item">
+                <a class="sidebar-link" href="{{ url_for('auth.logout') }}">
+                    <i class="align-middle" data-feather="log-out"></i> <span class="align-middle">Sign
+                        Out</span>
+                </a>
+            </li>
+            {% if current_user.admin == True %}
+            <li class="sidebar-header">
+                Tools and Components
+            </li>
+
+            <li class="sidebar-item">
+                <a class="sidebar-link" href="{{ url_for('admin.admin_table') }}">
+                    <i class="align-middle" data-feather="users"></i> <span class="align-middle">Users</span>
+                </a>
+            </li>
+
+            <li class="sidebar-item">
+                <a class="sidebar-link" href="{{ url_for('admin.currency_table') }}">
+                    <i class="align-middle" data-feather="dollar-sign"></i> <span class="align-middle">Currencies</span>
+                </a>
+            </li>
+
+            <li class="sidebar-item">
+                <a class="sidebar-link" href="{{ url_for('admin.travel_table') }}">
+                    <i class="align-middle" data-feather="navigation"></i> <span class="align-middle">Travels</span>
+                </a>
+            </li>
+
+            <li class="sidebar-item">
+                <a class="sidebar-link" href="{{ url_for('admin.supported_types_table')}}">
+                    <i class="align-middle" data-feather="sliders"></i> <span class="align-middle">Supported
+                        Types</span>
+                </a>
+            </li>
+
+            <li class="sidebar-item">
+                <a class="sidebar-link" href="{{ url_for('admin.account_items_table')}}">
+                    <i class="align-middle" data-feather="tag"></i> <span class="align-middle">Account Items</span>
+                </a>
+            </li>
+
+            <li class="sidebar-item">
+                <a class="sidebar-link" href="{{ url_for('admin.payment_methods_table')}}">
+                    <i class="align-middle" data-feather="credit-card"></i> <span class="align-middle">Payment
+                        Methods</span>
+                </a>
+            </li>
+
+            <li class="sidebar-item">
+                <a class="sidebar-link" href="{{ url_for('admin.receipts_table')}}">
+                    <i class="align-middle" data-feather="inbox"></i> <span class="align-middle">Receipts</span>
+                </a>
+            </li>
+            {% endif %}
+        </ul>
+    </div>
+</nav>

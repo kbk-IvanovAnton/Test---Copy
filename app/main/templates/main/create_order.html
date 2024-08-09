@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+
+{% extends "main/base.html" %}
+
+{% block content %}
+
+
+
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
+<script src="{{ url_for('main.static', filename='js/currency_table.js') }}"></script>
+<script src="{{ url_for('main.static', filename='js/details_table.js') }}"></script>
+<script src="{{ url_for('main.static', filename='js/allowance_table.js') }}"></script>
+
+
+<style>
+    #calendar {
+        max-height: 600px;
+        max-width: 600px;
+        margin: 40px auto;
+    }
+
+    /* Увеличиваем размер чисел в ячейках календаря */
+    .fc .fc-daygrid-day-number {
+        font-size: 1.5em;
+        /* Увеличиваем размер шрифта */
+        /* font-weight: bold; */
+        /* Делаем шрифт жирным для большей заметности */
+    }
+
+
+    /* Настраиваем стиль для выходных дней */
+    .fc .fc-day-sat .fc-daygrid-day-number,
+    .fc .fc-day-sun .fc-daygrid-day-number {
+        color: #e74c3c;
+        /* Красный цвет для выходных */
+    }
+
+    /* Улучшаем стиль заголовка календаря */
+    .fc .fc-toolbar-title {
+        font-size: 1.5em;
+        /* Увеличиваем размер заголовка */
+        /* font-weight: bold; */
+        /* Делаем заголовок жирным */
+    }
+
+    /* Стилизуем кнопки в панели инструментов */
+    .fc .fc-button-primary {
+        background-color: #3788d8;
+        border-color: #3788d8;
+        font-weight: bold;
+    }
+
+    .fc .fc-button-primary:hover {
+        background-color: #2c6aa0;
+        border-color: #2c6aa0;
+    }
+
+
+    /* Отключаем стандартное выделение сегодняшнего дня */
+    .fc-day-today {
+        background-color: inherit !important;
+    }
+
+    /* .fc-daygrid-day.fc-day-today .fc-daygrid-day-number {
+        width: 30px;
+        height: 30px;
+        line-height: 30px;
+        border-radius: 50%;
+        border: 2px solid #3788d8;
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+    } */
+
+    .row.equal-height {
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+    .equal-height>[class*='col-'] {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .equal-height .card {
+        flex: 1;
+    }
+
+
+    #currencyTable input[type="text"] {
+        border: none;
+        background-color: transparent;
+        width: 100%;
+        outline: none;
+        padding: 0;
+    }
+
+    #currencyTable select {
+        border: none;
+        background-color: transparent;
+        width: 100%;
+        outline: none;
+        padding: 0;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+    }
+
+    #currencyTable td {
+        padding: 8px;
+    }
+
+    #detailsTable input[type="text"] {
+        border: none;
+        background-color: transparent;
+        width: 100%;
+        outline: none;
+        padding: 0;
+    }
+
+    #detailsTable select {
+        border: none;
+        background-color: transparent;
+        width: 100%;
+        outline: none;
+        padding: 0;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+    }
+
+    #detailsTable td {
+        padding: 8px;
+    }
+
+    #calendarHeader {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var calendarEl = document.getElementById('calendar');
+        var selectedEventType = 'Work'; // Значение по умолчанию
+
+        // Обновляем выбранный тип события при изменении радио-кнопки
+        document.querySelectorAll('#eventTypeSelection input[name="eventType"]').forEach(function (radio) {
+            radio.addEventListener('change', function (e) {
+                selectedEventType = e.target.value;
+            });
+        });
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+            initialView: 'dayGridMonth',
+            headerToolbar: {
+                left: 'prev,next today',
+                center: 'title',
+                right: ''
+            },
+            selectable: true,
+            events: [],
+            eventClick: function (info) {
+                switch (selectedEventType) {
+                    case 'Work':
+                        info.event.setProp('title', 'Work');
+                        info.event.setProp('backgroundColor', '#1E90FF');
+                        info.event.setProp('borderColor', '#1E90FF');
+                        break;
+                    case 'Sells':
+                        info.event.setProp('title', 'Sells');
+                        info.event.setProp('backgroundColor', '#2E8B57');
+                        info.event.setProp('borderColor', '#2E8B57');
+                        break;
+                    case 'Movement':
+                        info.event.setProp('title', 'Movement');
+                        info.event.setProp('backgroundColor', '#F0E68C');
+                        info.event.setProp('borderColor', '#F0E68C');
+                        break;
+                    case 'Exeption':
+                        info.event.setProp('title', 'Exeption');
+                        info.event.setProp('backgroundColor', '#CD5C5C');
+                        info.event.setProp('borderColor', '#CD5C5C');
+                        break;
+                    case 'Other':
+                        info.event.setProp('title', 'Other');
+                        info.event.setProp('backgroundColor', '#BA55D3');
+                        info.event.setProp('borderColor', '#BA55D3');
+                        break;
+                }
+
+                info.event.render();
+                info.view.calendar.unselect();
+
+            }
+        });
+        calendar.render();
+
+        document.getElementById('add-event').addEventListener('click', function () {
+            var startDateInput = document.getElementById('start-date');
+            var endDateInput = document.getElementById('end-date');
+            var addButton = document.getElementById('add-event');
+            var removeButton = document.getElementById('remove-event');
+
+            var startDate = new Date(startDateInput.value);
+            var endDate = new Date(endDateInput.value);
+
+            if (endDate < startDate) {
+                $('#dateErrorModal').modal('show');
+                return; // Прекращаем выполнение функции
+            }
+
+            startDateInput.disabled = true;
+            endDateInput.disabled = true;
+            addButton.disabled = true;
+
+            var diffDays = parseInt((endDate - startDate) / (1000 * 60 * 60 * 24), 10);
+
+            var events = [];
+
+            switch (diffDays) {
+                case 0:
+                    events.push({
+                        title: 'Movement',
+                        start: startDate.toISOString().split('T')[0],
+                        end: startDate.toISOString().split('T')[0],
+                        // display: 'background',
+                        color: '#F0E68C'
+                    });
+                    break;
+                case 1:
+                    events.push({
+                        title: 'Movement',
+                        start: startDate.toISOString().split('T')[0],
+                        end: startDate.toISOString().split('T')[0],
+                        // display: 'background',
+                        color: '#F0E68C'
+                    }, {
+                        title: 'Movement',
+                        start: endDate.toISOString().split('T')[0],
+                        end: endDate.toISOString().split('T')[0],
+                        // display: 'background',
+                        color: '#F0E68C'
+                    });
+                    break;
+                default:
+                    events.push({
+                        title: 'Movement',
+                        start: startDate.toISOString().split('T')[0],
+                        end: startDate.toISOString().split('T')[0],
+                        // display: 'background',
+                        color: '#F0E68C'
+                    });
+
+                    for (var i = 1; i < diffDays; i++) {
+                        var workStartDate = new Date(startDate.getTime() + i * 24 * 60 * 60 * 1000);
+                        events.push({
+                            title: 'Work',
+                            start: workStartDate.toISOString().split('T')[0],
+                            end: new Date(workStartDate.getTime() + 24 * 60 * 60 * 1000).toISOString().split('T')[0], // Добавляем один день к начальной дате
+                            // display: 'background',
+                            color: '#1E90FF' // Синий цвет для дней работы
+                        });
+                    }
+
+                    events.push({
+                        title: 'Movement',
+                        start: endDate.toISOString().split('T')[0],
+                        end: endDate.toISOString().split('T')[0],
+                        // display: 'background',
+                        color: '#F0E68C'
+                    });
+                    break;
+            }
+            calendar.addEventSource(events);
+        });
+
+        document.getElementById('remove-event').addEventListener('click', function () {
+            var startDateInput = document.getElementById('start-date');
+            var endDateInput = document.getElementById('end-date');
+            var addButton = document.getElementById('add-event');
+            var removeButton = document.getElementById('remove-event');
+
+            startDateInput.disabled = false;
+            endDateInput.disabled = false;
+            addButton.disabled = false;
+
+            calendar.removeAllEvents();
+        });
+    });
+
+</script>
+
+<div class="container-fluid p-0">
+    <form method="POST">
+        {{ form.hidden_tag() }}
+        <div class="row equal-height">
+            <div class="col-12 col-lg-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">Trip Form</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-md-12">
+                                <div class="form-floating">
+                                    {{form.order.name_id(class="form-select", id="name_id", placeholder="User")}}
+                                    <label for="name_id">User</label>
+                                </div>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="form-floating">
+                                    {{form.order.order(class="form-control", id="order", placeholder="Order")}}
+                                    <label for="order">Order</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    {{form.order.order_number(class="form-control", id="order_number",
+                                    placeholder="Order
+                                    Number")}}
+                                    <label for="order_number">Order Number</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    {{form.order.detail_number(class="form-control", id="detail_number",
+                                    placeholder="Detail
+                                    Number")}}
+                                    <label for="detail_number">Detail Number</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    {{form.order.service_number(class="form-control", id="service_number",
+                                    placeholder="Service
+                                    Number")}}
+                                    <label for="service_number">Service No.</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    {{form.order.service_card_number(class="form-control", id="service_card_number",
+                                    placeholder="Service Card
+                                    Number")}}
+                                    <label for="service_card_number">Service Card No.</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    {{form.order.quote_number(class="form-control", id="quote_number",
+                                    placeholder="Quote
+                                    Number")}}
+                                    <label for="quote_number">Estimation</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    {{form.order.purchase_order_number(class="form-control", id="purchase_order_number",
+                                    placeholder="Purchase Order
+                                    Number")}}
+                                    <label for="purchase_order_number">Customer Ordering Doc.</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    {{form.order.support_type_id(class="form-select", id="support_type_id",
+                                    placeholder="Supported
+                                    Type")}}
+                                    <label for="support_type_id">Supported Type</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    {{form.order.travel_id(class="form-select", id="travel_id", placeholder="Travel")}}
+                                    <label for="travel_id">Travel</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-lg-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">Form Details</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    <input type="text" class="form-control" id="no" name="no">
+                                    <label for="no">No.</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-floating">
+                                    <input type="date" class="form-control" id="date" name="date">
+                                    <label for="date">Date</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">Currency</h5>
+                    </div>
+                    <div class="card-body mb-5">
+                        <table class="display cell-border" id="currencyTable" style="width: 100%;">
+                            <thead>
+                                <tr style="text-align:center">
+                                    <th>Currency</th>
+                                    <th>Correlation</th>
+                                    <th>Temporary Advance</th>
+                                    <th>Cash Balance</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for rate in form.rates %}
+                                <tr>
+                                    <td>
+                                        <div>
+                                            {{ rate.currency_id(class="form-select", id="currency_id_" ~ loop.index) }}
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div>
+                                            {{ rate.foreign_currency(class="form-control", id="foreign_currency_" ~
+                                            loop.index) }}
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div>
+                                            {{ rate.temporary_payment(class="form-control", id="temporary_payment_" ~
+                                            loop.index) }}
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div>
+                                            {{ rate.remaining_payment(class="form-control", id="remaining_payment_" ~
+                                            loop.index) }}
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12 col-lg-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h5 class="card-title mb-0">Details</h5>
+                    </div>
+                    <div class="card-body">
+                        <table class="display cell-border" id="detailsTable" style="width: 100%;">
+                            <thead>
+                                <tr style="text-align:center">
+                                    <th>№</th>
+                                    <th>Survey Items</th>
+                                    <th>Application</th>
+                                    <th>Applying Days</th>
+                                    <th>Currency</th>
+                                    <th>Unit Price</th>
+                                    <th>Quantity</th>
+                                    <th>Subtotal</th>
+                                    <th>Payment Method</th>
+                                    <th>Receving Letter</th>
+                                    <th>Note</th>
+                                    <th>Del</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for detail in form.details %}
+                                <tr>
+                                    <td>{{ loop.index }}</td>
+                                    <td>{{ detail.account_item_id(class="form-select") }}</td>
+                                    <td>{{ detail.content(class="form-control") }}</td>
+                                    <td>{{ detail.applying_date(class="form-control") }}</td>
+                                    <td>{{ detail.currency_id(class="form-select") }}</td>
+                                    <td>{{ detail.unit_price(class="form-control") }}</td>
+                                    <td>{{ detail.quantity(class="form-control") }}</td>
+                                    <td><!-- Subtotal calculation --></td>
+                                    <td>{{ detail.payment_method_id(class="form-select") }}</td>
+                                    <td>{{ detail.receipt_id(class="form-select") }}</td>
+                                    <td>{{ detail.remarks(class="form-control") }}</td>
+                                    <td><a class="btn btn-danger btn-sm"><i class="align-middle"
+                                                data-feather="trash-2"></i></a></td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12 col-lg-6">
+                <div class="card">
+                    <div class="card-header" id="calendarHeader">
+                        <h5 class="card-title mb-0">Calendar</h5>
+
+                        <button class="btn btn-primary" type="button" id="add-event">Add</button>
+                        <button class="btn btn-primary" type="button" id="remove-event">Clear</button>
+                    </div>
+                    <div class="row g-3 mx-3">
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <input type="date" class="form-control" id="start-date" placeholder="Date">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <input type="date" class="form-control" id="end-date" placeholder="Date">
+                            </div>
+                        </div>
+                        <div id="eventTypeSelection">
+                            <input class="btn-check" type="radio" name="eventType" value="Work" id="inlineRadioWork"
+                                autocomplete="off">
+                            <label class="btn btn-outline-primary" for="inlineRadioWork">Work</label>
+
+                            <input class="btn-check" type="radio" name="eventType" value="Sells" id="inlineRadioSells"
+                                autocomplete="off">
+                            <label class="btn btn-outline-success" for="inlineRadioSells">Sells</label>
+
+                            <input class="btn-check" type="radio" name="eventType" value="Movement"
+                                id="inlineRadioMovement" autocomplete="off">
+                            <label class="btn btn-outline-warning" for="inlineRadioMovement">Movement</label>
+
+                            <input class="btn-check" type="radio" name="eventType" value="Exeption"
+                                id="inlineRadioExeption" autocomplete="off">
+                            <label class="btn btn-outline-danger" for="inlineRadioExeption">Exeption</label>
+
+                            <input class="btn-check" type="radio" name="eventType" value="Other" id="inlineRadioOther"
+                                autocomplete="off">
+                            <label class="btn btn-outline-secondary" for="inlineRadioOther">Other</label>
+
+                        </div>
+                    </div>
+                    <div class="card-body" id="calendar-container">
+                        <div id="calendar"></div>
+                    </div>
+                    <div class="m-3">
+                        <div class="form-floating mb-3">
+                            {{form.location.location_id(class="form-select", id="location_id", placeholder="Location")}}
+                            <label for="location_id">Trip</label>
+                        </div>
+                        <div class="form-floating">
+                            {{form.location.location_id(class="form-select", id="location1_id",
+                            placeholder="Location1")}}
+                            <label for="location1_id">Return Trip</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-lg-6">
+                <div class="row equal-height">
+                    <div class="col-12 col-lg-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="card-title mb-0">Allowance</h5>
+                            </div>
+                            <div class="card-body">
+                                <table class="display cell-border" id="allowanceTable" style="width: 100%;">
+                                    <thead>
+                                        <tr>
+                                            <th></th>
+                                            <th></th>
+                                            <th>Unit Price</th>
+                                            <th>Days</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>Transfer Allowance</td>
+                                            <td>Trip</td>
+                                            <td></td>
+                                            <td></td>
+                                        </tr>
+                                        <tr>
+                                            <td></td>
+                                            <td>Return Trip</td>
+                                            <td></td>
+                                            <td></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Accomodation Allowance</td>
+                                            <td>
+                                                <input class="form-check-input" type="checkbox" id="checkboxNoLabel"
+                                                    value="" aria-label="..." checked>
+                                            </td>
+                                            <td></td>
+                                            <td></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Working Away Allowance</td>
+                                            <td>A</td>
+                                            <td></td>
+                                            <td></td>
+                                        </tr>
+                                        <tr>
+                                            <td></td>
+                                            <td>B</td>
+                                            <td></td>
+                                            <td></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Special Allowance</td>
+                                            <td>A</td>
+                                            <td></td>
+                                            <td></td>
+                                        </tr>
+                                        <tr>
+                                            <td></td>
+                                            <td>B</td>
+                                            <td></td>
+                                            <td></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Exeption Allowance</td>
+                                            <td></td>
+                                            <td></td>
+                                            <td></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-lg-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5 class="card-title mb-0">Info</h5>
+                            </div>
+                            <div class="card-body">
+                                <div>
+                                    <p>※1: Sales activities, suppliers, various seminars, exhibitions.
+                                        Foreign travel allowance will not be paid on the day of travel or travel.</p>
+                                    <p>※2: Only when traveling by car, select the outbound or return route.
+                                        If you have any questions, please feel free to contact us.(Domestic)</p>
+                                    <p>※3: Special allowance: 8 month 13,14,15.
+                                        12 month: 30,31.
+                                        1 month: It is an allowance to be paid when traveling to 1,2,3.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="d-grid">
+                                    <button type="submit" class="btn btn-primary">Submit</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+    <div class="modal fade" id="dateErrorModal" tabindex="-1" role="dialog" aria-labelledby="dateErrorModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="dateErrorModalLabel">Error</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    Invalid data format.
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Ok</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+
+<nav class="navbar navbar-expand navbar-light navbar-bg">
+    <a class="sidebar-toggle js-sidebar-toggle">
+        <i class="hamburger align-self-center"></i>
+    </a>
+
+    <div class="navbar-collapse collapse">
+        <ul class="navbar-nav navbar-align">
+            <li class="nav-item dropdown">
+                <a class="nav-link d-none d-sm-inline-block">
+                    <span class="text-dark">{{ current_user.name }}</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a id="fullscreenButton" class="nav-link d-none d-sm-inline-block">
+                    <i class="align-middle" data-feather="maximize"></i>
+                </a>
+            </li>
+        </ul>
+    </div>
+</nav>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const fullscreenButton = document.getElementById("fullscreenButton");
+        fullscreenButton.addEventListener("click", function () {
+            if (document.fullscreenElement) {
+                document.exitFullscreen();
+            } else {
+                document.documentElement.requestFullscreen();
+            }
+        });
+    });
+</script>

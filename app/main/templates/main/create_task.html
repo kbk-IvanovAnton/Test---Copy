@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+
+{% extends "main/base.html" %}
+
+{% block content %}
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.js"></script>
+
+<link href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.21.0/vis.min.css" rel="stylesheet" type="text/css" />
+
+<script>
+
+    document.addEventListener('DOMContentLoaded', function () {
+        var groups = new vis.DataSet([
+            { id: 1, content: 'Resource A' },
+            { id: 2, content: 'Resource B' },
+            { id: 3, content: 'Resource C' }
+        ]);
+
+        var items = new vis.DataSet([
+            { id: 1, group: 1, content: 'Task 1', start: '2024-07-15', end: '2024-07-18' },
+            { id: 2, group: 2, content: 'Task 2', start: '2024-07-16', end: '2024-07-19' },
+            { id: 3, group: 3, content: 'Task 3', start: '2024-07-17', end: '2024-07-20' }
+        ]);
+
+        // Set timeline options
+        var options = {
+            stack: true,
+            editable: true
+        };
+
+        // Create the timeline
+        var container = document.getElementById('visualization');
+        var timeline = new vis.Timeline(container, items, groups, options);
+
+        // Handle form submission to add new tasks
+
+    });
+
+</script>
+
+<div class="conteiner-fluid p-0">
+    <div class="row">
+        <div class="col-12 col-lg-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">Timeline Resourse Planner</h5>
+                </div>
+                <div class="card-body">
+                    <div id="visualization" style="height: 300px;"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

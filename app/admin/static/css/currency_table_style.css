@@ -1,0 +1,33 @@
+.col-order {
+    width: 10%;
+}
+
+.col-currency {
+    width: 20%;
+}
+
+.col-prefix {
+    width: 10%;
+}
+
+.col-suffix {
+    width: 10%;
+}
+
+.col-code {
+    width: 10%;
+}
+
+.col-num {
+    width: 10%;
+}
+
+.col-menu {
+    width: 20%;
+}
+
+.text-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

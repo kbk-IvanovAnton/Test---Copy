@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+
+{% extends "main/base.html" %}
+
+{% block content %}
+
+<style>
+    .dataTables_filter {
+        margin-bottom: 0;
+    }
+
+    .dataTables_filter label {
+        margin-bottom: 0;
+        display: flex;
+        align-items: center;
+    }
+
+    .dataTables_filter input {
+        margin-left: 0.5em;
+        padding: 0.375rem 0.75rem;
+        font-size: 1rem;
+        line-height: 1.5;
+        border-radius: 0.25rem;
+        border: 1px solid #ced4da;
+    }
+</style>
+
+<script src="{{ url_for('admin.static', filename='js/currency_table.js') }}"></script>
+<script src="{{ url_for('admin.static', filename='css/currency_table_style.css') }}"></script>
+
+<div class="container-fluid p-0">
+    <div class="row">
+        <div class="col-md-12 ms-sm-auto col-lg-12 px-md-4">
+            <div class="card flex-fill">
+                <div class="card-header py-3">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div id="datatableSearch"></div>
+                        <h3 class="card-title mb-0">Currency Table</h3>
+                        <button class="btn btn-primary btn-add" id="btn-add">New Line</button>
+                    </div>
+                </div>
+                <div class="card-body py-0 mb-3">
+                    <table class="display cell-border" style="width: 100%" id="currencyTable">
+                        <thead>
+                            <tr style="text-align: center;">
+                                <th class="col-order">Order</th>
+                                <th class="col-currency">Currency</th>
+                                <th class="col-prefix">Prefix</th>
+                                <th class="col-suffix">Suffix</th>
+                                <th class="col-code">Code</th>
+                                <th class="col-num">Num of digits</th>
+                                <th class="col-menu">Menu</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for currency in currencies %}
+                            <tr data-id="{{ currency.id }}" data-order="{{ currency.order }}" class="text-center">
+                                <td style="text-align:center">
+                                    <button class="btn btn-sm btn-outline-secondary move-up"><i class="align-middle"
+                                            data-feather="arrow-up-circle"></i></button>
+                                    <button class="btn btn-sm btn-outline-secondary move-down"><i class="align-middle"
+                                            data-feather="arrow-down-circle"></i></button>
+                                </td>
+                                <td class="view-mode currency-cell">{{ currency.name }}</td>
+                                <td class="view-mode">{{ currency.prefix }}</td>
+                                <td class="view-mode">{{ currency.suffix }}</td>
+                                <td class="view-mode">{{ currency.code }}</td>
+                                <td class="view-mode">{{ currency.decimal }}</td>
+                                <td style="text-align:center">
+                                    <button class="btn btn-primary btn-sm btn-edit"><i class="align-middle"
+                                            data-feather="edit"></i></button>
+                                    <button class="btn btn-success btn-sm btn-save edit-mode" style="display: none;"><i
+                                            class="align-middle" data-feather="save"></i></button>
+                                    <button class="btn btn-secondary btn-sm btn-cancel edit-mode"
+                                        style="display: none;"><i class="align-middle" data-feather="x"></i></button>
+                                    <button class="btn btn-danger btn-sm btn-delete"><i class="align-middle"
+                                            data-feather="trash"></i></button>
+                                    <button
+                                        class="btn btn-sm btn-show-japan {{ 'btn-success' if currency.is_show_japan else 'btn-danger' }}"
+                                        disabled>
+                                        {% if currency.is_show_japan %}
+                                        <i class="align-middle" data-feather="eye"></i> 国内
+                                        {% else %}
+                                        <i class="align-middle" data-feather="eye-off"></i> 国内
+                                        {% endif %}
+                                    </button>
+                                    <button
+                                        class="btn btn-sm btn-show-world {{ 'btn-success' if currency.is_show_world else 'btn-danger' }}"
+                                        disabled>
+                                        {% if currency.is_show_world %}
+                                        <i class="align-middle" data-feather="eye"></i> 海外
+                                        {% else %}
+                                        <i class="align-middle" data-feather="eye-off"></i> 海外
+                                        {% endif %}
+                                    </button>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    <div class="modal fade" id="deleteConfirmationModal" tabindex="-1" role="dialog"
+                        aria-labelledby="deleteConfirmationModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="deleteConfirmationModalLabel">Delete Confirmation</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                </div>
+                                <div class="modal-body">
+                                    Do you really want to delete row <strong id="currencyToDelete"></strong>?
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-success" id="confirmDeleteBtn">Yes</button>
+                                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">No</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
