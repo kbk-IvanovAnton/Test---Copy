@@ -1,8 +1,8 @@
 """first
 
-Revision ID: a0828fca06f5
+Revision ID: 1c8233952377
 Revises: 
-Create Date: 2024-08-07 09:16:27.471435
+Create Date: 2024-08-20 14:18:02.925987
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'a0828fca06f5'
+revision = '1c8233952377'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -29,8 +29,56 @@ def upgrade():
         batch_op.create_index(batch_op.f('ix_account_items_is_show'), ['is_show'], unique=False)
         batch_op.create_index(batch_op.f('ix_account_items_order'), ['order'], unique=False)
 
+    op.create_table('allowance_drives',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('applying_dates', sa.JSON(), nullable=False),
+    sa.Column('unit_prices', sa.JSON(), nullable=False),
+    sa.Column('days', sa.JSON(), nullable=False),
+    sa.PrimaryKeyConstraint('id')
+    )
+    op.create_table('allowance_lodgments',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('applying_date', sa.String(length=255), nullable=False),
+    sa.Column('unit_price', sa.Integer(), nullable=False),
+    sa.Column('days', sa.Integer(), nullable=False),
+    sa.Column('validity', sa.Boolean(), nullable=False),
+    sa.PrimaryKeyConstraint('id')
+    )
     op.create_table('allowance_moves',
     sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('location_ids', sa.JSON(), nullable=False),
+    sa.Column('applying_dates', sa.JSON(), nullable=False),
+    sa.Column('unit_prices', sa.JSON(), nullable=False),
+    sa.Column('days', sa.JSON(), nullable=False),
+    sa.PrimaryKeyConstraint('id')
+    )
+    op.create_table('allowance_regions',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('region_id', sa.Integer(), nullable=False),
+    sa.Column('applying_dates', sa.JSON(), nullable=False),
+    sa.Column('unit_prices', sa.JSON(), nullable=False),
+    sa.Column('days', sa.JSON(), nullable=False),
+    sa.PrimaryKeyConstraint('id')
+    )
+    op.create_table('allowance_special_cases',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('applying_date', sa.String(length=255), nullable=False),
+    sa.Column('unit_price', sa.Integer(), nullable=False),
+    sa.Column('days', sa.Integer(), nullable=False),
+    sa.PrimaryKeyConstraint('id')
+    )
+    op.create_table('allowance_specials',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('applying_dates', sa.JSON(), nullable=False),
+    sa.Column('unit_prices', sa.JSON(), nullable=False),
+    sa.Column('days', sa.JSON(), nullable=False),
+    sa.PrimaryKeyConstraint('id')
+    )
+    op.create_table('allowance_works',
+    sa.Column('id', sa.Integer(), nullable=False),
+    sa.Column('applying_dates', sa.JSON(), nullable=False),
+    sa.Column('unit_prices', sa.JSON(), nullable=False),
+    sa.Column('days', sa.JSON(), nullable=False),
     sa.PrimaryKeyConstraint('id')
     )
     op.create_table('currencies',
@@ -39,7 +87,7 @@ def upgrade():
     sa.Column('prefix', sa.String(), nullable=False),
     sa.Column('suffix', sa.String(), nullable=False),
     sa.Column('code', sa.String(), nullable=False),
-    sa.Column('decimal', sa.Integer(), nullable=False),
+    sa.Column('decimal', sa.Float(), nullable=False),
     sa.Column('order', sa.Integer(), nullable=False),
     sa.Column('is_show_japan', sa.Boolean(), nullable=False),
     sa.Column('is_show_world', sa.Boolean(), nullable=False),
@@ -97,7 +145,7 @@ def upgrade():
     op.create_table('regions2',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('name', sa.String(length=255), nullable=False),
-    sa.Column('allowance', sa.Integer(), nullable=False),
+    sa.Column('allowance', sa.JSON(), nullable=False),
     sa.Column('order', sa.Integer(), nullable=False),
     sa.Column('is_show', sa.Boolean(), nullable=False),
     sa.PrimaryKeyConstraint('id')
@@ -175,8 +223,20 @@ def upgrade():
     sa.Column('departure_date', sa.String(length=255), nullable=False),
     sa.Column('return_date', sa.String(length=255), nullable=False),
     sa.Column('allowance_move_id', sa.Integer(), nullable=False),
+    sa.Column('allowance_lodgment_id', sa.Integer(), nullable=False),
+    sa.Column('allowance_work_id', sa.Integer(), nullable=False),
+    sa.Column('allowance_region_id', sa.Integer(), nullable=False),
+    sa.Column('allowance_special_id', sa.Integer(), nullable=False),
+    sa.Column('allowance_drive_id', sa.Integer(), nullable=False),
+    sa.Column('allowance_special_case_id', sa.Integer(), nullable=False),
     sa.Column('calendars', sa.String(length=255), nullable=False),
+    sa.ForeignKeyConstraint(['allowance_drive_id'], ['allowance_drives.id'], ),
+    sa.ForeignKeyConstraint(['allowance_lodgment_id'], ['allowance_lodgments.id'], ),
     sa.ForeignKeyConstraint(['allowance_move_id'], ['allowance_moves.id'], ),
+    sa.ForeignKeyConstraint(['allowance_region_id'], ['allowance_regions.id'], ),
+    sa.ForeignKeyConstraint(['allowance_special_case_id'], ['allowance_special_cases.id'], ),
+    sa.ForeignKeyConstraint(['allowance_special_id'], ['allowance_specials.id'], ),
+    sa.ForeignKeyConstraint(['allowance_work_id'], ['allowance_works.id'], ),
     sa.ForeignKeyConstraint(['order_id'], ['order.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
@@ -188,7 +248,7 @@ def upgrade():
     sa.Column('content', sa.String(length=255), nullable=False),
     sa.Column('applying_date', sa.String(length=255), nullable=False),
     sa.Column('currency_id', sa.Integer(), nullable=False),
-    sa.Column('unit_price', sa.Integer(), nullable=False),
+    sa.Column('unit_price', sa.Float(), nullable=False),
     sa.Column('quantity', sa.Integer(), nullable=False),
     sa.Column('payment_method_id', sa.Integer(), nullable=False),
     sa.Column('receipt_id', sa.Integer(), nullable=False),
@@ -265,7 +325,13 @@ def downgrade():
         batch_op.drop_index(batch_op.f('ix_currencies_order'))
 
     op.drop_table('currencies')
+    op.drop_table('allowance_works')
+    op.drop_table('allowance_specials')
+    op.drop_table('allowance_special_cases')
+    op.drop_table('allowance_regions')
     op.drop_table('allowance_moves')
+    op.drop_table('allowance_lodgments')
+    op.drop_table('allowance_drives')
     with op.batch_alter_table('account_items', schema=None) as batch_op:
         batch_op.drop_index(batch_op.f('ix_account_items_order'))
         batch_op.drop_index(batch_op.f('ix_account_items_is_show'))

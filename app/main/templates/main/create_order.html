@@ -238,6 +238,22 @@
             var addButton = document.getElementById('add-event');
             var removeButton = document.getElementById('remove-event');
 
+            let tripUnitPriceCell = document.getElementById('TripUnitPrice');
+            let tripDaysCell = document.getElementById('TripDays');
+            let returnTripUnitPriceCell = document.getElementById('ReturnTripUnitPrice');
+            let returnTripDaysCell = document.getElementById('ReturnTripDays');
+            let accomodationUnitPriceCell = document.getElementById('AccomodationUnitPrice');
+            let accomodationDaysCell = document.getElementById('AccomodationDays');
+            let workingAwayUnitPrice_A_Cell = document.getElementById('WorkingAwayUnitPrice_A');
+            let workingAwayDays_A_Cell = document.getElementById('WorkingAwayDays_A');
+            let workingAwayUnitPrice_B_Cell = document.getElementById('WorkingAwayUnitPrice_B');
+            let workingAwayDays_B_Cell = document.getElementById('WorkingAwayDays_B');
+
+            accomodationUnitPriceCell.innerHTML = '7000';
+            workingAwayUnitPrice_A_Cell.innerHTML = '2000';
+            workingAwayUnitPrice_B_Cell.innerHTML = '4000';
+
+
             var startDate = new Date(startDateInput.value);
             var endDate = new Date(endDateInput.value);
 
@@ -285,7 +301,9 @@
             addButton.disabled = true;
             removeButton.disabled = false;
 
-            var diffDays = parseInt((endDate - startDate) / (1000 * 60 * 60 * 24), 10);
+            let oneDay = 24 * 60 * 60 * 1000;
+
+            var diffDays = parseInt((endDate - startDate) / oneDay, 10);
 
             var events = [];
 
@@ -324,11 +342,11 @@
                     });
 
                     for (var i = 1; i < diffDays; i++) {
-                        var workStartDate = new Date(startDate.getTime() + i * 24 * 60 * 60 * 1000);
+                        var workStartDate = new Date(startDate.getTime() + i * oneDay);
                         events.push({
                             title: 'Work',
                             start: workStartDate.toISOString().split('T')[0],
-                            end: new Date(workStartDate.getTime() + 24 * 60 * 60 * 1000).toISOString().split('T')[0], // Добавляем один день к начальной дате
+                            end: new Date(workStartDate.getTime() + oneDay).toISOString().split('T')[0], // Добавляем один день к начальной дате
                             // display: 'background',
                             color: '#1E90FF' // Синий цвет для дней работы
                         });
@@ -344,6 +362,19 @@
                     break;
             }
             calendar.addEventSource(events);
+
+            // Скрипт заполнения таблицы allowance
+
+            var movementEvents = events.filter(event => event.title === 'Movement');
+            var movementCount = movementEvents.length;
+
+            console.log(`Количество событий 'Movement': ${movementCount}`);
+
+            // Пример: подсчёт количества событий с заголовком 'Work'
+            var workEvents = events.filter(event => event.title === 'Work');
+            var workCount = workEvents.length;
+
+            console.log(`Количество событий 'Work': ${workCount}`);
         });
 
         document.getElementById('remove-event').addEventListener('click', function () {
@@ -693,14 +724,14 @@
                                         <tr>
                                             <td>Transfer Allowance</td>
                                             <td>Trip</td>
-                                            <td></td>
-                                            <td></td>
+                                            <td id="TripUnitPrice"></td>
+                                            <td id="TripDays"></td>
                                         </tr>
                                         <tr>
                                             <td></td>
                                             <td>Return Trip</td>
-                                            <td></td>
-                                            <td></td>
+                                            <td id="ReturnTripUnitPrice"></td>
+                                            <td id="ReturnTripDays"></td>
                                         </tr>
                                         <tr>
                                             <td>Accomodation Allowance</td>
@@ -708,38 +739,40 @@
                                                 <input class="form-check-input" type="checkbox" id="checkboxNoLabel"
                                                     value="" aria-label="..." checked>
                                             </td>
-                                            <td></td>
-                                            <td></td>
+                                            <td id="AccomodationUnitPrice"></td>
+                                            <td id="AccomodationDays"></td>
                                         </tr>
                                         <tr>
                                             <td>Working Away Allowance</td>
                                             <td>A</td>
-                                            <td></td>
-                                            <td></td>
+                                            <td id="WorkingAwayUnitPrice_A"></td>
+                                            <td id="WorkingAwayDays_A"></td>
                                         </tr>
                                         <tr>
                                             <td></td>
                                             <td>B</td>
-                                            <td></td>
-                                            <td></td>
+                                            <td id="WorkingAwayUnitPrice_B"></td>
+                                            <td id="WorkingAwayDays_B"></td>
                                         </tr>
                                         <tr>
                                             <td>Special Allowance</td>
                                             <td>A</td>
-                                            <td></td>
-                                            <td></td>
+                                            <td id="SpecialAllowanceUnitPrice_A"></td>
+                                            <td id="SpecialAllowanceDays_A"></td>
                                         </tr>
                                         <tr>
                                             <td></td>
                                             <td>B</td>
-                                            <td></td>
-                                            <td></td>
+                                            <td id="SpecialAllowanceUnitPrice_B"></td>
+                                            <td id="SpecialAllowanceDays_B"></td>
                                         </tr>
                                         <tr>
                                             <td>Exeption Allowance</td>
                                             <td></td>
-                                            <td></td>
-                                            <td></td>
+                                            <td>
+                                                <input type="text" class="form-control" id="ExeptionAllowanceUnitPrice">
+                                            </td>
+                                            <td id="ExeptionAllowanceDays"></td>
                                         </tr>
                                     </tbody>
                                 </table>

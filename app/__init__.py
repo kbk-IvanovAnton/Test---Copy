@@ -44,7 +44,13 @@ from app.admin.models import (
 )
 from app.auth.models import user
 from app.main.models import (
+    allowance_drives,
+    allowance_lodgments,
     allowance_moves,
+    allowance_regions,
+    allowance_special_cases,
+    allowance_specials,
+    allowance_works,
     allowances,
     details,
     locations1,

@@ -6,11 +6,9 @@ import sqlalchemy.orm as so
 from app import db
 
 
-class AllowanceMoves(db.Model):
+class AllowanceRegions(db.Model):
     id: so.Mapped[int] = so.mapped_column(primary_key=True)
-    location_ids: so.Mapped[Dict[int, int]] = so.mapped_column(
-        sa.JSON, nullable=False, default=dict
-    )
+    region_id: so.Mapped[int] = so.mapped_column(sa.Integer(), nullable=False)
     applying_dates: so.Mapped[Dict[int, int]] = so.mapped_column(
         sa.JSON, nullable=False, default=dict
     )
@@ -20,5 +18,5 @@ class AllowanceMoves(db.Model):
     days: so.Mapped[Dict[int, int]] = so.mapped_column(sa.JSON, nullable=False, default=dict)
 
     allowances = db.relationship(
-        "Allowances", back_populates="allowance_move", cascade="all, delete-orphan"
+        "Allowances", back_populates="allowance_region", cascade="all, delete-orphan"
     )
