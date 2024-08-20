@@ -134,18 +134,32 @@
     }
 
     #calendarHeader {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        align-items: start;
+        gap: 10px;
+    }
+
+    .buttons {
+        justify-self: end;
         display: flex;
-        justify-content: flex-end;
-        align-items: center;
+        gap: 10px;
+    }
+
+    #calendarHeader h5 {
+        justify-self: end;
+        display: flex;
+        gap: 10px;
+        margin-right: 10px;
     }
 
     #eventTypeSelection {
         display: flex;
-        justify-content: center;
         align-items: center;
+        justify-content: center;
     }
 
-    .btn-check {
+    #eventTypeSelection label {
         margin-right: 10px;
     }
 </style>
@@ -161,6 +175,18 @@
                 selectedEventType = e.target.value;
             });
         });
+        const radioButtons = document.querySelectorAll('.btn-check');
+        const formSelects = document.querySelectorAll('.location-select');
+
+        // Функция для активации/деактивации форм
+        function toggleForms(disabled) {
+            formSelects.forEach(function (select) {
+                select.disabled = disabled;
+            });
+        }
+
+        toggleForms(true);
+
         var calendar = new FullCalendar.Calendar(calendarEl, {
             initialView: 'dayGridMonth',
             headerToolbar: {
@@ -215,14 +241,49 @@
             var startDate = new Date(startDateInput.value);
             var endDate = new Date(endDateInput.value);
 
-            if (endDate < startDate) {
-                $('#dateErrorModal').modal('show');
-                return; // Прекращаем выполнение функции
+            let valid = true;
+
+            if (!startDateInput.value) {
+                startDateInput.classList.add('is-invalid');
+                valid = false;
+                radioButtons.forEach(function (button) {
+                    button.disabled = true;
+                });
+                toggleForms(true);
+            } else {
+                startDateInput.classList.remove('is-invalid');
+                radioButtons.forEach(function (button) {
+                    button.disabled = false;
+                });
+                toggleForms(false);
+            }
+
+            if (!endDateInput.value) {
+                endDateInput.classList.add('is-invalid');
+                valid = false;
+                radioButtons.forEach(function (button) {
+                    button.disabled = true;
+                });
+                toggleForms(true);
+            } else {
+                endDateInput.classList.remove('is-invalid');
+                radioButtons.forEach(function (button) {
+                    button.disabled = false;
+                });
+                toggleForms(false);
+            }
+
+            if (startDate && endDate) {
+                if (startDate > endDate) {
+                    $('#dateErrorModal').modal('show');
+                    return; // Прекращаем выполнение функции
+                }
             }
 
             startDateInput.disabled = true;
             endDateInput.disabled = true;
             addButton.disabled = true;
+            removeButton.disabled = false;
 
             var diffDays = parseInt((endDate - startDate) / (1000 * 60 * 60 * 24), 10);
 
@@ -291,9 +352,26 @@
             var addButton = document.getElementById('add-event');
             var removeButton = document.getElementById('remove-event');
 
+            radioButtons.forEach(function (button) {
+                button.disabled = true;
+            });
+            // Проходим по всем радио-кнопкам и снимаем выделение с выбранной
+            radioButtons.forEach(function (button) {
+                if (button.checked) {
+                    button.checked = false;
+                }
+            });
+            toggleForms(true);
+
+            document.getElementById('start-date').value = '';
+            document.getElementById('end-date').value = '';
+            document.getElementById('start-date').classList.remove('is-invalid');
+            document.getElementById('end-date').classList.remove('is-invalid');
+
             startDateInput.disabled = false;
             endDateInput.disabled = false;
             addButton.disabled = false;
+            removeButton.disabled = true;
 
             calendar.removeAllEvents();
         });
@@ -314,13 +392,21 @@
                         <div class="row g-3">
                             <div class="col-md-12">
                                 <div class="form-floating">
-                                    {{form.order.name_id(class="form-select", id="name_id", placeholder="User")}}
+                                    {{form.order.name_id(class="form-select needs-validation", id="name_id",
+                                    placeholder="User")}}
+                                    {% for error in form.order.name_id.errors %}
+                                    <span class="text-danger">{{ error }}</span>
+                                    {% endfor %}
                                     <label for="name_id">User</label>
                                 </div>
                             </div>
                             <div class="col-md-12">
                                 <div class="form-floating">
-                                    {{form.order.order(class="form-control", id="order", placeholder="Order")}}
+                                    {{form.order.order(class="form-control needs-validation", id="order",
+                                    placeholder="Order")}}
+                                    {% for error in form.order.order.errors %}
+                                    <span style="color: red;">{{ error }}</span>
+                                    {% endfor %}
                                     <label for="order">Order</label>
                                 </div>
                             </div>
@@ -431,25 +517,38 @@
                                 <tr>
                                     <td>
                                         <div>
-                                            {{ rate.currency_id(class="form-select", id="currency_id_" ~ loop.index) }}
+                                            {% if loop.first %}
+                                            {{ rate.currency_id(class="form-select",
+                                            id="currency_id_" ~ loop.index,
+                                            disabled=loop.index != 1) }}
+                                            {% else %}
+                                            {{ rate.currency_id(class="form-select", id="currency_id_" ~ loop.index,
+                                            disabled=true) }}
+                                            {% endif %}
                                         </div>
                                     </td>
                                     <td>
                                         <div>
                                             {{ rate.foreign_currency(class="form-control", id="foreign_currency_" ~
-                                            loop.index) }}
+                                            loop.index, disabled=true) }}
                                         </div>
                                     </td>
                                     <td>
                                         <div>
+                                            {% if loop.first %}
+                                            {{ rate.temporary_payment(class="form-control", placeholder="Imput Here",
+                                            id="temporary_payment_" ~
+                                            loop.index, disabled=loop.index != 1) }}
+                                            {% else %}
                                             {{ rate.temporary_payment(class="form-control", id="temporary_payment_" ~
-                                            loop.index) }}
+                                            loop.index, disabled=true) }}
+                                            {% endif %}
                                         </div>
                                     </td>
                                     <td>
                                         <div>
                                             {{ rate.remaining_payment(class="form-control", id="remaining_payment_" ~
-                                            loop.index) }}
+                                            loop.index, disabled=true) }}
                                         </div>
                                     </td>
                                 </tr>
@@ -513,40 +612,45 @@
                 <div class="card">
                     <div class="card-header" id="calendarHeader">
                         <h5 class="card-title mb-0">Calendar</h5>
-
-                        <button class="btn btn-primary" type="button" id="add-event">Add</button>
-                        <button class="btn btn-primary" type="button" id="remove-event">Clear</button>
+                        <div class="buttons">
+                            <button class="btn btn-primary" type="button" id="add-event">Add</button>
+                            <button class="btn btn-primary" type="button" id="remove-event" disabled>Clear</button>
+                        </div>
                     </div>
                     <div class="row g-3 mx-3">
                         <div class="col-md-6">
                             <div class="form-floating">
-                                <input type="date" class="form-control" id="start-date" placeholder="Date">
+                                <input type="date" class="form-control" id="start-date" placeholder="Date" required>
+                                <label for="start-date">Start Date</label>
+                                <div class="invalid-feedback">Start date is required.</div>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-floating">
-                                <input type="date" class="form-control" id="end-date" placeholder="Date">
+                                <input type="date" class="form-control" id="end-date" placeholder="Date" required>
+                                <label for="end-date">End Date</label>
+                                <div class="invalid-feedback">End date is required.</div>
                             </div>
                         </div>
                         <div id="eventTypeSelection">
                             <input class="btn-check" type="radio" name="eventType" value="Work" id="inlineRadioWork"
-                                autocomplete="off">
+                                autocomplete="off" disabled>
                             <label class="btn btn-outline-primary" for="inlineRadioWork">Work</label>
 
                             <input class="btn-check" type="radio" name="eventType" value="Sells" id="inlineRadioSells"
-                                autocomplete="off">
+                                autocomplete="off" disabled>
                             <label class="btn btn-outline-success" for="inlineRadioSells">Sells</label>
 
                             <input class="btn-check" type="radio" name="eventType" value="Movement"
-                                id="inlineRadioMovement" autocomplete="off">
+                                id="inlineRadioMovement" autocomplete="off" disabled>
                             <label class="btn btn-outline-warning" for="inlineRadioMovement">Movement</label>
 
                             <input class="btn-check" type="radio" name="eventType" value="Exeption"
-                                id="inlineRadioExeption" autocomplete="off">
+                                id="inlineRadioExeption" autocomplete="off" disabled>
                             <label class="btn btn-outline-danger" for="inlineRadioExeption">Exeption</label>
 
                             <input class="btn-check" type="radio" name="eventType" value="Other" id="inlineRadioOther"
-                                autocomplete="off">
+                                autocomplete="off" disabled>
                             <label class="btn btn-outline-secondary" for="inlineRadioOther">Other</label>
 
                         </div>
@@ -556,11 +660,12 @@
                     </div>
                     <div class="m-3">
                         <div class="form-floating mb-3">
-                            {{form.location.location_id(class="form-select", id="location_id", placeholder="Location")}}
+                            {{form.location.location_id(class="form-select location-select", id="location_id",
+                            placeholder="Location")}}
                             <label for="location_id">Trip</label>
                         </div>
                         <div class="form-floating">
-                            {{form.location.location_id(class="form-select", id="location1_id",
+                            {{form.location.location_id(class="form-select location-select", id="location1_id",
                             placeholder="Location1")}}
                             <label for="location1_id">Return Trip</label>
                         </div>

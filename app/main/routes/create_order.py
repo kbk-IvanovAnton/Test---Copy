@@ -56,7 +56,6 @@ def create_order():
         db.session.add(order)
         db.session.commit()
 
-        flash("Заказ успешно создан", "success")
         return redirect(url_for("main.index"))
 
     # if not form.validate_on_submit():
