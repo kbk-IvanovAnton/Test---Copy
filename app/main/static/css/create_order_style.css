@@ -1,0 +1,149 @@
+#calendar {
+    max-height: 600px;
+    max-width: 600px;
+    margin: 40px auto;
+}
+
+/* Увеличиваем размер чисел в ячейках календаря */
+.fc .fc-daygrid-day-number {
+    font-size: 1.5em;
+    /* Увеличиваем размер шрифта */
+    /* font-weight: bold; */
+    /* Делаем шрифт жирным для большей заметности */
+}
+
+
+/* Настраиваем стиль для выходных дней */
+.fc .fc-day-sat .fc-daygrid-day-number,
+.fc .fc-day-sun .fc-daygrid-day-number {
+    color: #e74c3c;
+    /* Красный цвет для выходных */
+}
+
+/* Улучшаем стиль заголовка календаря */
+.fc .fc-toolbar-title {
+    font-size: 1.5em;
+    /* Увеличиваем размер заголовка */
+    /* font-weight: bold; */
+    /* Делаем заголовок жирным */
+}
+
+/* Стилизуем кнопки в панели инструментов */
+.fc .fc-button-primary {
+    background-color: #3788d8;
+    border-color: #3788d8;
+    font-weight: bold;
+}
+
+.fc .fc-button-primary:hover {
+    background-color: #2c6aa0;
+    border-color: #2c6aa0;
+}
+
+
+/* Отключаем стандартное выделение сегодняшнего дня */
+.fc-day-today {
+    background-color: inherit !important;
+}
+
+/* .fc-daygrid-day.fc-day-today .fc-daygrid-day-number {
+    width: 30px;
+    height: 30px;
+    line-height: 30px;
+    border-radius: 50%;
+    border: 2px solid #3788d8;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+} */
+
+.row.equal-height {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.equal-height>[class*='col-'] {
+    display: flex;
+    flex-direction: column;
+}
+
+.equal-height .card {
+    flex: 1;
+}
+
+
+#currencyTable input[type="text"] {
+    border: none;
+    background-color: transparent;
+    width: 100%;
+    outline: none;
+    padding: 0;
+}
+
+#currencyTable select {
+    border: none;
+    background-color: transparent;
+    width: 100%;
+    outline: none;
+    padding: 0;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+
+#currencyTable td {
+    padding: 8px;
+}
+
+#detailsTable input[type="text"] {
+    border: none;
+    background-color: transparent;
+    width: 100%;
+    outline: none;
+    padding: 0;
+}
+
+#detailsTable select {
+    border: none;
+    background-color: transparent;
+    width: 100%;
+    outline: none;
+    padding: 0;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+
+#detailsTable td {
+    padding: 8px;
+}
+
+#calendarHeader {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: start;
+    gap: 10px;
+}
+
+.buttons {
+    justify-self: end;
+    display: flex;
+    gap: 10px;
+}
+
+#calendarHeader h5 {
+    justify-self: end;
+    display: flex;
+    gap: 10px;
+    margin-right: 10px;
+}
+
+#eventTypeSelection {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#eventTypeSelection label {
+    margin-right: 10px;
+}

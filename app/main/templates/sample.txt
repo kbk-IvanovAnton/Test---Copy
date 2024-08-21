@@ -1,0 +1,17 @@
+{% from '_formhelpers.html' import render_field %}
+
+<form method="post">
+    {{ form.hidden_tag( )}}
+
+    <div class="mb-3">
+        <label class="form-label" for="name">{{ form.name.label() }}</label>
+        {{ render_field(form.name, id="name", class="form-control form-control-lg") }}
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label" for="address">{{ form.address.label() }}</label>
+        {{ render_field(form.address, id="address", class="form-control form-control-lg") }}
+    </div>
+
+    {{ form.submit(class="form-control bg-primary text-light") }}
+</form>

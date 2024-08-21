@@ -3,7 +3,7 @@ from flask_login import login_required
 
 from app import db
 from app.main import bp
-from app.main.forms.order import CompleteOrderForm
+from app.main.forms.order import CompleteOrderForm, OrderForm
 from app.main.models.details import Details
 from app.main.models.order import Order
 from app.main.models.rates import Rates
@@ -13,7 +13,6 @@ from app.main.models.rates import Rates
 @login_required
 def create_order():
     form = CompleteOrderForm(request.form)
-
     # print("Form data before validation:", form.data)
     if form.validate_on_submit():
         order = Order(
@@ -70,4 +69,4 @@ def create_order():
     # if form.errors:
     #     flash("Пожалуйста, исправьте ошибки в форме", "error")
 
-    return render_template("main/create_order.html", title="Create Order", form=form)
+    return render_template("main/create_order_japan.html", title="Create Order", form=form)

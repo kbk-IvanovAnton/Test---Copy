@@ -8,6 +8,7 @@ from wtforms import (
     IntegerField,
     SelectField,
     StringField,
+    ValidationError,
 )
 from wtforms.validators import DataRequired, Optional
 
@@ -21,18 +22,23 @@ from app.auth.models.user import User
 from app.main.models.locations1 import Locations1
 
 
+def my_length_check(form, field):
+    if len(field.data) == 0:
+        raise ValidationError("This field is required.")
+
+
 class OrderForm(FlaskForm):
     class Meta:
         csrf = False
 
     name_id = SelectField("User", coerce=int, validators=[DataRequired()])
-    order = StringField("Order", validators=[DataRequired()])
-    order_number = StringField("Order Number", validators=[DataRequired()])
-    detail_number = StringField("Detail Number", validators=[DataRequired()])
-    service_number = StringField("Service Number", validators=[DataRequired()])
-    service_card_number = StringField("Service Card Number", validators=[DataRequired()])
-    quote_number = StringField("Quote Number", validators=[DataRequired()])
-    purchase_order_number = StringField("Purchase Order Number", validators=[DataRequired()])
+    order = StringField("Order", validators=[my_length_check])
+    order_number = StringField("Order Number", validators=[my_length_check])
+    detail_number = StringField("Detail Number", validators=[my_length_check])
+    service_number = StringField("Service Number", validators=[my_length_check])
+    service_card_number = StringField("Service Card Number", validators=[my_length_check])
+    quote_number = StringField("Quote Number", validators=[my_length_check])
+    purchase_order_number = StringField("Purchase Order Number", validators=[my_length_check])
     travel_id = SelectField("Travel", coerce=int, validators=[DataRequired()])
     support_type_id = SelectField("Support Type", coerce=int, validators=[DataRequired()])
 

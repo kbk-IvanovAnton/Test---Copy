@@ -30,4 +30,4 @@ def update_order(order_id):
         form.order_number.data = order.order_number
         form.detail_number.data = order.detail_number
 
-    return render_template("main/create_order.html", title="Edit Order", form=form)
+    return render_template("main/create_order_japan.html", title="Edit Order", form=form)

@@ -1,0 +1,12 @@
+<!DOCTYPE html>
+
+{% macro render_field(field, class) %}
+{% if field.errors %}
+{{ field(class=class + " is-invalid", **kwargs)|safe }}
+{% for error in field.errors %}
+<span style="color: red;">・ {{ error }}</span>
+{% endfor %}
+{% else %}
+{{ field(class=class, **kwargs)|safe }}
+{% endif %}
+{% endmacro %}
