@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     toggleForms(true);
-
+    let count = 0;
     let calendar = new FullCalendar.Calendar(calendarEl, {
         initialView: 'dayGridMonth',
         headerToolbar: {
@@ -32,26 +32,31 @@ document.addEventListener('DOMContentLoaded', function () {
         eventClick: function (info) {
             switch (selectedEventType) {
                 case 'Work':
+                    count = 0;
                     info.event.setProp('title', 'Work');
                     info.event.setProp('backgroundColor', '#1E90FF');
                     info.event.setProp('borderColor', '#1E90FF');
                     break;
                 case 'Sells':
+                    count = 0;
                     info.event.setProp('title', 'Sells');
                     info.event.setProp('backgroundColor', '#2E8B57');
                     info.event.setProp('borderColor', '#2E8B57');
                     break;
                 case 'Movement':
+                    count = 0;
                     info.event.setProp('title', 'Movement');
                     info.event.setProp('backgroundColor', '#F0E68C');
                     info.event.setProp('borderColor', '#F0E68C');
                     break;
                 case 'Exeption':
+                    count = 0;
                     info.event.setProp('title', 'Exeption');
                     info.event.setProp('backgroundColor', '#CD5C5C');
                     info.event.setProp('borderColor', '#CD5C5C');
                     break;
                 case 'Other':
+                    count = 0;
                     info.event.setProp('title', 'Other');
                     info.event.setProp('backgroundColor', '#BA55D3');
                     info.event.setProp('borderColor', '#BA55D3');
@@ -63,7 +68,92 @@ document.addEventListener('DOMContentLoaded', function () {
 
         },
         eventChange: function (info) {
-            updateAllowanceTable(selectedEventType); // Обновляем таблицу на основе типа события
+            count += 1;
+            if (count != 2) {
+                return;
+            }
+            let allEvents = calendar.getEvents();
+            let mainWorkCount = allEvents.filter(event => event.title === 'Work').length;
+            // Обновление ячеек таблицы в зависимости от типа события
+            switch (selectedEventType) {
+                case 'Work':
+                    let work1Events = allEvents.filter(event => event.title === 'Work');
+                    let work1Count = work1Events.length;
+
+                    let sells1Count = allEvents.filter(event => event.title === 'Sells').length;
+                    let exception1Count = allEvents.filter(event => event.title === 'Exeption').length;
+
+                    if (work1Events.some(event => event.title === 'Work')) {
+                        if (targetDates.includes(info.event.startStr)) {
+                            document.getElementById('SpecialAllowanceDays_A').innerHTML = --sellsTargetCount;
+                            document.getElementById('SpecialAllowanceDays_B').innerHTML = ++workTargetCount;
+                        }
+                        document.getElementById('WorkingAwayDays_B').innerHTML = work1Count;
+                        document.getElementById('WorkingAwayDays_A').innerHTML = sells1Count;
+                        document.getElementById('ExeptionAllowanceDays').innerHTML = exception1Count;
+                    }
+                    break;
+                case 'Sells':
+                    let sells2Events = allEvents.filter(event => event.title === 'Sells');
+                    let sells2Count = sells2Events.length;
+
+                    let work2Count = allEvents.filter(event => event.title === 'Work').length;
+                    let exception2Count = allEvents.filter(event => event.title === 'Exeption').length;
+
+                    if (sells2Events.some(event => event.title === 'Sells')) {
+                        if (targetDates.includes(info.event.startStr)) {
+                            document.getElementById('SpecialAllowanceDays_A').innerHTML = ++sellsTargetCount;
+                            document.getElementById('SpecialAllowanceDays_B').innerHTML = --workTargetCount;
+                        }
+                        document.getElementById('WorkingAwayDays_B').innerHTML = work2Count;
+                        document.getElementById('WorkingAwayDays_A').innerHTML = sells2Count;
+                        document.getElementById('ExeptionAllowanceDays').innerHTML = exception2Count;
+                    }
+                    break;
+                case 'Movement':
+                    let movement3Events = allEvents.filter(event => event.title === 'Movement');
+
+                    let work3Count = allEvents.filter(event => event.title === 'Work').length;
+                    let sells3Count = allEvents.filter(event => event.title === 'Sells').length;
+                    let exception3Count = allEvents.filter(event => event.title === 'Exeption').length;
+
+                    if (movement3Events.some(event => event.title === 'Movement')) {
+                        document.getElementById('WorkingAwayDays_B').innerHTML = work3Count;
+                        document.getElementById('WorkingAwayDays_A').innerHTML = sells3Count;
+                        document.getElementById('ExeptionAllowanceDays').innerHTML = exception3Count;
+                    }
+                    break;
+                case 'Exeption':
+                    let exeption4Events = allEvents.filter(event => event.title === 'Exeption');
+                    let exeption4Count = exeption4Events.length;
+
+                    let work4Count = allEvents.filter(event => event.title === 'Work').length;
+                    let sells4Count = allEvents.filter(event => event.title === 'Sells').length;
+
+                    if (exeption4Events.some(event => event.title === 'Exeption')) {
+                        document.getElementById('WorkingAwayDays_B').innerHTML = work4Count;
+                        document.getElementById('WorkingAwayDays_A').innerHTML = sells4Count;
+                        document.getElementById('ExeptionAllowanceDays').innerHTML = exeption4Count;
+                    }
+                    break;
+                case 'Other':
+                    let other5Events = allEvents.filter(event => event.title === 'Other');
+
+                    let work5Count = allEvents.filter(event => event.title === 'Work').length;
+                    let sells5Count = allEvents.filter(event => event.title === 'Sells').length;
+                    let exeption5Count = allEvents.filter(event => event.title === 'Exeption').length;
+
+                    if (other5Events.some(event => event.title === 'Other')) {
+                        document.getElementById('WorkingAwayDays_B').innerHTML = work5Count;
+                        document.getElementById('WorkingAwayDays_A').innerHTML = sells5Count;
+                        document.getElementById('ExeptionAllowanceDays').innerHTML = exeption5Count;
+                    }
+                    break;
+                default:
+                    console.log('Неизвестный тип события:', selectedEventType);
+                    break;
+            }
+            updateSprcialAllowance();
         }
     });
     calendar.render();
@@ -224,104 +314,22 @@ document.addEventListener('DOMContentLoaded', function () {
 
     });
 
-    function updateAllowanceTable(selectedEventType) {
-        let allEvents = calendar.getEvents();
-        // Обновление ячеек таблицы в зависимости от типа события
+    function updateSprcialAllowance() {
+        let allWorkEvents = events.filter(event => event.title === 'Work').length;
+        let work6Count = calendar.getEvents().filter(event => event.title === 'Work').length;
+        let movement6Events = calendar.getEvents().filter(event => event.title === 'Movement');
+
+        console.log(allWorkEvents);
         switch (selectedEventType) {
-            case 'Work':
-                let work1Events = allEvents.filter(event => event.title === 'Work');
-                let work1Count = work1Events.length;
-                let sells1Events = allEvents.filter(event => event.title === 'Sells');
-                let sells1Count = sells1Events.length;
-                let exception1Events = allEvents.filter(event => event.title === 'Exeption');
-                let exception1Count = exception1Events.length;
-
-                if (work1Events.some(event => event.title === 'Work')) {
-                    document.getElementById('WorkingAwayDays_B').innerHTML = work1Count;
-                    console.log(work1Count);
-                }
-                if (sells1Events.some(event => event.title === 'Sells')) {
-                    document.getElementById('WorkingAwayDays_A').innerHTML = sells1Count;
-                }
-                if (exception1Events.some(event => event.title === 'Exeption')) {
-                    document.getElementById('ExeptionAllowanceDays').innerHTML = exception1Count;
-                }
-                break;
-            case 'Sells':
-                let work2Events = allEvents.filter(event => event.title === 'Work');
-                let work2Count = work2Events.length;
-                let sells2Events = allEvents.filter(event => event.title === 'Sells');
-                let sells2Count = sells2Events.length;
-                let exception2Events = allEvents.filter(event => event.title === 'Exeption');
-                let exception2Count = exception2Events.length;
-
-                if (work2Events.some(event => event.title === 'Work')) {
-                    document.getElementById('WorkingAwayDays_B').innerHTML = work2Count;
-                    console.log(work2Count);
-                }
-                if (sells2Events.some(event => event.title === 'Sells')) {
-                    document.getElementById('WorkingAwayDays_A').innerHTML = sells2Count;
-                }
-                if (exception2Events.some(event => event.title === 'Exeption')) {
-                    document.getElementById('ExeptionAllowanceDays').innerHTML = exception2Count;
-                }
-                break;
             case 'Movement':
-                let work3Events = allEvents.filter(event => event.title === 'Work');
-                let work3Count = work3Events.length;
-                let sells3Events = allEvents.filter(event => event.title === 'Sells');
-                let sells3Count = sells3Events.length;
-                let exception3Events = allEvents.filter(event => event.title === 'Exeption');
-                let exception3Count = exception3Events.length;
-
-                if (work3Events.some(event => event.title === 'Work')) {
-                    document.getElementById('WorkingAwayDays_B').innerHTML = work3Count;
+                console.log(event => event.start)
+                if (movement6Events.some(event => event.title === 'Movement' && event.start === '2024-08-13')) {
+                    if (allWorkEvents > work6Count) {
+                        document.getElementById('SpecialAllowanceDays_B').innerHTML = --workTargetCount;
+                    }
                 }
-                if (sells3Events.some(event => event.title === 'Sells')) {
-                    document.getElementById('WorkingAwayDays_A').innerHTML = sells3Count;
-                }
-                if (exception3Events.some(event => event.title === 'Exeption')) {
-                    document.getElementById('ExeptionAllowanceDays').innerHTML = exception3Count;
-                }
+                console.log(work6Count);
                 break;
-            case 'Exeption':
-                let work4Events = allEvents.filter(event => event.title === 'Work');
-                let work4Count = work4Events.length;
-                let sells4Events = allEvents.filter(event => event.title === 'Sells');
-                let sells4Count = sells4Events.length;
-                let exception4Events = allEvents.filter(event => event.title === 'Exeption');
-                let exception4Count = exception4Events.length;
-
-                if (work4Events.some(event => event.title === 'Work')) {
-                    document.getElementById('WorkingAwayDays_B').innerHTML = work4Count;
-                }
-                if (sells4Events.some(event => event.title === 'Sells')) {
-                    document.getElementById('WorkingAwayDays_A').innerHTML = sells4Count;
-                }
-                if (exception4Events.some(event => event.title === 'Exeption')) {
-                    document.getElementById('ExeptionAllowanceDays').innerHTML = exception4Count;
-                }
-                break;
-            case 'Other':
-                let work5Events = allEvents.filter(event => event.title === 'Work');
-                let work5Count = work5Events.length;
-                let sells5Events = allEvents.filter(event => event.title === 'Sells');
-                let sells5Count = sells5Events.length;
-                let exception5Events = allEvents.filter(event => event.title === 'Exeption');
-                let exception5Count = exception5Events.length;
-
-                if (work5Events.some(event => event.title === 'Work')) {
-                    document.getElementById('WorkingAwayDays_B').innerHTML = work5Count;
-                }
-                if (sells5Events.some(event => event.title === 'Sells')) {
-                    document.getElementById('WorkingAwayDays_A').innerHTML = sells5Count;
-                }
-                if (exception5Events.some(event => event.title === 'Exeption')) {
-                    document.getElementById('ExeptionAllowanceDays').innerHTML = exception5Count;
-                }
-                break;
-            default:
-                console.log('Неизвестный тип события:', selectedEventType);
         }
     }
 
@@ -364,6 +372,7 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('SpecialAllowanceUnitPrice_B').innerHTML = "";
         document.getElementById('SpecialAllowanceDays_B').innerHTML = "";
         document.getElementById('SpecialAllowanceDays_A').innerHTML = "";
+        document.getElementById('ExeptionAllowanceDays').innerHTML = "";
         workTargetCount = 0;
         sellsTargetCount = 0;
 
