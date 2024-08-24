@@ -296,12 +296,13 @@
                     </div>
                     <div class="m-3">
                         <div class="form-floating mb-3">
-                            {{form.location.location_id(class="form-select location-select", id="location_id",
+                            {{form.location.location_id(class="form-select location-select-trip", id="location_id",
                             placeholder="Location")}}
                             <label for="location_id">Trip</label>
                         </div>
                         <div class="form-floating">
-                            {{form.location.location_id(class="form-select location-select", id="location1_id",
+                            {{form.location.location_id(class="form-select location-select-return-trip",
+                            id="location1_id",
                             placeholder="Location1")}}
                             <label for="location1_id">Return Trip</label>
                         </div>
@@ -341,8 +342,8 @@
                                         <tr>
                                             <td>Accomodation Allowance</td>
                                             <td>
-                                                <input class="form-check-input" type="checkbox" id="checkboxNoLabel"
-                                                    value="" aria-label="..." checked>
+                                                <input class="form-check-input" type="checkbox"
+                                                    id="AccomodationAllowanceCheck" value="" aria-label="..." checked>
                                             </td>
                                             <td id="AccomodationUnitPrice"></td>
                                             <td id="AccomodationDays"></td>

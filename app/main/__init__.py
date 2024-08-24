@@ -15,5 +15,7 @@ from app.main.routes import (
     delete_order,
     hide_order,
     index,
+    return_trip_unit_price,
+    trip_unit_price,
     update_order,
 )
