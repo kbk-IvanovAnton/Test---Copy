@@ -36,6 +36,8 @@ def create_app(config_class="config.Config"):
 
 from app.admin.models import (
     account_items,
+    allowance_prices_japan,
+    allowance_prices_world,
     currencies,
     payment_metods,
     receipts,

@@ -15,6 +15,7 @@ from app.admin.routes.account_items import (
     edit_item,
     update_account_items_order,
 )
+from app.admin.routes.allowance_prices_world import allowance_prices_table
 from app.admin.routes.currencies import (
     add_currency,
     currency_table,

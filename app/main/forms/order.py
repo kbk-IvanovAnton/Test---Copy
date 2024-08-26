@@ -124,8 +124,29 @@ class LocationForm(FlaskForm):
         self.location_id.choices.insert(0, (0, ""))
 
 
+# class AllowanceForm(FlaskForm):
+#     class Meta:
+#         csrf = False
+
+#     trip_unit_price = IntegerField("Trip Unit Price", validators=[Optional()])
+#     trip_days = IntegerField("Trip Days", validators=[Optional()])
+#     return_trip_unit_price = IntegerField("Return Trip Unit Price", validators=[Optional()])
+#     return_trip_days = IntegerField("Return Trip Days", validators=[Optional()])
+#     accomodation_unit_price = IntegerField("Accomodation Unit Price", validators=[Optional()])
+#     accomodation_days = IntegerField("Accomodation Days", validators=[Optional()])
+#     working_away_unit_price_A = IntegerField("Working Away Unit Price A", validators=[Optional()])
+#     working_away_days_A = IntegerField("Working Away Days A", validators=[Optional()])
+#     working_away_unit_price_B = IntegerField("Working Away Unit Price B", validators=[Optional()])
+#     working_away_days_B = IntegerField("Working Away Days B", validators=[Optional()])
+#     exeption_allowance_unit_price = IntegerField(
+#         "Exeption Allowance Unit Price", validators=[Optional()]
+#     )
+#     exeption_allowance_days = IntegerField("Exeption Allowance Days", validators=[Optional()])
+
+
 class CompleteOrderForm(FlaskForm):
     order = FormField(OrderForm)
     location = FormField(LocationForm)
+    # allowance = FormField(AllowanceForm)
     rates = FieldList(FormField(RateForm), min_entries=5, max_entries=5)
     details = FieldList(FormField(DetailForm), min_entries=20, max_entries=20)
