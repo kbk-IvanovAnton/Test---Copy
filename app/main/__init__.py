@@ -13,6 +13,7 @@ from app.main.routes import (
     create_order,
     create_task,
     delete_order,
+    get_alllowance_prices_japan,
     hide_order,
     index,
     return_trip_unit_price,

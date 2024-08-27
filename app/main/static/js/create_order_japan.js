@@ -252,11 +252,28 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('TripUnitPrice').innerHTML = 0;
         document.getElementById('ReturnTripDays').innerHTML = 0;
         document.getElementById('ReturnTripUnitPrice').innerHTML = 0;
-        document.getElementById('AccomodationUnitPrice').innerHTML = 7000;
-        document.getElementById('WorkingAwayUnitPrice_A').innerHTML = 2000;
-        document.getElementById('WorkingAwayUnitPrice_B').innerHTML = 4000;
-        document.getElementById('SpecialAllowanceUnitPrice_A').innerHTML = 2000;
-        document.getElementById('SpecialAllowanceUnitPrice_B').innerHTML = 4000;
+        // document.getElementById('AccomodationUnitPrice').innerHTML = 7000;
+        // document.getElementById('WorkingAwayUnitPrice_A').innerHTML = 2000;
+        // document.getElementById('WorkingAwayUnitPrice_B').innerHTML = 4000;
+        // document.getElementById('SpecialAllowanceUnitPrice_A').innerHTML = 2000;
+        // document.getElementById('SpecialAllowanceUnitPrice_B').innerHTML = 4000;
+
+        fetch('/admin_menu/get_allowance_prices_japan', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    console.log(data.result[0].allowance);
+                    document.getElementById('AccomodationUnitPrice').innerHTML = data.result[0].allowance;
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
 
         let eventCount = events.length;
         document.getElementById('AccomodationDays').innerHTML = eventCount - 1;

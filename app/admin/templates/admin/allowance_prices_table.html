@@ -15,63 +15,8 @@
         <div class="col-md-6 ms-sm-auto col-lg-6 px-md-4">
             <div class="card flex-fill">
                 <div class="card-header py-3">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div></div>
-                        <h3 class="card-title mb-0">Allowance Prices World Table</h3>
-                        <button class="btn btn-primary btn-add" id="btn-add">New Line</button>
-                    </div>
-                </div>
-                <div class="card-body py-0 mb-3">
-                    <table class="display cell-border" style="width: 100%" id="allowancePricesWorldTable">
-                        <thead>
-                            <tr style="text-align: center;">
-                                <th class="col-name">Name</th>
-                                <th class="col-price">Price</th>
-                                <th class="col-note">Note</th>
-                                <th class="col-menu">Menu</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for allowance_price in allowance_prices_world %}
-                            <tr data-id="{{ allowance_price.id }}">
-                                <td class="view-mode allowance-price-cell-world">{{ allowance_price.name }}</td>
-                                <td style="text-align:end" class="view-mode allowance-price-cell-world">{{
-                                    allowance_price.allowance }}</td>
-                                <td class="view-mode allowance-price-cell-world">{{
-                                    allowance_price.note }}</td>
-                                <td style="text-align:center">
-                                    <button class="btn btn-primary btn-sm btn-edit"><i class="align-middle"
-                                            data-feather="edit"></i></button>
-                                    <button class="btn btn-success btn-sm btn-save edit-mode" style="display: none;"><i
-                                            class="align-middle" data-feather="save"></i></button>
-                                    <button class="btn btn-secondary btn-sm btn-cancel edit-mode"
-                                        style="display: none;"><i class="align-middle" data-feather="x"></i></button>
-                                    <button class="btn btn-danger btn-sm btn-delete"><i class="align-middle"
-                                            data-feather="trash"></i></button>
-                                    <button
-                                        class="btn btn-sm btn-show-allowance-price-world {{ 'btn-success' if allowance_price.is_show else 'btn-danger' }}"
-                                        disabled>
-                                        {% if allowance_price.is_show %}
-                                        <i class="align-middle" data-feather="eye"></i>
-                                        {% else %}
-                                        <i class="align-middle" data-feather="eye-off"></i>
-                                        {% endif %}
-                                    </button>
-                                </td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-        <div class="col-md-6 ms-sm-auto col-lg-6 px-md-4">
-            <div class="card flex-fill">
-                <div class="card-header py-3">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <div></div>
+                    <div style="display: flex; justify-content: center;">
                         <h3 class="card-title mb-0">Allowance Prices Japan Table</h3>
-                        <button class="btn btn-primary btn-add" id="btn-add-japan">New Line</button>
                     </div>
                 </div>
                 <div class="card-body py-0 mb-3">
@@ -87,29 +32,18 @@
                         <tbody>
                             {% for allowance_price in allowance_prices_japan %}
                             <tr data-id="{{ allowance_price.id }}">
-                                <td class="view-mode allowance-price-japan-cell">{{ allowance_price.name }}</td>
-                                <td style="text-align:end" class="view-mode allowance-price-japan-cell">{{
+                                <td class="view-mode-japan">{{ allowance_price.name }}</td>
+                                <td style="text-align:end" class="view-mode-japan">{{
                                     allowance_price.allowance }}</td>
-                                <td class="view-mode allowance-price-japan-cell">{{
+                                <td class="view-mode-japan">{{
                                     allowance_price.note }}</td>
                                 <td style="text-align:center">
-                                    <button class="btn btn-primary btn-sm btn-edit"><i class="align-middle"
+                                    <button class="btn btn-primary btn-sm btn-edit-japan"><i class="align-middle"
                                             data-feather="edit"></i></button>
-                                    <button class="btn btn-success btn-sm btn-save edit-mode" style="display: none;"><i
-                                            class="align-middle" data-feather="save"></i></button>
-                                    <button class="btn btn-secondary btn-sm btn-cancel edit-mode"
+                                    <button class="btn btn-success btn-sm btn-save-japan edit-mode-japan"
+                                        style="display: none;"><i class="align-middle" data-feather="save"></i></button>
+                                    <button class="btn btn-secondary btn-sm btn-cancel-japan edit-mode-japan"
                                         style="display: none;"><i class="align-middle" data-feather="x"></i></button>
-                                    <button class="btn btn-danger btn-sm btn-delete"><i class="align-middle"
-                                            data-feather="trash"></i></button>
-                                    <button
-                                        class="btn btn-sm btn-show-allowance-price-japan {{ 'btn-success' if allowance_price.is_show else 'btn-danger' }}"
-                                        disabled>
-                                        {% if allowance_price.is_show %}
-                                        <i class="align-middle" data-feather="eye"></i>
-                                        {% else %}
-                                        <i class="align-middle" data-feather="eye-off"></i>
-                                        {% endif %}
-                                    </button>
                                 </td>
                             </tr>
                             {% endfor %}
@@ -118,39 +52,43 @@
                 </div>
             </div>
         </div>
-    </div>
-    <div class="modal fade" id="deleteConfirmationModal" tabindex="-1" role="dialog"
-        aria-labelledby="deleteConfirmationModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="deleteConfirmationModalLabel">Delete Confirmation</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        <div class="col-md-6 ms-sm-auto col-lg-6 px-md-4">
+            <div class="card flex-fill">
+                <div class="card-header py-3">
+                    <div style="display: flex; justify-content: center;">
+                        <h3 class="card-title mb-0">Allowance Prices World Table</h3>
+                    </div>
                 </div>
-                <div class="modal-body">
-                    Do you really want to delete row <strong id="allowancePriceWorldToDelete"></strong>?
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-success" id="confirmDeleteBtn">Yes</button>
-                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">No</button>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="modal fade" id="deleteConfirmationModalJapan" tabindex="-1" role="dialog"
-        aria-labelledby="deleteConfirmationModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="deleteConfirmationModalLabelJapan">Delete Confirmation</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    Do you really want to delete row <strong id="allowancePriceJapanToDelete"></strong>?
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-success" id="confirmDeleteBtnJapan">Yes</button>
-                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">No</button>
+                <div class="card-body py-0 mb-3">
+                    <table class="display cell-border" style="width: 100%" id="allowancePricesWorldTable">
+                        <thead>
+                            <tr style="text-align: center;">
+                                <th class="col-name">Name</th>
+                                <th class="col-price">Price</th>
+                                <th class="col-note">Note</th>
+                                <th class="col-menu">Menu</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for allowance_price in allowance_prices_world %}
+                            <tr data-id="{{ allowance_price.id }}">
+                                <td class="view-mode-world">{{ allowance_price.name }}</td>
+                                <td style="text-align:end" class="view-mode-world">{{
+                                    allowance_price.allowance }}</td>
+                                <td class="view-mode-world">{{
+                                    allowance_price.note }}</td>
+                                <td style="text-align:center">
+                                    <button class="btn btn-primary btn-sm btn-edit-world"><i class="align-middle"
+                                            data-feather="edit"></i></button>
+                                    <button class="btn btn-success btn-sm btn-save-world edit-mode-world"
+                                        style="display: none;"><i class="align-middle" data-feather="save"></i></button>
+                                    <button class="btn btn-secondary btn-sm btn-cancel-world edit-mode-world"
+                                        style="display: none;"><i class="align-middle" data-feather="x"></i></button>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
