@@ -23,9 +23,10 @@ $(document).ready(function () {
         $row.find('.view-mode-world').each(function () {
             let $cell = $(this);
             let text = $cell.text().trim();
-            if ($cell.index() !== 3 && $cell.index() !== 0) { // Skip is_show column
+            if ($cell.index() !== 3 && $cell.index() !== 0) {
+                let unformattedText = text.replace(/,/g, '');
                 $cell.data('original-content', text);
-                $cell.html('<input type="text" class="form-control" value="' + text + '">');
+                $cell.html('<input type="text" class="form-control" value="' + unformattedText + '">');
             }
         });
         $('.btn-edit-world').prop('disabled', true);
@@ -38,7 +39,10 @@ $(document).ready(function () {
         let $row = $(this).closest('tr');
         let allowance = $row.find('.view-mode-world:eq(1) input').val();
         let note = $row.find('.view-mode-world:eq(2) input').val();
-        $row.find('.view-mode-world:eq(1)').text(allowance);
+
+        let formattedAllowance = Number(allowance).toLocaleString();
+
+        $row.find('.view-mode-world:eq(1)').text(formattedAllowance);
         $row.find('.view-mode-world:eq(2)').text(note);
         $row.find('.edit-mode-world').hide();
         $row.find('.btn-edit-world').show();
@@ -61,7 +65,7 @@ $(document).ready(function () {
             .then(response => response.json())
             .then(response => {
                 if (response.success) {
-                    $row.find('.view-mode-world:eq(1)').text(allowance);
+                    $row.find('.view-mode-world:eq(1)').text(Number(allowance).toLocaleString());
                     $row.find('.view-mode-world:eq(2)').text(note);
                     $row.find('.edit-mode-world').hide();
                     $row.find('.btn-edit-world').show();

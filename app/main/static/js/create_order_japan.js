@@ -32,14 +32,14 @@ document.addEventListener('DOMContentLoaded', function () {
         eventClick: function (info) {
             switch (selectedEventType) {
                 case 'Work':
-                    if (info.event.title === 'Sells' && targetDates.includes(info.event.startStr)) {
+                    if (info.event.title === 'Sells' && targetDates.includes(info.event.startStr.substring(5))) {
                         document.getElementById('SpecialAllowanceDays_A').innerHTML = --sellsTargetCount;
                         document.getElementById('SpecialAllowanceDays_B').innerHTML = ++workTargetCount;
                     }
-                    else if (info.event.title === 'Movement' && targetDates.includes(info.event.startStr)) {
+                    else if (info.event.title === 'Movement' && targetDates.includes(info.event.startStr.substring(5))) {
                         document.getElementById('SpecialAllowanceDays_B').innerHTML = ++workTargetCount;
                     }
-                    else if (info.event.title === 'Exeption' && targetDates.includes(info.event.startStr)) {
+                    else if (info.event.title === 'Exeption' && targetDates.includes(info.event.startStr.substring(5))) {
                         document.getElementById('SpecialAllowanceDays_B').innerHTML = ++workTargetCount;
                     }
                     info.event.setProp('title', 'Work');
@@ -50,14 +50,14 @@ document.addEventListener('DOMContentLoaded', function () {
                     document.getElementById('ExeptionAllowanceDays').innerHTML = calendar.getEvents().filter(event => event.title === 'Exeption').length;
                     break;
                 case 'Sells':
-                    if (info.event.title === 'Work' && targetDates.includes(info.event.startStr)) {
+                    if (info.event.title === 'Work' && targetDates.includes(info.event.startStr.substring(5))) {
                         document.getElementById('SpecialAllowanceDays_A').innerHTML = ++sellsTargetCount;
                         document.getElementById('SpecialAllowanceDays_B').innerHTML = --workTargetCount;
                     }
-                    else if (info.event.title === 'Movement' && targetDates.includes(info.event.startStr)) {
+                    else if (info.event.title === 'Movement' && targetDates.includes(info.event.startStr.substring(5))) {
                         document.getElementById('SpecialAllowanceDays_A').innerHTML = ++sellsTargetCount;
                     }
-                    else if (info.event.title === 'Exeption' && targetDates.includes(info.event.startStr)) {
+                    else if (info.event.title === 'Exeption' && targetDates.includes(info.event.startStr.substring(5))) {
                         document.getElementById('SpecialAllowanceDays_A').innerHTML = ++sellsTargetCount;
                     }
                     info.event.setProp('title', 'Sells');
@@ -68,10 +68,10 @@ document.addEventListener('DOMContentLoaded', function () {
                     document.getElementById('ExeptionAllowanceDays').innerHTML = calendar.getEvents().filter(event => event.title === 'Exeption').length;
                     break;
                 case 'Movement':
-                    if (info.event.title === 'Work' && targetDates.includes(info.event.startStr)) {
+                    if (info.event.title === 'Work' && targetDates.includes(info.event.startStr.substring(5))) {
                         document.getElementById('SpecialAllowanceDays_B').innerHTML = --workTargetCount;
                     }
-                    else if (info.event.title === 'Sells' && targetDates.includes(info.event.startStr)) {
+                    else if (info.event.title === 'Sells' && targetDates.includes(info.event.startStr.substring(5))) {
                         document.getElementById('SpecialAllowanceDays_A').innerHTML = --sellsTargetCount;
                     }
                     info.event.setProp('title', 'Movement');
@@ -82,10 +82,10 @@ document.addEventListener('DOMContentLoaded', function () {
                     document.getElementById('ExeptionAllowanceDays').innerHTML = calendar.getEvents().filter(event => event.title === 'Exeption').length;
                     break;
                 case 'Exeption':
-                    if (info.event.title === 'Work' && targetDates.includes(info.event.startStr)) {
+                    if (info.event.title === 'Work' && targetDates.includes(info.event.startStr.substring(5))) {
                         document.getElementById('SpecialAllowanceDays_B').innerHTML = --workTargetCount;
                     }
-                    else if (info.event.title === 'Sells' && targetDates.includes(info.event.startStr)) {
+                    else if (info.event.title === 'Sells' && targetDates.includes(info.event.startStr.substring(5))) {
                         document.getElementById('SpecialAllowanceDays_A').innerHTML = --sellsTargetCount;
                     }
                     info.event.setProp('title', 'Exeption');
@@ -96,10 +96,10 @@ document.addEventListener('DOMContentLoaded', function () {
                     document.getElementById('ExeptionAllowanceDays').innerHTML = calendar.getEvents().filter(event => event.title === 'Exeption').length;
                     break;
                 case 'Other':
-                    if (info.event.title === 'Work' && targetDates.includes(info.event.startStr)) {
+                    if (info.event.title === 'Work' && targetDates.includes(info.event.startStr.substring(5))) {
                         document.getElementById('SpecialAllowanceDays_B').innerHTML = --workTargetCount;
                     }
-                    else if (info.event.title === 'Sells' && targetDates.includes(info.event.startStr)) {
+                    else if (info.event.title === 'Sells' && targetDates.includes(info.event.startStr.substring(5))) {
                         document.getElementById('SpecialAllowanceDays_A').innerHTML = --sellsTargetCount;
                     }
                     info.event.setProp('title', 'Other');
@@ -110,7 +110,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     document.getElementById('ExeptionAllowanceDays').innerHTML = calendar.getEvents().filter(event => event.title === 'Exeption').length;
                     break;
             }
-
+            console.log(info.event.startStr.substring(5));
             info.view.calendar.unselect();
         },
     });
@@ -118,7 +118,7 @@ document.addEventListener('DOMContentLoaded', function () {
     calendar.render();
 
     let events = [];
-    let targetDates = ["2024-08-13", "2024-08-14", "2024-08-15"];
+    let targetDates = ["08-13", "08-14", "08-15", "12-30", "12-31", "01-01", "01-02", "01-03"];
     let workTargetCount = 0;
     let sellsTargetCount = 0;
 
@@ -130,6 +130,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         let startDate = new Date(startDateInput.value);
         let endDate = new Date(endDateInput.value);
+        console.log(startDate, endDate);
 
         let valid = true;
 
@@ -227,7 +228,12 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
                 for (const targetDateStr of targetDates) {
                     const targetDate = new Date(targetDateStr);
-                    if (targetDate > startDate && targetDate < endDate) {
+                    let newTargetDate = targetDate.toISOString().split('T')[0].substring(5);
+                    let newStartDate = startDate.toISOString().split('T')[0].substring(5);
+                    let newEndDate = endDate.toISOString().split('T')[0].substring(5);
+                    console.log(newTargetDate, newStartDate, newEndDate);
+                    if (newTargetDate > newStartDate && newTargetDate < newEndDate) {
+                        console.log(newTargetDate);
                         workTargetCount++;
                     }
                 }
@@ -252,11 +258,6 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('TripUnitPrice').innerHTML = 0;
         document.getElementById('ReturnTripDays').innerHTML = 0;
         document.getElementById('ReturnTripUnitPrice').innerHTML = 0;
-        // document.getElementById('AccomodationUnitPrice').innerHTML = 7000;
-        // document.getElementById('WorkingAwayUnitPrice_A').innerHTML = 2000;
-        // document.getElementById('WorkingAwayUnitPrice_B').innerHTML = 4000;
-        // document.getElementById('SpecialAllowanceUnitPrice_A').innerHTML = 2000;
-        // document.getElementById('SpecialAllowanceUnitPrice_B').innerHTML = 4000;
 
         fetch('/admin_menu/get_allowance_prices_japan', {
             method: 'GET',
@@ -267,8 +268,11 @@ document.addEventListener('DOMContentLoaded', function () {
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    console.log(data.result[0].allowance);
-                    document.getElementById('AccomodationUnitPrice').innerHTML = data.result[0].allowance;
+                    document.getElementById('AccomodationUnitPrice').innerHTML = Number(data.result[0].allowance).toLocaleString();
+                    document.getElementById('WorkingAwayUnitPrice_A').innerHTML = Number(data.result[1].allowance).toLocaleString();
+                    document.getElementById('WorkingAwayUnitPrice_B').innerHTML = Number(data.result[2].allowance).toLocaleString();
+                    document.getElementById('SpecialAllowanceUnitPrice_A').innerHTML = Number(data.result[3].allowance).toLocaleString();
+                    document.getElementById('SpecialAllowanceUnitPrice_B').innerHTML = Number(data.result[4].allowance).toLocaleString();
                 }
             })
             .catch(error => {
@@ -283,14 +287,12 @@ document.addEventListener('DOMContentLoaded', function () {
         let workCount = workEvents.length;
 
         document.getElementById('WorkingAwayDays_B').innerHTML = workCount;
-        console.log(`Количество событий 'Work': ${workCount}`);
 
         // Подсчёт количества событий с заголовком 'Sells'
         let sellsEvents = events.filter(event => event.title === 'Sells');
         let sellsCount = sellsEvents.length;
 
         document.getElementById('WorkingAwayDays_A').innerHTML = sellsCount;
-        console.log(`Количество событий 'Sells': ${sellsCount}`);
 
     });
 
@@ -341,16 +343,33 @@ document.addEventListener('DOMContentLoaded', function () {
         workTargetCount = 0;
         sellsTargetCount = 0;
 
+        document.getElementById('location_id').value = '0'; // Trip/Return Trip select field to 'None'
+        document.getElementById('location1_id').value = '0';
+
     });
 
     document.getElementById('AccomodationAllowanceCheck').addEventListener('click', function () {
-        if (document.getElementById('AccomodationAllowanceCheck').checked) {
-            document.getElementById('AccomodationUnitPrice').innerHTML = 7000;
-            document.getElementById('AccomodationDays').innerHTML = calendar.getEvents().length - 1;
-        } else {
-            document.getElementById('AccomodationUnitPrice').innerHTML = 7000;
-            document.getElementById('AccomodationDays').innerHTML = 0;
-        }
+        fetch('/admin_menu/get_allowance_prices_japan', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    if (document.getElementById('AccomodationAllowanceCheck').checked) {
+                        document.getElementById('AccomodationUnitPrice').innerHTML = Number(data.result[0].allowance).toLocaleString();
+                        document.getElementById('AccomodationDays').innerHTML = calendar.getEvents().length - 1;
+                    } else {
+                        document.getElementById('AccomodationUnitPrice').innerHTML = Number(data.result[0].allowance).toLocaleString();
+                        document.getElementById('AccomodationDays').innerHTML = 0;
+                    }
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
     });
 
     $(document).ready(function () {
@@ -368,7 +387,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
-                        document.getElementById('TripUnitPrice').innerText = data.allowance;
+                        document.getElementById('TripUnitPrice').innerHTML = Number(data.allowance).toLocaleString();
                         document.getElementById('TripDays').innerHTML = 1;
                     }
                 })
@@ -390,7 +409,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
-                        document.getElementById('ReturnTripUnitPrice').innerText = data.allowance;
+                        document.getElementById('ReturnTripUnitPrice').innerHTML = Number(data.allowance).toLocaleString();
                         document.getElementById('ReturnTripDays').innerHTML = 1;
                     }
                 })

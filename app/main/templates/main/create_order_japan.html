@@ -151,7 +151,7 @@
                             <tbody>
                                 {% for rate in form.rates %}
                                 <tr>
-                                    <td>
+                                    <td id="currency_id_td_{{ loop.index }}">
                                         <div>
                                             {% if loop.first %}
                                             {{ rate.currency_id(class="form-select",
@@ -169,7 +169,7 @@
                                             loop.index, disabled=true) }}
                                         </div>
                                     </td>
-                                    <td>
+                                    <td id="temporary_payment_id_td_{{ loop.index }}">
                                         <div>
                                             {% if loop.first %}
                                             {{ rate.temporary_payment(class="form-control", placeholder="Imput Here",

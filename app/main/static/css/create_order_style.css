@@ -91,21 +91,17 @@
     appearance: none;
 }
 
-/* #currencyTable td {
+#currencyTable td {
     padding: 8px;
-} */
-
-
-#currencyTable input[disabled] {
-    background-color: rgb(104, 104, 104);
-    opacity: 0.6;
+    background-color: #b3b3b3;
 }
 
-#currencyTable select[disabled] {
-    background-color: rgb(104, 104, 104);
-    /* Светло-серый фон */
-    opacity: 0.6;
-    /* Немного прозрачный */
+#currency_id_td_1 {
+    background-color: #ffffff !important;
+}
+
+#temporary_payment_id_td_1 {
+    background-color: #ffffff !important;
 }
 
 #detailsTable input[type="text"] {
