@@ -61,7 +61,7 @@ class RateForm(FlaskForm):
     class Meta:
         csrf = False
 
-    currency_id = SelectField("Currency", coerce=int, validators=[Optional()], default=1)
+    currency_id = SelectField("Currency", coerce=int, validators=[Optional()])
     foreign_currency = FloatField("Foreign Currency", validators=[Optional()])
     temporary_payment = FloatField("Temporary Payment", validators=[Optional()])
     remaining_payment = FloatField("Remaining Payment", validators=[Optional()])

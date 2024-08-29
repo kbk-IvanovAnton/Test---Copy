@@ -10,7 +10,7 @@ def edit_item():
     data = request.json
     item = AccountItems.query.get(data["id"])
     if item:
-        item.supportedTypeName = data["name"]
+        item.accountItemName = data["name"]
         item.is_show = bool(data["is_show_account_item"])
         db.session.commit()
         return jsonify(success=True)

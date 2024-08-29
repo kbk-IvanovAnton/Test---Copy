@@ -32,14 +32,14 @@ document.addEventListener('DOMContentLoaded', function () {
         eventClick: function (info) {
             switch (selectedEventType) {
                 case 'Work':
-                    if (info.event.title === 'Sells' && targetDates.includes(info.event.startStr.substring(5))) {
+                    if (info.event.title === 'Sells' && targetDates.includes(info.event.startStr)) {
                         document.getElementById('SpecialAllowanceDays_A').innerHTML = --sellsTargetCount;
                         document.getElementById('SpecialAllowanceDays_B').innerHTML = ++workTargetCount;
                     }
-                    else if (info.event.title === 'Movement' && targetDates.includes(info.event.startStr.substring(5))) {
+                    else if (info.event.title === 'Movement' && targetDates.includes(info.event.startSt)) {
                         document.getElementById('SpecialAllowanceDays_B').innerHTML = ++workTargetCount;
                     }
-                    else if (info.event.title === 'Exeption' && targetDates.includes(info.event.startStr.substring(5))) {
+                    else if (info.event.title === 'Exeption' && targetDates.includes(info.event.startStr)) {
                         document.getElementById('SpecialAllowanceDays_B').innerHTML = ++workTargetCount;
                     }
                     info.event.setProp('title', 'Work');
@@ -50,14 +50,14 @@ document.addEventListener('DOMContentLoaded', function () {
                     document.getElementById('ExeptionAllowanceDays').innerHTML = calendar.getEvents().filter(event => event.title === 'Exeption').length;
                     break;
                 case 'Sells':
-                    if (info.event.title === 'Work' && targetDates.includes(info.event.startStr.substring(5))) {
+                    if (info.event.title === 'Work' && targetDates.includes(info.event.startStr)) {
                         document.getElementById('SpecialAllowanceDays_A').innerHTML = ++sellsTargetCount;
                         document.getElementById('SpecialAllowanceDays_B').innerHTML = --workTargetCount;
                     }
-                    else if (info.event.title === 'Movement' && targetDates.includes(info.event.startStr.substring(5))) {
+                    else if (info.event.title === 'Movement' && targetDates.includes(info.event.startStr)) {
                         document.getElementById('SpecialAllowanceDays_A').innerHTML = ++sellsTargetCount;
                     }
-                    else if (info.event.title === 'Exeption' && targetDates.includes(info.event.startStr.substring(5))) {
+                    else if (info.event.title === 'Exeption' && targetDates.includes(info.event.startStr)) {
                         document.getElementById('SpecialAllowanceDays_A').innerHTML = ++sellsTargetCount;
                     }
                     info.event.setProp('title', 'Sells');
@@ -68,10 +68,10 @@ document.addEventListener('DOMContentLoaded', function () {
                     document.getElementById('ExeptionAllowanceDays').innerHTML = calendar.getEvents().filter(event => event.title === 'Exeption').length;
                     break;
                 case 'Movement':
-                    if (info.event.title === 'Work' && targetDates.includes(info.event.startStr.substring(5))) {
+                    if (info.event.title === 'Work' && targetDates.includes(info.event.startStr)) {
                         document.getElementById('SpecialAllowanceDays_B').innerHTML = --workTargetCount;
                     }
-                    else if (info.event.title === 'Sells' && targetDates.includes(info.event.startStr.substring(5))) {
+                    else if (info.event.title === 'Sells' && targetDates.includes(info.event.startStr)) {
                         document.getElementById('SpecialAllowanceDays_A').innerHTML = --sellsTargetCount;
                     }
                     info.event.setProp('title', 'Movement');
@@ -82,10 +82,10 @@ document.addEventListener('DOMContentLoaded', function () {
                     document.getElementById('ExeptionAllowanceDays').innerHTML = calendar.getEvents().filter(event => event.title === 'Exeption').length;
                     break;
                 case 'Exeption':
-                    if (info.event.title === 'Work' && targetDates.includes(info.event.startStr.substring(5))) {
+                    if (info.event.title === 'Work' && targetDates.includes(info.event.startStr)) {
                         document.getElementById('SpecialAllowanceDays_B').innerHTML = --workTargetCount;
                     }
-                    else if (info.event.title === 'Sells' && targetDates.includes(info.event.startStr.substring(5))) {
+                    else if (info.event.title === 'Sells' && targetDates.includes(info.event.startStr)) {
                         document.getElementById('SpecialAllowanceDays_A').innerHTML = --sellsTargetCount;
                     }
                     info.event.setProp('title', 'Exeption');
@@ -96,10 +96,10 @@ document.addEventListener('DOMContentLoaded', function () {
                     document.getElementById('ExeptionAllowanceDays').innerHTML = calendar.getEvents().filter(event => event.title === 'Exeption').length;
                     break;
                 case 'Other':
-                    if (info.event.title === 'Work' && targetDates.includes(info.event.startStr.substring(5))) {
+                    if (info.event.title === 'Work' && targetDates.includes(info.event.startStr)) {
                         document.getElementById('SpecialAllowanceDays_B').innerHTML = --workTargetCount;
                     }
-                    else if (info.event.title === 'Sells' && targetDates.includes(info.event.startStr.substring(5))) {
+                    else if (info.event.title === 'Sells' && targetDates.includes(info.event.startStr)) {
                         document.getElementById('SpecialAllowanceDays_A').innerHTML = --sellsTargetCount;
                     }
                     info.event.setProp('title', 'Other');
@@ -110,7 +110,6 @@ document.addEventListener('DOMContentLoaded', function () {
                     document.getElementById('ExeptionAllowanceDays').innerHTML = calendar.getEvents().filter(event => event.title === 'Exeption').length;
                     break;
             }
-            console.log(info.event.startStr.substring(5));
             info.view.calendar.unselect();
         },
     });
@@ -118,9 +117,24 @@ document.addEventListener('DOMContentLoaded', function () {
     calendar.render();
 
     let events = [];
+
+    const currentYear = new Date().getFullYear();
+    const pastYear = currentYear - 1;
+    const futureYear = currentYear + 1;
     let targetDates = ["08-13", "08-14", "08-15", "12-30", "12-31", "01-01", "01-02", "01-03"];
+    currentDates = targetDates.map(date => currentYear + "-" + date);
+    pastDates = targetDates.map(date => pastYear + "-" + date);
+    futureDates = targetDates.map(date => futureYear + "-" + date);
+    targetDates = currentDates.concat(pastDates, futureDates);
+
     let workTargetCount = 0;
     let sellsTargetCount = 0;
+
+    document.getElementById('rates-0-currency_id').value = '1';
+
+    for (let i = 0; i < 20; i++) {
+        document.getElementById('details-' + i + '-currency_id').value = '1';
+    }
 
     document.getElementById('add-event').addEventListener('click', function () {
         let startDateInput = document.getElementById('start-date');
@@ -130,7 +144,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
         let startDate = new Date(startDateInput.value);
         let endDate = new Date(endDateInput.value);
-        console.log(startDate, endDate);
 
         let valid = true;
 
@@ -187,31 +200,33 @@ document.addEventListener('DOMContentLoaded', function () {
                     title: 'Movement',
                     start: startDate.toISOString().split('T')[0],
                     end: startDate.toISOString().split('T')[0],
-                    // display: 'background',
                     color: '#F0E68C'
                 });
+                document.getElementById('SpecialAllowanceDays_B').innerHTML = workTargetCount;
+                document.getElementById('SpecialAllowanceDays_A').innerHTML = sellsTargetCount;
+                document.getElementById('ExeptionAllowanceDays').innerHTML = 0;
                 break;
             case 1:
                 events.push({
                     title: 'Movement',
                     start: startDate.toISOString().split('T')[0],
                     end: startDate.toISOString().split('T')[0],
-                    // display: 'background',
                     color: '#F0E68C'
                 }, {
                     title: 'Movement',
                     start: endDate.toISOString().split('T')[0],
                     end: endDate.toISOString().split('T')[0],
-                    // display: 'background',
                     color: '#F0E68C'
                 });
+                document.getElementById('SpecialAllowanceDays_B').innerHTML = workTargetCount;
+                document.getElementById('SpecialAllowanceDays_A').innerHTML = sellsTargetCount;
+                document.getElementById('ExeptionAllowanceDays').innerHTML = 0;
                 break;
             default:
                 events.push({
                     title: 'Movement',
                     start: startDate.toISOString().split('T')[0],
                     end: startDate.toISOString().split('T')[0],
-                    // display: 'background',
                     color: '#F0E68C'
                 });
 
@@ -220,37 +235,29 @@ document.addEventListener('DOMContentLoaded', function () {
                     events.push({
                         title: 'Work',
                         start: workStartDate.toISOString().split('T')[0],
-                        end: workStartDate.toISOString().split('T')[0], // Добавляем один день к начальной дате
-                        // display: 'background',
-                        color: '#1E90FF' // Синий цвет для дней работы
+                        end: workStartDate.toISOString().split('T')[0],
+                        color: '#1E90FF'
                     });
-                    // console.log(workStartDate.toISOString().split('T')[0]);
                 }
                 for (const targetDateStr of targetDates) {
                     const targetDate = new Date(targetDateStr);
-                    let newTargetDate = targetDate.toISOString().split('T')[0].substring(5);
-                    let newStartDate = startDate.toISOString().split('T')[0].substring(5);
-                    let newEndDate = endDate.toISOString().split('T')[0].substring(5);
-                    console.log(newTargetDate, newStartDate, newEndDate);
-                    if (newTargetDate > newStartDate && newTargetDate < newEndDate) {
-                        console.log(newTargetDate);
+                    if (targetDate > startDate && targetDate < endDate) {
                         workTargetCount++;
                     }
                 }
                 document.getElementById('SpecialAllowanceDays_B').innerHTML = workTargetCount;
                 document.getElementById('SpecialAllowanceDays_A').innerHTML = sellsTargetCount;
                 document.getElementById('ExeptionAllowanceDays').innerHTML = 0;
-                console.log(workTargetCount);
 
                 events.push({
                     title: 'Movement',
                     start: endDate.toISOString().split('T')[0],
                     end: endDate.toISOString().split('T')[0],
-                    // display: 'background',
                     color: '#F0E68C'
                 });
                 break;
         }
+
         calendar.addEventSource(events);
 
         // Скрипт заполнения таблицы allowance
@@ -347,6 +354,52 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('location1_id').value = '0';
 
     });
+
+    function naritaTrip() {
+
+        for (let i = 0; i < 20; i++) {
+
+            const currentContentElement = document.getElementById('details-' + i + '-content');
+            const currentAccountItemElement = document.getElementById('details-' + i + '-account_item_id');
+            const currentUnitPriceElement = document.getElementById('details-' + i + '-unit_price');
+            const currentApplyingDateElement = document.getElementById('details-' + i + '-applying_date');
+
+            // Проверяем, пустое ли текущее поле
+            if (currentContentElement.value !== '' || currentAccountItemElement.value !== '0' || currentApplyingDateElement.value !== '') {
+                continue; // Продолжаем цикл
+            } else {
+                currentContentElement.value = '市川 ⇔ 成田空港(片道)';
+                currentAccountItemElement.value = '1';
+                currentUnitPriceElement.value = '￥ ' + Number('1170').toLocaleString();
+                return; // Останавливаем выполнение, чтобы не продолжать цикл
+            }
+        }
+    }
+
+    document.getElementById('naritaButton').addEventListener('click', naritaTrip);
+
+    function hanedaTrip() {
+
+        for (let i = 0; i < 20; i++) {
+
+            const currentContentElement = document.getElementById('details-' + i + '-content');
+            const currentAccountItemElement = document.getElementById('details-' + i + '-account_item_id');
+            const currentUnitPriceElement = document.getElementById('details-' + i + '-unit_price');
+            const currentApplyingDateElement = document.getElementById('details-' + i + '-applying_date');
+
+            // Проверяем, пустое ли текущее поле
+            if (currentContentElement.value !== '' || currentAccountItemElement.value !== '0' || currentApplyingDateElement.value !== '') {
+                continue; // Продолжаем цикл
+            } else {
+                currentContentElement.value = '市川 ⇔ 羽田空港(片道)';
+                currentAccountItemElement.value = '1';
+                currentUnitPriceElement.value = '￥ ' + Number('810').toLocaleString();
+                return; // Останавливаем выполнение, чтобы не продолжать цикл
+            }
+        }
+    }
+
+    document.getElementById('hanedaButton').addEventListener('click', hanedaTrip);
 
     document.getElementById('AccomodationAllowanceCheck').addEventListener('click', function () {
         fetch('/admin_menu/get_allowance_prices_japan', {

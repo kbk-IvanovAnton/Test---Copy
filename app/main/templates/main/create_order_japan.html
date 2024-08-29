@@ -153,38 +153,28 @@
                                 <tr>
                                     <td id="currency_id_td_{{ loop.index }}">
                                         <div>
-                                            {% if loop.first %}
                                             {{ rate.currency_id(class="form-select",
-                                            id="currency_id_" ~ loop.index,
-                                            disabled=loop.index != 1) }}
-                                            {% else %}
-                                            {{ rate.currency_id(class="form-select", id="currency_id_" ~ loop.index,
                                             disabled=true) }}
-                                            {% endif %}
                                         </div>
                                     </td>
                                     <td>
                                         <div>
-                                            {{ rate.foreign_currency(class="form-control", id="foreign_currency_" ~
-                                            loop.index, disabled=true) }}
+                                            {{ rate.foreign_currency(class="form-control", disabled=true) }}
                                         </div>
                                     </td>
                                     <td id="temporary_payment_id_td_{{ loop.index }}">
                                         <div>
                                             {% if loop.first %}
                                             {{ rate.temporary_payment(class="form-control", placeholder="Imput Here",
-                                            id="temporary_payment_" ~
-                                            loop.index, disabled=loop.index != 1) }}
+                                            disabled=loop.index != 1) }}
                                             {% else %}
-                                            {{ rate.temporary_payment(class="form-control", id="temporary_payment_" ~
-                                            loop.index, disabled=true) }}
+                                            {{ rate.temporary_payment(class="form-control", disabled=true) }}
                                             {% endif %}
                                         </div>
                                     </td>
                                     <td>
                                         <div>
-                                            {{ rate.remaining_payment(class="form-control", id="remaining_payment_" ~
-                                            loop.index, disabled=true) }}
+                                            {{ rate.remaining_payment(class="form-control", disabled=true) }}
                                         </div>
                                     </td>
                                 </tr>
@@ -198,8 +188,12 @@
         <div class="row">
             <div class="col-12 col-lg-12">
                 <div class="card">
-                    <div class="card-header">
+                    <div class="card-header" id="detailsHeader">
                         <h5 class="card-title mb-0">Details</h5>
+                        <div class="buttons">
+                            <button class="btn btn-primary" type="button" id="naritaButton">Ichikawa - Narita</button>
+                            <button class="btn btn-primary" type="button" id="hanedaButton">Ichikawa - Haneda</button>
+                        </div>
                     </div>
                     <div class="card-body">
                         <table class="display cell-border" id="detailsTable" style="width: 100%;">
@@ -226,7 +220,7 @@
                                     <td>{{ detail.account_item_id(class="form-select") }}</td>
                                     <td>{{ detail.content(class="form-control") }}</td>
                                     <td>{{ detail.applying_date(class="form-control") }}</td>
-                                    <td>{{ detail.currency_id(class="form-select") }}</td>
+                                    <td>{{ detail.currency_id(class="form-select", disabled=true) }}</td>
                                     <td>{{ detail.unit_price(class="form-control") }}</td>
                                     <td>{{ detail.quantity(class="form-control") }}</td>
                                     <td><!-- Subtotal calculation --></td>
