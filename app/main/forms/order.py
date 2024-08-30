@@ -82,7 +82,7 @@ class DetailForm(FlaskForm):
     content = StringField("Content", validators=[Optional()])
     applying_date = StringField("Applying Date", validators=[Optional()])
     currency_id = SelectField("Currency", coerce=int, validators=[Optional()])
-    unit_price = FloatField("Unit Price", validators=[Optional()])
+    unit_price = StringField("Unit Price", validators=[Optional()])
     quantity = IntegerField("Quantity", validators=[Optional()])
     payment_method_id = SelectField("Payment Method", coerce=int, validators=[Optional()])
     receipt_id = SelectField("Receipt", coerce=int, validators=[Optional()])
@@ -128,6 +128,8 @@ class LocationForm(FlaskForm):
 #     class Meta:
 #         csrf = False
 
+#     departure_date = StringField("Departure Date", validators=[Optional()])
+#     return_date = StringField("Return Date", validators=[Optional()])
 #     trip_unit_price = IntegerField("Trip Unit Price", validators=[Optional()])
 #     trip_days = IntegerField("Trip Days", validators=[Optional()])
 #     return_trip_unit_price = IntegerField("Return Trip Unit Price", validators=[Optional()])
@@ -138,6 +140,14 @@ class LocationForm(FlaskForm):
 #     working_away_days_A = IntegerField("Working Away Days A", validators=[Optional()])
 #     working_away_unit_price_B = IntegerField("Working Away Unit Price B", validators=[Optional()])
 #     working_away_days_B = IntegerField("Working Away Days B", validators=[Optional()])
+#     special_allowance_unit_price_A = IntegerField(
+#         "Special Allowance Unit Price A", validators=[Optional()]
+#     )
+#     special_allowance_days_A = IntegerField("Special Allowance Days A", validators=[Optional()])
+#     special_allowance_unit_price_B = IntegerField(
+#         "Special Allowance Unit Price B", validators=[Optional()]
+#     )
+#     special_allowance_days_B = IntegerField("Special Allowance Days B", validators=[Optional()])
 #     exeption_allowance_unit_price = IntegerField(
 #         "Exeption Allowance Unit Price", validators=[Optional()]
 #     )

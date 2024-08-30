@@ -18,6 +18,62 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
+    function updateMoveButtons() {
+        let rows = $('#detailsTable tbody tr');
+        rows.each(function (index) {
+            let upButton = $(this).find('.move-up');
+            let downButton = $(this).find('.move-down');
+
+            if (index === 0) {
+                upButton.prop('disabled', true).addClass('disabled');
+            } else {
+                upButton.prop('disabled', false).removeClass('disabled');
+            }
+
+            if (index === rows.length - 1) {
+                downButton.prop('disabled', true).addClass('disabled');
+            } else {
+                downButton.prop('disabled', false).removeClass('disabled');
+            }
+        });
+    }
+
+    function swapRows(row1, row2) {
+        let order1 = parseInt(row1.data('order'), 10);
+        let order2 = parseInt(row2.data('order'), 10);
+
+        // Меняем местами значения order
+        row1.data('order', order2);
+        row2.data('order', order1);
+
+        // Меняем местами строки в DOM
+        row2.insertBefore(row1);
+
+        // Обновляем порядок на сервере
+        // updateOrder(row1.data('id'), order2);
+        // updateOrder(row2.data('id'), order1);
+
+        updateMoveButtons();
+    }
+
+    // Обработчик для кнопки "вверх"
+    $(document).on('click', '.move-up:not(.disabled)', function () {
+        let currentRow = $(this).closest('tr');
+        let previousRow = currentRow.prev();
+        if (previousRow.length) {
+            swapRows(previousRow, currentRow);
+        }
+    });
+
+    // Обработчик для кнопки "вниз"
+    $(document).on('click', '.move-down:not(.disabled)', function () {
+        let currentRow = $(this).closest('tr');
+        let nextRow = currentRow.next();
+        if (nextRow.length) {
+            swapRows(currentRow, nextRow);
+        }
+    });
+
     toggleForms(true);
     let count = 0;
     let calendar = new FullCalendar.Calendar(calendarEl, {
@@ -260,6 +316,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
         calendar.addEventSource(events);
 
+        calendar.gotoDate(startDate.toISOString().split('T')[0]);
+
         // Скрипт заполнения таблицы allowance
         document.getElementById('TripDays').innerHTML = 0;
         document.getElementById('TripUnitPrice').innerHTML = 0;
@@ -370,7 +428,7 @@ document.addEventListener('DOMContentLoaded', function () {
             } else {
                 currentContentElement.value = '市川 ⇔ 成田空港(片道)';
                 currentAccountItemElement.value = '1';
-                currentUnitPriceElement.value = '￥ ' + Number('1170').toLocaleString();
+                currentUnitPriceElement.value = Number('1170').toLocaleString();
                 return; // Останавливаем выполнение, чтобы не продолжать цикл
             }
         }
@@ -393,13 +451,32 @@ document.addEventListener('DOMContentLoaded', function () {
             } else {
                 currentContentElement.value = '市川 ⇔ 羽田空港(片道)';
                 currentAccountItemElement.value = '1';
-                currentUnitPriceElement.value = '￥ ' + Number('810').toLocaleString();
+                currentUnitPriceElement.value = Number('810').toLocaleString();
                 return; // Останавливаем выполнение, чтобы не продолжать цикл
             }
         }
     }
 
     document.getElementById('hanedaButton').addEventListener('click', hanedaTrip);
+
+    function subtotalCalc() {
+
+        for (let i = 0; i < 20; i++) {
+
+            const currentUnitPriceElement = document.getElementById('details-' + i + '-unit_price');
+            const currentQuantityElement = document.getElementById('details-' + i + '-quantity');
+            const currentSubtotalElement = document.getElementById('subtotal_id_' + i);
+
+            if (currentUnitPriceElement.value !== '' && currentQuantityElement.value !== '') {
+                currentSubtotalElement.innerHTML = currentUnitPriceElement.value.replace(/,/g, '') * Number(currentQuantityElement.value);
+                console.log(currentUnitPriceElement.value.replace(/,/g, ''))
+            } else {
+                currentSubtotalElement.innerHTML = '';
+            }
+        }
+    }
+
+    document.getElementById('detailsTable').addEventListener('input', subtotalCalc);
 
     document.getElementById('AccomodationAllowanceCheck').addEventListener('click', function () {
         fetch('/admin_menu/get_allowance_prices_japan', {

@@ -113,6 +113,14 @@
     padding: 0;
 }
 
+#detailsTable input[type="number"] {
+    border: none;
+    background-color: transparent;
+    width: 100%;
+    outline: none;
+    padding: 0;
+}
+
 #detailsTable select {
     border: none;
     background-color: transparent;

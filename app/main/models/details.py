@@ -19,9 +19,9 @@ class Details(db.Model):
     applying_date: so.Mapped[str] = so.mapped_column(sa.String(255), nullable=False, default="")
 
     currency_id: so.Mapped[int] = so.mapped_column(
-        sa.Integer, db.ForeignKey("currencies.id"), nullable=False
+        sa.Integer, db.ForeignKey("currencies.id"), nullable=False, default=1
     )
-    unit_price: so.Mapped[float] = so.mapped_column(sa.Float, nullable=False, default=0.0)
+    unit_price: so.Mapped[str] = so.mapped_column(sa.String(255), nullable=False, default="")
 
     quantity: so.Mapped[int] = so.mapped_column(sa.Integer, nullable=False, default=0)
 

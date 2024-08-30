@@ -221,14 +221,19 @@
                                     <td>{{ detail.content(class="form-control") }}</td>
                                     <td>{{ detail.applying_date(class="form-control") }}</td>
                                     <td>{{ detail.currency_id(class="form-select", disabled=true) }}</td>
-                                    <td>{{ detail.unit_price(class="form-control") }}</td>
-                                    <td>{{ detail.quantity(class="form-control") }}</td>
-                                    <td><!-- Subtotal calculation --></td>
+                                    <td>{{ detail.unit_price(class="form-control", style="text-align:right") }}</td>
+                                    <td>{{ detail.quantity(class="form-control", style="text-align:right") }}</td>
+                                    <td style="text-align:right" id="subtotal_id_{{ loop.index - 1 }}"></td>
                                     <td>{{ detail.payment_method_id(class="form-select") }}</td>
                                     <td>{{ detail.receipt_id(class="form-select") }}</td>
                                     <td>{{ detail.remarks(class="form-control") }}</td>
                                     <td><a class="btn btn-danger btn-sm"><i class="align-middle"
-                                                data-feather="trash-2"></i></a></td>
+                                                data-feather="trash-2"></i></a>
+                                        <button type="button" class="btn btn-sm btn-outline-secondary move-up"><i
+                                                class="align-middle" data-feather="arrow-up-circle"></i></button>
+                                        <button type="button" class="btn btn-sm btn-outline-secondary move-down"><i
+                                                class="align-middle" data-feather="arrow-down-circle"></i></button>
+                                    </td>
                                 </tr>
                                 {% endfor %}
                             </tbody>
@@ -339,32 +344,39 @@
                                                 <input class="form-check-input" type="checkbox"
                                                     id="AccomodationAllowanceCheck" value="" aria-label="..." checked>
                                             </td>
-                                            <td id="AccomodationUnitPrice"></td>
+                                            <td id="AccomodationUnitPrice">
+                                            </td>
                                             <td id="AccomodationDays"></td>
                                         </tr>
                                         <tr>
                                             <td>Working Away Allowance</td>
                                             <td>A</td>
-                                            <td id="WorkingAwayUnitPrice_A"></td>
+                                            <td id="WorkingAwayUnitPrice_A">
+                                            </td>
                                             <td id="WorkingAwayDays_A"></td>
                                         </tr>
                                         <tr>
                                             <td></td>
                                             <td>B</td>
-                                            <td id="WorkingAwayUnitPrice_B"></td>
+                                            <td id="WorkingAwayUnitPrice_B">
+                                            </td>
                                             <td id="WorkingAwayDays_B"></td>
                                         </tr>
                                         <tr>
                                             <td>Special Allowance</td>
                                             <td>A</td>
-                                            <td id="SpecialAllowanceUnitPrice_A"></td>
-                                            <td id="SpecialAllowanceDays_A"></td>
+                                            <td id="SpecialAllowanceUnitPrice_A">
+                                            </td>
+                                            <td id="SpecialAllowanceDays_A">
+                                            </td>
                                         </tr>
                                         <tr>
                                             <td></td>
                                             <td>B</td>
-                                            <td id="SpecialAllowanceUnitPrice_B"></td>
-                                            <td id="SpecialAllowanceDays_B"></td>
+                                            <td id="SpecialAllowanceUnitPrice_B">
+                                            </td>
+                                            <td id="SpecialAllowanceDays_B">
+                                            </td>
                                         </tr>
                                         <tr>
                                             <td>Exeption Allowance</td>
@@ -372,7 +384,8 @@
                                             <td>
                                                 <input type="text" class="form-control" id="ExeptionAllowanceUnitPrice">
                                             </td>
-                                            <td id="ExeptionAllowanceDays"></td>
+                                            <td id="ExeptionAllowanceDays">
+                                            </td>
                                         </tr>
                                     </tbody>
                                 </table>

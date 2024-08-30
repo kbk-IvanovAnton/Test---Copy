@@ -10,6 +10,7 @@ $(document).ready(function () {
         "searching": false,
 
         columnDefs: [
+            { width: '9%', targets: 11 },
         ],
         fixedColumns: true
     });

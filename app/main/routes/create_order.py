@@ -3,7 +3,7 @@ from flask_login import login_required
 
 from app import db
 from app.main import bp
-from app.main.forms.order import CompleteOrderForm, OrderForm
+from app.main.forms.order import CompleteOrderForm
 from app.main.models.details import Details
 from app.main.models.order import Order
 from app.main.models.rates import Rates
