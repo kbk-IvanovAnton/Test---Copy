@@ -21,7 +21,7 @@ class Details(db.Model):
     currency_id: so.Mapped[int] = so.mapped_column(
         sa.Integer, db.ForeignKey("currencies.id"), nullable=False, default=1
     )
-    unit_price: so.Mapped[str] = so.mapped_column(sa.String(255), nullable=False, default="")
+    unit_price: so.Mapped[float] = so.mapped_column(sa.Float(), nullable=False, default=0.0)
 
     quantity: so.Mapped[int] = so.mapped_column(sa.Integer, nullable=False, default=0)
 

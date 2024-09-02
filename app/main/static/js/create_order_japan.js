@@ -75,7 +75,6 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     toggleForms(true);
-    let count = 0;
     let calendar = new FullCalendar.Calendar(calendarEl, {
         initialView: 'dayGridMonth',
         headerToolbar: {
@@ -167,6 +166,24 @@ document.addEventListener('DOMContentLoaded', function () {
                     break;
             }
             info.view.calendar.unselect();
+
+            // let eventDates = [];
+
+            // calendar.getEvents().forEach(function (event) {
+            //     // Получаем даты начала и окончания события
+            //     let start = event.start;
+            //     let end = event.end;
+
+            //     // Форматируем даты в строку формата YYYY-MM-DD
+            //     let formattedStart = start.toISOString().split('T')[0];
+            //     let formattedEnd = end.toISOString().split('T')[0];
+
+            //     // Сохраняем форматированные даты в массив
+            //     eventDates.push({ start: formattedStart, end: formattedEnd });
+            // });
+
+            // // Теперь eventDates содержит все даты всех событий
+            // console.log(eventDates);
         },
     });
 
@@ -333,7 +350,9 @@ document.addEventListener('DOMContentLoaded', function () {
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
+                    console.log(data.result);
                     document.getElementById('AccomodationUnitPrice').innerHTML = Number(data.result[0].allowance).toLocaleString();
+                    document.getElementById('AccomodationUnitPrice').dataset.value = data.result[0].allowance;
                     document.getElementById('WorkingAwayUnitPrice_A').innerHTML = Number(data.result[1].allowance).toLocaleString();
                     document.getElementById('WorkingAwayUnitPrice_B').innerHTML = Number(data.result[2].allowance).toLocaleString();
                     document.getElementById('SpecialAllowanceUnitPrice_A').innerHTML = Number(data.result[3].allowance).toLocaleString();
@@ -358,6 +377,9 @@ document.addEventListener('DOMContentLoaded', function () {
         let sellsCount = sellsEvents.length;
 
         document.getElementById('WorkingAwayDays_A').innerHTML = sellsCount;
+
+        let list = calendar.getEvents();
+        console.log(list);
 
     });
 
@@ -436,6 +458,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
     document.getElementById('naritaButton').addEventListener('click', naritaTrip);
 
+    document.getElementById('naritaButton').addEventListener('click', function () {
+        subtotalCalc();
+    });
+
     function hanedaTrip() {
 
         for (let i = 0; i < 20; i++) {
@@ -459,6 +485,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
     document.getElementById('hanedaButton').addEventListener('click', hanedaTrip);
 
+    document.getElementById('hanedaButton').addEventListener('click', function () {
+        subtotalCalc();
+    });
+
     function subtotalCalc() {
 
         for (let i = 0; i < 20; i++) {
@@ -467,9 +497,26 @@ document.addEventListener('DOMContentLoaded', function () {
             const currentQuantityElement = document.getElementById('details-' + i + '-quantity');
             const currentSubtotalElement = document.getElementById('subtotal_id_' + i);
 
+            currentUnitPriceElement.addEventListener('input', function () {
+                // Убираем все нечисловые символы кроме точки
+                let value = this.value.replace(/,/g, '').replace(/[^\d.]/g, '');
+
+                // Если введено число с плавающей точкой, оставляем только одну точку
+                const parts = value.split('.');
+                if (parts.length > 2) {
+                    value = parts[0] + '.' + parts.slice(1).join('');
+                }
+
+                // Преобразуем строку в число и форматируем с разделением на тысячи
+                const formattedValue = Number(value).toLocaleString('en-US');
+
+                // Обновляем значение в input
+                this.value = formattedValue;
+            })
+
             if (currentUnitPriceElement.value !== '' && currentQuantityElement.value !== '') {
-                currentSubtotalElement.innerHTML = currentUnitPriceElement.value.replace(/,/g, '') * Number(currentQuantityElement.value);
-                console.log(currentUnitPriceElement.value.replace(/,/g, ''))
+                const subtotal = currentUnitPriceElement.value.replace(/,/g, '') * Number(currentQuantityElement.value);
+                currentSubtotalElement.innerHTML = Number(subtotal).toLocaleString();
             } else {
                 currentSubtotalElement.innerHTML = '';
             }
@@ -546,6 +593,67 @@ document.addEventListener('DOMContentLoaded', function () {
                 .catch(error => {
                     console.error('Error:', error);
                 });
+        })
+
+        function allowanceLodgment() {
+            let accomodationUnitPrice = document.querySelector('#AccomodationUnitPrice').dataset.value;
+            let accomodationDays = $('#AccomodationDays').text();
+            let accomodationAllowanceCheck = $('#AccomodationAllowanceCheck').is(':checked');
+            let startDate = $('#start-date').val();
+            let endDate = $('#end-date').val();
+
+            // Создаем объекты Date на основе выбранных дат
+            let formattedStartDate = new Date(startDate);
+            let formattedEndDate = new Date(endDate);
+
+            // Добавляем 1 день к начальной дате
+            formattedStartDate.setDate(formattedStartDate.getDate() + 1);
+            let accomodationStartDay = formattedStartDate.toISOString().split('T')[0];
+
+            // Вычитаем 1 день из конечной даты
+            formattedEndDate.setDate(formattedEndDate.getDate() - 1);
+            let accomodationEndDay = formattedEndDate.toISOString().split('T')[0];
+
+            // Создаем строку диапазона дат
+            let accomodationSumDays;
+
+            switch (parseInt(accomodationDays)) {
+                case 0:
+                    accomodationSumDays = "";
+                    break;
+                case 1:
+                    accomodationSumDays = accomodationStartDay
+                    break;
+                default:
+                    accomodationSumDays = accomodationStartDay + ' ～ ' + accomodationEndDay;
+                    break;
+            }
+
+            fetch('/admin_menu/allowance_lodgment', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    accomodationUnitPrice: accomodationUnitPrice,
+                    accomodationDays: accomodationDays,
+                    accomodationAllowanceCheck: accomodationAllowanceCheck,
+                    accomodationSumDays: accomodationSumDays
+                })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        console.log('Success:', data);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        }
+
+        $('#test').click(function () {
+            allowanceLodgment();
         })
     });
 });

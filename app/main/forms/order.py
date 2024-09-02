@@ -82,7 +82,7 @@ class DetailForm(FlaskForm):
     content = StringField("Content", validators=[Optional()])
     applying_date = StringField("Applying Date", validators=[Optional()])
     currency_id = SelectField("Currency", coerce=int, validators=[Optional()])
-    unit_price = StringField("Unit Price", validators=[Optional()])
+    unit_price = FloatField("Unit Price", validators=[Optional()])
     quantity = IntegerField("Quantity", validators=[Optional()])
     payment_method_id = SelectField("Payment Method", coerce=int, validators=[Optional()])
     receipt_id = SelectField("Receipt", coerce=int, validators=[Optional()])

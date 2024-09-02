@@ -9,6 +9,7 @@ bp = Blueprint(
 )
 
 from app.main.routes import (
+    allowance_lodgment,
     copy_order,
     create_order,
     create_task,
