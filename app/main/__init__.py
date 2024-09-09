@@ -11,6 +11,7 @@ bp = Blueprint(
 from app.main.routes import (
     allowance_lodgment,
     allowance_special,
+    allowance_special_cases,
     allowance_work,
     copy_order,
     create_order,

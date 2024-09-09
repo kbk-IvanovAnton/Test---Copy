@@ -187,6 +187,30 @@ document.addEventListener('DOMContentLoaded', function () {
 
     document.getElementById('rates-0-currency_id').value = '1';
 
+
+    function exeptionUnitPriceFormat() {
+        let exeptionAllowanceUnitPrice = document.getElementById('ExeptionAllowanceUnitPrice');
+
+        exeptionAllowanceUnitPrice.addEventListener('input', function () {
+            // Убираем все нечисловые символы кроме точки
+            let value = this.value.replace(/,/g, '').replace(/[^\d.]/g, '');
+
+            // Если введено число с плавающей точкой, оставляем только одну точку
+            const parts = value.split('.');
+            if (parts.length > 2) {
+                value = parts[0] + '.' + parts.slice(1).join('');
+            }
+
+            // Преобразуем строку в число и форматируем с разделением на тысячи
+            const formattedValue = Number(value).toLocaleString('en-US');
+
+            // Обновляем значение в input
+            this.value = formattedValue;
+        })
+    }
+
+    exeptionUnitPriceFormat();
+
     for (let i = 0; i < 20; i++) {
         document.getElementById('details-' + i + '-currency_id').value = '1';
     }
@@ -322,6 +346,8 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('TripUnitPrice').innerHTML = 0;
         document.getElementById('ReturnTripDays').innerHTML = 0;
         document.getElementById('ReturnTripUnitPrice').innerHTML = 0;
+        document.getElementById('ExeptionAllowanceUnitPrice').value = 0;
+
 
         fetch('/admin_menu/get_allowance_prices_japan', {
             method: 'GET',
@@ -413,6 +439,7 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('ReturnTripDays').innerHTML = "";
         document.getElementById('TripUnitPrice').innerHTML = "";
         document.getElementById('ReturnTripUnitPrice').innerHTML = "";
+        document.getElementById('ExeptionAllowanceUnitPrice').value = "";
         workTargetCount = 0;
         sellsTargetCount = 0;
 
@@ -542,6 +569,11 @@ document.addEventListener('DOMContentLoaded', function () {
         $('.location-select-trip').on('change', function () {
             let selectedTripValue = $(this).val();
 
+            if (selectedTripValue === "0") {
+                document.getElementById('TripDays').innerHTML = 0;
+                document.getElementById('TripUnitPrice').innerHTML = 0;
+            }
+
             fetch('/admin_menu/get_allowance', {
                 method: 'POST',
                 headers: {
@@ -553,6 +585,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 .then(data => {
                     if (data.success) {
                         document.getElementById('TripUnitPrice').innerHTML = Number(data.allowance).toLocaleString();
+                        // document.getElementById('TripUnitPrice').dataset.tripUnitPrice = data.allowance;
                         document.getElementById('TripDays').innerHTML = 1;
                     }
                 })
@@ -563,6 +596,11 @@ document.addEventListener('DOMContentLoaded', function () {
 
         $('.location-select-return-trip').on('change', function () {
             let selectedReturnTripValue = $(this).val();
+
+            if (selectedReturnTripValue === "0") {
+                document.getElementById('ReturnTripDays').innerHTML = 0;
+                document.getElementById('ReturnTripUnitPrice').innerHTML = 0;
+            }
 
             fetch('/admin_menu/get_return_allowance', {
                 method: 'POST',
@@ -575,6 +613,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 .then(data => {
                     if (data.success) {
                         document.getElementById('ReturnTripUnitPrice').innerHTML = Number(data.allowance).toLocaleString();
+                        // document.getElementById('ReturnTripUnitPrice').dataset.returnTripUnitPrice = data.allowance;
                         document.getElementById('ReturnTripDays').innerHTML = 1;
                     }
                 })
@@ -582,6 +621,55 @@ document.addEventListener('DOMContentLoaded', function () {
                     console.error('Error:', error);
                 });
         })
+
+        // // Функция для проверки, идут ли даты последовательно (разница 1 день)
+        // function isConsecutive(date1, date2) {
+        //     const oneDay = 24 * 60 * 60 * 1000; // Миллисекунды в одном дне
+        //     return (date2 - date1) === oneDay;
+        // }
+
+        // // Функция форматирования последовательности дат
+        // function formatDateSequence(dates) {
+        //     // Преобразуем строки дат в объекты Date
+        //     dates = dates.map(dateStr => new Date(dateStr));
+
+        //     // Сортируем даты
+        //     dates.sort((a, b) => a - b);
+
+        //     let result = [];
+        //     let rangeStart = dates[0];
+        //     let previous = dates[0];
+
+        //     for (let i = 1; i < dates.length; i++) {
+        //         if (!isConsecutive(previous, dates[i])) {
+        //             // Если диапазон (минимум две даты), записываем его в формате 'start - end'
+        //             if (rangeStart.getTime() !== previous.getTime()) {
+        //                 result.push(`${formatDate(rangeStart)} - ${formatDate(previous)}`);
+        //             } else {
+        //                 result.push(`${formatDate(rangeStart)}`);
+        //             }
+        //             rangeStart = dates[i]; // Начинаем новый диапазон
+        //         }
+        //         previous = dates[i];
+        //     }
+
+        //     // Добавляем последний диапазон или дату
+        //     if (rangeStart.getTime() !== previous.getTime()) {
+        //         result.push(`${formatDate(rangeStart)} - ${formatDate(previous)}`);
+        //     } else {
+        //         result.push(`${formatDate(rangeStart)}`);
+        //     }
+
+        //     return result.join(', ');
+        // }
+
+        // // Функция форматирования даты в строку (гггг-мм-дд)
+        // function formatDate(date) {
+        //     let year = date.getFullYear();
+        //     let month = String(date.getMonth() + 1).padStart(2, '0'); // Добавляем ведущий 0
+        //     let day = String(date.getDate()).padStart(2, '0'); // Добавляем ведущий 0
+        //     return `${year}-${month}-${day}`;
+        // }
 
         function allowanceLodgment() {
             let accomodationUnitPrice = document.querySelector('#AccomodationUnitPrice').dataset.lodgmentAllowance;
@@ -650,7 +738,6 @@ document.addEventListener('DOMContentLoaded', function () {
             let workingAwayUnitPrice_B = document.querySelector('#WorkingAwayUnitPrice_B').dataset.workingAwayAllowanceB;
             let workingAwayUnitPrice_B_Int = parseInt(workingAwayUnitPrice_B);
 
-
             let unitPrice = [];
             let days = [];
             let eventWorkDates = [];
@@ -661,7 +748,7 @@ document.addEventListener('DOMContentLoaded', function () {
             days.push({ "A": workingAwayDays_A_Int });
             days.push({ "B": workingAwayDays_B_Int });
 
-            console.log(unitPrice, days);
+            // console.log(unitPrice, days);
 
             calendar.getEvents().forEach(function (event) {
                 // Получаем даты начала и окончания события
@@ -784,7 +871,7 @@ document.addEventListener('DOMContentLoaded', function () {
             days.push({ "A": specialAllowanceDays_A_Int });
             days.push({ "B": specialAllowanceDays_B_Int });
 
-            console.log(unitPrice, days);
+            // console.log(unitPrice, days);
 
             calendar.getEvents().forEach(function (event) {
                 // Получаем даты начала и окончания события
@@ -869,7 +956,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             let eventDates = [{ ...eventSellsDates[0], ...eventWorkDates[0] }];
 
-            console.log(eventDates);
+            // console.log(eventDates);
 
             fetch('/admin_menu/allowance_special', {
                 method: 'POST',
@@ -893,10 +980,95 @@ document.addEventListener('DOMContentLoaded', function () {
                 });
         }
 
+        function allowanceSpecialCase() {
+            let exeptionAllowanceDays = document.getElementById('ExeptionAllowanceDays').innerText;
+            let exeptionAllowanceDays_Int = parseInt(exeptionAllowanceDays);
+            let exeptionAllowanceUnitPrice = document.getElementById('ExeptionAllowanceUnitPrice').value;
+            let exeptionAllowanceUnitPrice_Int = parseInt(exeptionAllowanceUnitPrice.replace(/,/g, ''), 10);
+
+            let eventExeptionDates = [];
+
+            calendar.getEvents().forEach(function (event) {
+                // Получаем даты начала и окончания события
+
+                if (event.title === 'Exeption') {
+                    let startExeption = new Date(event.start);
+                    startExeption.setDate(startExeption.getDate() + 1);
+                    let formattedStartExeption = startExeption.toISOString().split('T')[0];
+
+                    eventExeptionDates.push(formattedStartExeption);
+                }
+            });
+
+            let eventExeptionDatesStr = eventExeptionDates.join(', ');
+
+            fetch('/admin_menu/allowance_special_case', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    eventExeptionDates: eventExeptionDatesStr,
+                    exeptionAllowanceUnitPrice_Int: exeptionAllowanceUnitPrice_Int,
+                    exeptionAllowanceDays_Int: exeptionAllowanceDays_Int
+                })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        console.log('Success:', data);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+        }
+
+        function allowanceMove() {
+            let tripDays = document.getElementById('TripDays').innerText;
+            let tripUnitPrice = document.getElementById('TripUnitPrice').innerText;
+            let tripUnitPrice_Int = parseInt(tripUnitPrice.replace(/,/g, ''), 10);
+
+            let returnTripDays = document.getElementById('ReturnTripDays').innerText;
+            let returnTripUnitPrice = document.getElementById('ReturnTripUnitPrice').innerText;
+            let returnTripUnitPrice_Int = parseInt(returnTripUnitPrice.replace(/,/g, ''), 10);
+
+            console.log(tripDays, tripUnitPrice, tripUnitPrice_Int, returnTripDays, returnTripUnitPrice, returnTripUnitPrice_Int);
+
+            let startDate = $('#start-date').val();
+            let endDate = $('#end-date').val();
+
+            let edgeDates = [];
+            edgeDates.push({ "1": startDate, "2": endDate });
+            console.log(edgeDates);
+
+            // let moveEvents = [];
+
+            // calendar.getEvents().forEach(function (event) {
+            //     let start = new Date(event.start);
+            //     start.setDate(start.getDate() + 1);
+            //     let formattedStart = start.toISOString().split('T')[0];
+
+            //     moveEvents.push(formattedStart);
+
+            // });
+
+            // console.log(moveEvents);
+
+            // let datesMove = moveEvents.map(item => new Date(item));
+
+            // let earliestDate = new Date(Math.min(...datesMove));
+            // let oldestDate = new Date(Math.max(...datesMove));
+            // console.log(oldestDate, earliestDate);
+
+        }
+
         $('#test').click(function () {
             allowanceLodgment();
             allowanceWork();
             allowanceSpecial();
+            allowanceSpecialCase();
+            // allowanceMove();
         })
 
         $('#test2').click(function () {

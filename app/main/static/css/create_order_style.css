@@ -136,6 +136,14 @@
     padding: 8px;
 }
 
+#allowanceTable input[type="text"] {
+    border: none;
+    background-color: transparent;
+    width: 100%;
+    outline: none;
+    padding: 0;
+}
+
 #detailsHeader {
     display: grid;
     grid-template-columns: auto 1fr;

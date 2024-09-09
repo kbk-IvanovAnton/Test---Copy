@@ -2,9 +2,7 @@ from flask import jsonify, request
 
 from app import db
 from app.main import bp
-from app.main.models.locations1 import (
-    Locations1,  # Предполагается, что ваша модель находится в файле models.py
-)
+from app.main.models.locations1 import Locations1
 
 
 @bp.route("/admin_menu/get_allowance", methods=["POST"])
