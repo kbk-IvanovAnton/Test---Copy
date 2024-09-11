@@ -1,3 +1,4 @@
+import datetime
 from typing import Dict
 
 import sqlalchemy as sa
@@ -9,30 +10,30 @@ from app import db
 class Allowances(db.Model):
     id: so.Mapped[int] = so.mapped_column(primary_key=True)
     order_id: so.Mapped[int] = so.mapped_column(
-        sa.Integer, db.ForeignKey("order.id"), nullable=False
+        sa.Integer, db.ForeignKey("order.id"), nullable=False, default=0
     )
-    departure_date: so.Mapped[str] = so.mapped_column(sa.String(255), nullable=False)
-    return_date: so.Mapped[str] = so.mapped_column(sa.String(255), nullable=False)
+    departure_date: so.Mapped[datetime.date] = so.mapped_column(sa.Date, nullable=True)
+    return_date: so.Mapped[datetime.date] = so.mapped_column(sa.Date, nullable=True)
     allowance_move_id: so.Mapped[int] = so.mapped_column(
-        sa.Integer, db.ForeignKey("allowance_moves.id"), nullable=False
+        sa.Integer, db.ForeignKey("allowance_moves.id"), nullable=False, default=0
     )
     allowance_lodgment_id: so.Mapped[int] = so.mapped_column(
-        sa.Integer, db.ForeignKey("allowance_lodgments.id"), nullable=False
+        sa.Integer, db.ForeignKey("allowance_lodgments.id"), nullable=False, default=0
     )
     allowance_work_id: so.Mapped[int] = so.mapped_column(
-        sa.Integer, db.ForeignKey("allowance_works.id"), nullable=False
+        sa.Integer, db.ForeignKey("allowance_works.id"), nullable=False, default=0
     )
     allowance_region_id: so.Mapped[int] = so.mapped_column(
-        sa.Integer, db.ForeignKey("allowance_regions.id"), nullable=False
+        sa.Integer, db.ForeignKey("allowance_regions.id"), nullable=False, default=0
     )
     allowance_special_id: so.Mapped[int] = so.mapped_column(
-        sa.Integer, db.ForeignKey("allowance_specials.id"), nullable=False
+        sa.Integer, db.ForeignKey("allowance_specials.id"), nullable=False, default=0
     )
     allowance_drive_id: so.Mapped[int] = so.mapped_column(
-        sa.Integer, db.ForeignKey("allowance_drives.id"), nullable=False
+        sa.Integer, db.ForeignKey("allowance_drives.id"), nullable=False, default=0
     )
     allowance_special_case_id: so.Mapped[int] = so.mapped_column(
-        sa.Integer, db.ForeignKey("allowance_special_cases.id"), nullable=False
+        sa.Integer, db.ForeignKey("allowance_special_cases.id"), nullable=False, default=0
     )
     calendars: so.Mapped[list[Dict[str, list[int]]]] = so.mapped_column(
         sa.JSON, nullable=False, default=dict

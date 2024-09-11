@@ -27,6 +27,7 @@ def create_order():
             travel_id=form.order.travel_id.data,
             support_type_id=form.order.support_type_id.data,
         )
+        # print("Form data after validation:", form.data)
 
         for rate_data in form.rates.data:
             rate = Rates(

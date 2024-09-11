@@ -14,6 +14,7 @@ from app.main.routes import (
     allowance_special,
     allowance_special_cases,
     allowance_work,
+    allowances,
     copy_order,
     create_order,
     create_task,

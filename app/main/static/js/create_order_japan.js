@@ -1150,15 +1150,75 @@ document.addEventListener('DOMContentLoaded', function () {
 
         }
 
-        $('#test').click(function () {
-            // allowanceLodgment();
-            // allowanceWork();
-            // allowanceSpecial();
-            // allowanceSpecialCase();
-            // allowanceMove();
+        function allowances() {
+
+            let moveEvents = [];
+
+            let earliestDate;
+            let oldestDate;
+
+            calendar.getEvents().forEach(function (event) {
+
+                if (event.title === 'Movement') {
+
+                    moveEvents.push(event.startStr);
+
+                    let datesMove = moveEvents.map(item => new Date(item));
+
+                    earliestDate = new Date(Math.min(...datesMove));
+                    oldestDate = new Date(Math.max(...datesMove));
+
+                    earliestDate = earliestDate.toISOString().split('T')[0];
+                    oldestDate = oldestDate.toISOString().split('T')[0];
+
+                }
+            });
+
+            if (oldestDate === earliestDate) {
+                oldestDate = $('#end-date').val();
+            }
+
+            if (moveEvents.length === 0) {
+                earliestDate = $('#start-date').val();
+                oldestDate = $('#end-date').val();
+            }
+
+            console.log(earliestDate, oldestDate);
+
+            fetch('/admin_menu/allowances', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    earliestDate: earliestDate,
+                    oldestDate: oldestDate,
+                })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        console.log('Success:', data);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+
+        }
+
+        $('.btn-submit').click(function () {
+
         })
 
-        $('#test2').click(function () {
+        $('#test').click(function () {
+            allowanceLodgment();
+            allowanceWork();
+            allowanceSpecial();
+            allowanceSpecialCase();
+            allowanceMove();
+            setTimeout(allowances, 500);
+            // allowances();
         })
     });
 });
