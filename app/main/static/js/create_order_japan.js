@@ -1018,46 +1018,50 @@ document.addEventListener('DOMContentLoaded', function () {
             let exeptionAllowanceUnitPrice = document.getElementById('ExeptionAllowanceUnitPrice').value;
             let exeptionAllowanceUnitPrice_Int = parseInt(exeptionAllowanceUnitPrice.replace(/,/g, ''), 10);
 
+            let eventDates = [];
             let eventExeptionDates = [];
             let eventExeptionDatesStr;
 
             calendar.getEvents().forEach(function (event) {
-                // Получаем даты начала и окончания события
+                eventDates.push({ 'start': event.startStr, 'title': event.title });
+            });
 
+            eventDates.forEach(function (event) {
                 if (event.title === 'Exeption') {
-                    let startExeption = new Date(event.start);
-                    startExeption.setDate(startExeption.getDate() + 1);
-                    let formattedStartExeption = startExeption.toISOString().split('T')[0];
-
-                    eventExeptionDates.push(formattedStartExeption);
-                    eventExeptionDatesStr = formatDateSequence(eventExeptionDates);
-                } else {
-                    eventExeptionDatesStr = "";
+                    eventExeptionDates.push(event.start);
                 }
             });
 
-            console.log(eventExeptionDatesStr);
+            if (eventExeptionDates.length === 0) {
+                eventExeptionDatesStr = "";
+            } else {
+                eventExeptionDatesStr = formatDateSequence(eventExeptionDates);
+            }
 
-            fetch('/admin_menu/allowance_special_case', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    eventExeptionDates: eventExeptionDatesStr,
-                    exeptionAllowanceUnitPrice_Int: exeptionAllowanceUnitPrice_Int,
-                    exeptionAllowanceDays_Int: exeptionAllowanceDays_Int
-                })
-            })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        console.log('Success:', data);
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                });
+            // console.log(eventExeptionDatesStr);
+
+            // fetch('/admin_menu/allowance_special_case', {
+            //     method: 'POST',
+            //     headers: {
+            //         'Content-Type': 'application/json'
+            //     },
+            //     body: JSON.stringify({
+            //         eventExeptionDates: eventExeptionDatesStr,
+            //         exeptionAllowanceUnitPrice_Int: exeptionAllowanceUnitPrice_Int,
+            //         exeptionAllowanceDays_Int: exeptionAllowanceDays_Int
+            //     })
+            // })
+            //     .then(response => response.json())
+            //     .then(data => {
+            //         if (data.success) {
+            //             console.log('Success:', data);
+            //         }
+            //     })
+            //     .catch(error => {
+            //         console.error('Error:', error);
+            //     });
+
+            return [eventExeptionDatesStr, exeptionAllowanceUnitPrice_Int, exeptionAllowanceDays_Int];
         }
 
         function allowanceMove() {
@@ -1121,69 +1125,55 @@ document.addEventListener('DOMContentLoaded', function () {
             moveIDs.push({ "1": tripID_Int, "2": returnTripID_Int });
             movePrices.push({ "1": tripUnitPrice_Int, "2": returnTripUnitPrice_Int });
 
-            // console.log(moveEvents);
-            // console.log(moveDays);
-            // console.log(moveIDs);
-            // console.log(movePrices);
-
-            fetch('/admin_menu/allowance_move', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    moveEvents: moveEvents,
-                    moveDays: moveDays,
-                    moveIDs: moveIDs,
-                    movePrices: movePrices
-                })
-            })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        console.log('Success:', data);
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                });
+            return [moveEvents, moveDays, moveIDs, movePrices, earliestDate, oldestDate];
 
         }
 
         function allowances() {
 
-            let moveEvents = [];
+            allowanceMove();
+            allowanceSpecialCase();
 
-            let earliestDate;
-            let oldestDate;
+            let = [moveEvents, moveDays, moveIDs, movePrices, earliestDate, oldestDate] = allowanceMove();
+            let = [eventExeptionDatesStr, exeptionAllowanceUnitPrice_Int, exeptionAllowanceDays_Int] = allowanceSpecialCase();
 
-            calendar.getEvents().forEach(function (event) {
 
-                if (event.title === 'Movement') {
 
-                    moveEvents.push(event.startStr);
+            // let moveEvents1 = [];
 
-                    let datesMove = moveEvents.map(item => new Date(item));
+            // let earliestDate1;
+            // let oldestDate1;
 
-                    earliestDate = new Date(Math.min(...datesMove));
-                    oldestDate = new Date(Math.max(...datesMove));
+            // calendar.getEvents().forEach(function (event) {
 
-                    earliestDate = earliestDate.toISOString().split('T')[0];
-                    oldestDate = oldestDate.toISOString().split('T')[0];
+            //     if (event.title === 'Movement') {
 
-                }
-            });
+            //         moveEvents1.push(event.startStr);
 
-            if (oldestDate === earliestDate) {
-                oldestDate = $('#end-date').val();
-            }
+            //         let datesMove = moveEvents1.map(item => new Date(item));
 
-            if (moveEvents.length === 0) {
-                earliestDate = $('#start-date').val();
-                oldestDate = $('#end-date').val();
-            }
+            //         earliestDate1 = new Date(Math.min(...datesMove));
+            //         oldestDate1 = new Date(Math.max(...datesMove));
 
-            console.log(earliestDate, oldestDate);
+            //         earliestDate1 = earliestDate1.toISOString().split('T')[0];
+            //         oldestDate1 = oldestDate1.toISOString().split('T')[0];
+
+            //     }
+            // });
+
+            // if (oldestDate1 === earliestDate1) {
+            //     oldestDate1 = $('#end-date').val();
+            // }
+
+            // if (moveEvents1.length === 0) {
+            //     earliestDate1 = $('#start-date').val();
+            //     oldestDate1 = $('#end-date').val();
+            // }
+
+            let [startYear, startMonth, startDay] = earliestDate.split('/');
+            let [endYear, endMonth, endDay] = oldestDate.split('/');
+
+            // console.log(startYear, startMonth, startDay, endYear, endMonth, endDay);
 
             fetch('/admin_menu/allowances', {
                 method: 'POST',
@@ -1191,8 +1181,19 @@ document.addEventListener('DOMContentLoaded', function () {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    earliestDate: earliestDate,
-                    oldestDate: oldestDate,
+                    startYear: startYear,
+                    startMonth: startMonth,
+                    startDay: startDay,
+                    endYear: endYear,
+                    endMonth: endMonth,
+                    endDay: endDay,
+                    moveEvents: moveEvents,
+                    moveDays: moveDays,
+                    moveIDs: moveIDs,
+                    movePrices: movePrices,
+                    eventExeptionDates: eventExeptionDatesStr,
+                    exeptionAllowanceUnitPrice_Int: exeptionAllowanceUnitPrice_Int,
+                    exeptionAllowanceDays_Int: exeptionAllowanceDays_Int
                 })
             })
                 .then(response => response.json())
@@ -1212,13 +1213,12 @@ document.addEventListener('DOMContentLoaded', function () {
         })
 
         $('#test').click(function () {
-            allowanceLodgment();
-            allowanceWork();
-            allowanceSpecial();
-            allowanceSpecialCase();
-            allowanceMove();
-            setTimeout(allowances, 500);
-            // allowances();
+            // allowanceLodgment();
+            // allowanceWork();
+            // allowanceSpecial();
+            // allowanceSpecialCase();
+            // allowanceMove();
+            allowances();
         })
     });
 });
