@@ -10,11 +10,11 @@ def allowance_special():
     data = request.get_json()
     print(data)
 
-    event_dates = data.get("eventDates")
-    unit_price = data.get("unitPrice")
-    days = data.get("days")
+    event_dates = data.get("eventSpecialDates")
+    unit_price = data.get("unitSpecialPrice")
+    days = data.get("specialDays")
 
-    if event_dates and unit_price and days:
+    if data:
         new_allowance_special = AllowanceSpecials(
             applying_dates=event_dates,
             unit_prices=unit_price,

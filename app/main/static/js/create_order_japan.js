@@ -714,6 +714,8 @@ document.addEventListener('DOMContentLoaded', function () {
                     break;
             }
 
+            return [accomodationDays, accomodationSumDays, accomodationAllowanceCheck, accomodationUnitPrice];
+
             fetch('/admin_menu/allowance_lodgment', {
                 method: 'POST',
                 headers: {
@@ -747,18 +749,15 @@ document.addEventListener('DOMContentLoaded', function () {
             let workingAwayUnitPrice_B = document.querySelector('#WorkingAwayUnitPrice_B').dataset.workingAwayAllowanceB;
             let workingAwayUnitPrice_B_Int = parseInt(workingAwayUnitPrice_B);
 
-            let unitPrice = [];
-            let days = [];
+            let unitWorkPrice = [];
+            let workDays = [];
             let eventWorkDates = [];
             let eventSellsDates = [];
 
-            // let formattedWorkDaysList = [];
-            // let formattedSellsDaysList = [];
-
-            unitPrice.push({ "A": workingAwayUnitPrice_A_Int });
-            unitPrice.push({ "B": workingAwayUnitPrice_B_Int });
-            days.push({ "A": workingAwayDays_A_Int });
-            days.push({ "B": workingAwayDays_B_Int });
+            unitWorkPrice.push({ "A": workingAwayUnitPrice_A_Int });
+            unitWorkPrice.push({ "B": workingAwayUnitPrice_B_Int });
+            workDays.push({ "A": workingAwayDays_A_Int });
+            workDays.push({ "B": workingAwayDays_B_Int });
 
             // console.log(unitPrice, days);
 
@@ -766,36 +765,15 @@ document.addEventListener('DOMContentLoaded', function () {
                 // Получаем даты начала и окончания события
 
                 if (event.title === 'Work') {
-                    let startWork = new Date(event.start);
-                    startWork.setDate(startWork.getDate() + 1);
-                    let formattedStartWork = startWork.toISOString().split('T')[0];
-
-                    eventWorkDates.push(formattedStartWork);
-                    // formattedWorkDaysList.push(formattedStartWork);
-
+                    let startWork = event.startStr;
+                    eventWorkDates.push(startWork);
                 }
             });
-
-            // Извлекаем даты из eventWorkDates и преобразуем их в объекты Date
-            let datesWork = eventWorkDates.map(item => new Date(item));
-
-            // Находим самую раннюю и самую позднюю дату
-            let earliestWorkDate = new Date(Math.min(...datesWork));
-
-            let formatWorkDate = (date) => date.toISOString().split('T')[0].replace(/-/g, '/');
-
-            let sumWorkDates;
-            // let formattedWorkDates;
 
             switch (parseInt(workingAwayDays_B)) {
                 case 0:
                     eventWorkDates = [];
                     eventWorkDates.push({ "B": "" });
-                    break;
-                case 1:
-                    sumWorkDates = formatWorkDate(earliestWorkDate);
-                    eventWorkDates = [];
-                    eventWorkDates.push({ "B": sumWorkDates });
                     break;
                 default:
                     sumWorkDates = formatDateSequence(eventWorkDates);
@@ -804,40 +782,21 @@ document.addEventListener('DOMContentLoaded', function () {
                     break;
             }
 
-            console.log(eventWorkDates);
+            // console.log(eventWorkDates);
 
             calendar.getEvents().forEach(function (event) {
                 // Получаем даты начала и окончания события
 
                 if (event.title === 'Sells') {
-                    let startSells = new Date(event.start);
-                    startSells.setDate(startSells.getDate() + 1);
-                    let formattedStartSells = startSells.toISOString().split('T')[0];
-
-                    eventSellsDates.push(formattedStartSells);
-                    // formattedSellsDaysList.push(formattedStartSells);
+                    let startSells = event.startStr;
+                    eventSellsDates.push(startSells);
                 }
             });
-
-            let datesSells = eventSellsDates.map(item => new Date(item));
-
-            // Находим самую раннюю и самую позднюю дату
-            let earliestSellsDate = new Date(Math.min(...datesSells));
-
-            let formatSellsDate = (date) => date.toISOString().split('T')[0].replace(/-/g, '/');
-
-            let sumSellsDates;
-            // let formattedSellsDates;
 
             switch (parseInt(workingAwayDays_A)) {
                 case 0:
                     eventSellsDates = [];
                     eventSellsDates.push({ "A": "" });
-                    break;
-                case 1:
-                    sumSellsDates = formatSellsDate(earliestSellsDate);
-                    eventSellsDates = [];
-                    eventSellsDates.push({ "A": sumSellsDates });
                     break;
                 default:
                     sumSellsDates = formatDateSequence(eventSellsDates);
@@ -846,30 +805,34 @@ document.addEventListener('DOMContentLoaded', function () {
                     break;
             }
 
-            console.log(eventSellsDates);
+            // console.log(eventSellsDates);
 
-            let eventDates = [{ ...eventSellsDates[0], ...eventWorkDates[0] }];
+            let workDates = [{ ...eventSellsDates[0], ...eventWorkDates[0] }];
 
-            fetch('/admin_menu/allowance_work', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    eventDates: eventDates,
-                    unitPrice: unitPrice,
-                    days: days
-                })
-            })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        console.log('Success:', data);
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                });
+            // console.log(workDates);
+
+            return [workDates, unitWorkPrice, workDays];
+
+            // fetch('/admin_menu/allowance_work', {
+            //     method: 'POST',
+            //     headers: {
+            //         'Content-Type': 'application/json'
+            //     },
+            //     body: JSON.stringify({
+            //         eventDates: eventDates,
+            //         unitPrice: unitPrice,
+            //         days: days
+            //     })
+            // })
+            //     .then(response => response.json())
+            //     .then(data => {
+            //         if (data.success) {
+            //             console.log('Success:', data);
+            //         }
+            //     })
+            //     .catch(error => {
+            //         console.error('Error:', error);
+            //     });
         }
 
         function allowanceSpecial() {
@@ -882,113 +845,73 @@ document.addEventListener('DOMContentLoaded', function () {
             let specialAllowanceUnitPrice_B = document.querySelector('#SpecialAllowanceUnitPrice_B').dataset.specialAllowanceB;
             let specialAllowanceUnitPrice_B_Int = parseInt(specialAllowanceUnitPrice_B);
 
-            let unitPrice = [];
-            let days = [];
+            let unitSpecialPrice = [];
+            let specialDays = [];
             let eventWorkDates = [];
             let eventSellsDates = [];
 
-            // let formattedWorkDaysList = [];
-            // let formattedSellsDaysList = [];
-
-            unitPrice.push({ "A": specialAllowanceUnitPrice_A_Int });
-            unitPrice.push({ "B": specialAllowanceUnitPrice_B_Int });
-            days.push({ "A": specialAllowanceDays_A_Int });
-            days.push({ "B": specialAllowanceDays_B_Int });
-
-            // console.log(unitPrice, days);
+            unitSpecialPrice.push({ "A": specialAllowanceUnitPrice_A_Int });
+            unitSpecialPrice.push({ "B": specialAllowanceUnitPrice_B_Int });
+            specialDays.push({ "A": specialAllowanceDays_A_Int });
+            specialDays.push({ "B": specialAllowanceDays_B_Int });
 
             calendar.getEvents().forEach(function (event) {
                 // Получаем даты начала и окончания события
 
                 if (event.title === 'Work') {
-                    let startWork = new Date(event.start);
-                    startWork.setDate(startWork.getDate() + 1);
-                    let formattedStartWork = startWork.toISOString().split('T')[0];
+                    let startWork = event.startStr;
 
-                    if (targetDates.includes(formattedStartWork)) {
-                        eventWorkDates.push(formattedStartWork);
-                        // formattedWorkDaysList.push(formattedStartWork);
+                    if (targetDates.includes(startWork)) {
+                        eventWorkDates.push(startWork);
                     }
                 }
             });
-
-            // Извлекаем даты из eventWorkDates и преобразуем их в объекты Date
-            let datesWork = eventWorkDates.map(item => new Date(item.B));
-
-            // Находим самую раннюю и самую позднюю дату
-            let earliestWorkDate = new Date(Math.min(...datesWork));
-
-            let formatWorkDate = (date) => date.toISOString().split('T')[0].replace(/-/g, '/');
-
-            let sumWorkDates;
-            // let formattedWorkDates;
 
             switch (parseInt(specialAllowanceDays_B)) {
                 case 0:
                     eventWorkDates = [];
                     eventWorkDates.push({ "B": "" });
                     break;
-                case 1:
-                    sumWorkDates = formatWorkDate(earliestWorkDate);
-                    eventWorkDates = [];
-                    eventWorkDates.push({ "B": sumWorkDates });
-                    break;
                 default:
-                    sumWorkDates = formatDateSequence(formattedWorkDaysList);
+                    sumWorkDates = formatDateSequence(eventWorkDates);
                     eventWorkDates = [];
                     eventWorkDates.push({ "B": sumWorkDates });
                     break;
             }
 
-            console.log(eventWorkDates);
+            // console.log(eventWorkDates);
 
             calendar.getEvents().forEach(function (event) {
                 // Получаем даты начала и окончания события
 
                 if (event.title === 'Sells') {
-                    let startSells = new Date(event.start);
-                    startSells.setDate(startSells.getDate() + 1);
-                    let formattedStartSells = startSells.toISOString().split('T')[0];
+                    let startSells = event.startStr;
 
-                    if (targetDates.includes(formattedStartSells)) {
-                        eventSellsDates.push(formattedStartSells);
-                        // formattedSellsDaysList.push(formattedStartSells);
+                    if (targetDates.includes(startSells)) {
+                        eventSellsDates.push(startSells);
                     }
                 }
             });
-
-            let datesSells = eventSellsDates.map(item => new Date(item.A));
-
-            // Находим самую раннюю и самую позднюю дату
-            let earliestSellsDate = new Date(Math.min(...datesSells));
-
-            let formatSellsDate = (date) => date.toISOString().split('T')[0].replace(/-/g, '/');
-
-            let sumSellsDates;
-            // let formattedSellsDates;
 
             switch (parseInt(specialAllowanceDays_A)) {
                 case 0:
                     eventSellsDates = [];
                     eventSellsDates.push({ "A": "" });
                     break;
-                case 1:
-                    sumSellsDates = formatSellsDate(earliestSellsDate);
-                    eventSellsDates = [];
-                    eventSellsDates.push({ "A": sumSellsDates });
-                    break;
                 default:
-                    sumSellsDates = formatDateSequence(formattedSellsDaysList);
+                    sumSellsDates = formatDateSequence(eventSellsDates);
                     eventSellsDates = [];
                     eventSellsDates.push({ "A": sumSellsDates });
                     break;
             }
 
-            console.log(eventSellsDates);
+            // console.log(eventSellsDates);
 
-            let eventDates = [{ ...eventSellsDates[0], ...eventWorkDates[0] }];
+            let eventSpecialDates = [{ ...eventSellsDates[0], ...eventWorkDates[0] }];
 
-            // console.log(eventDates);
+            // console.log(eventSpecialDates);
+
+            return [eventSpecialDates, unitSpecialPrice, specialDays];
 
             fetch('/admin_menu/allowance_special', {
                 method: 'POST',
@@ -996,9 +919,9 @@ document.addEventListener('DOMContentLoaded', function () {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    eventDates: eventDates,
-                    unitPrice: unitPrice,
-                    days: days
+                    eventSpecialDates: eventSpecialDates,
+                    unitSpecialPrice: unitSpecialPrice,
+                    specialDays: specialDays
                 })
             })
                 .then(response => response.json())
@@ -1129,46 +1052,160 @@ document.addEventListener('DOMContentLoaded', function () {
 
         }
 
+        function allowanceCalendar() {
+            let calendarDates = [];
+            calendar.getEvents().forEach(function (event) {
+                calendarDates.push({ 'start': event.startStr, 'title': event.title });
+            });
+
+            let calendarWorkDates = [];
+            let calendarWorkDatesStr;
+
+            calendarDates.forEach(function (event) {
+                if (event.title === 'Work') {
+                    calendarWorkDates.push(event.start);
+                }
+            })
+            if (calendarWorkDates.length === 0) {
+                calendarWorkDatesStr = "";
+            } else {
+                calendarWorkDatesStr = formatDateSequence(calendarWorkDates);
+            }
+
+            let calendarSellsDates = [];
+            let calendarSellsDatesStr;
+
+            calendarDates.forEach(function (event) {
+                if (event.title === 'Sells') {
+                    calendarSellsDates.push(event.start);
+                }
+            })
+            if (calendarSellsDates.length === 0) {
+                calendarSellsDatesStr = "";
+            } else {
+                calendarSellsDatesStr = formatDateSequence(calendarSellsDates);
+            };
+
+            let calendarMovementDates = [];
+            let calendarMovementDatesStr;
+
+            calendarDates.forEach(function (event) {
+                if (event.title === 'Movement') {
+                    calendarMovementDates.push(event.start);
+                }
+            })
+            if (calendarMovementDates.length === 0) {
+                calendarMovementDatesStr = "";
+            } else {
+                calendarMovementDatesStr = formatDateSequence(calendarMovementDates);
+            }
+
+            let calendarExeptionDates = [];
+            let calendarExeptionDatesStr;
+
+            calendarDates.forEach(function (event) {
+                if (event.title === 'Exeption') {
+                    calendarExeptionDates.push(event.start);
+                }
+            })
+            if (calendarExeptionDates.length === 0) {
+                calendarExeptionDatesStr = "";
+            } else {
+                calendarExeptionDatesStr = formatDateSequence(calendarExeptionDates);
+            }
+
+            let calendarOtherDates = [];
+            let calendarOtherDatesStr;
+
+            calendarDates.forEach(function (event) {
+                if (event.title === 'Other') {
+                    calendarOtherDates.push(event.start);
+                }
+            })
+            if (calendarOtherDates.length === 0) {
+                calendarOtherDatesStr = "";
+            } else {
+                calendarOtherDatesStr = formatDateSequence(calendarOtherDates);
+            }
+
+            let allCalendarDates = [];
+            allCalendarDates.push({ "1": calendarWorkDatesStr, "2": calendarSellsDatesStr, "3": calendarMovementDatesStr, "4": calendarExeptionDatesStr, "5": calendarOtherDatesStr });
+
+            return [allCalendarDates];
+        }
+
+        function tripForm() {
+            let tripName = $('#name_id').val();
+            let orderName = $('#order').val();
+            let orderNumber = $('#order_number').val();
+            let detailNumber = $('#detail_number').val();
+            let serviceNumber = $('#service_number').val();
+            let serviceCardNumber = $('#service_card_number').val();
+            let quoteNumber = $('#quote_number').val();
+            let purchaseOrderNumber = $('#purchase_order_number').val();
+            let supportTypeID = $('#support_type_id').val();
+            let travelID = $('#travel_id').val();
+
+            console.log(tripName, orderName, orderNumber, detailNumber, serviceNumber, serviceCardNumber, quoteNumber, purchaseOrderNumber, supportTypeID, travelID);
+        }
+
+        function currencyForm() {
+
+            let rowRateData = [];
+            for (let i = 0; i < 5; i++) {
+                let currencyRateID = $('#rates-' + i + '-currency_id').val();
+                let correlation = $('#rates-' + i + '-foreign_currency').val();
+                let advance = $('#rates-' + i + '-temporary_payment').val();
+                let balance = $('#rates-' + i + '-remaining_payment').val();
+                rowRateData.push({ "1": currencyRateID, "2": correlation, "3": advance, "4": balance });
+            }
+
+            console.log(rowRateData);
+        }
+
+        function detailsForm() {
+
+            let rowDetailsData = [];
+            for (let i = 0; i < 20; i++) {
+                let accountItemID = $('#details-' + i + '-account_item_id').val();
+                let content = $('#details-' + i + '-content').val();
+                let applyingDate = $('#details-' + i + '-applying_date').val();
+                let currencyDetailsID = $('#details-' + i + '-currency_id').val();
+                let unitPrice = $('#details-' + i + '-unit_price').val();
+                let quantity = $('#details-' + i + '-quantity').val();
+                let paymentMethodID = $('#details-' + i + '-payment_method_id').val();
+                let receiptID = $('#details-' + i + '-receipt_id').val();
+                let remark = $('#details-' + i + '-remarks').val();
+                rowDetailsData.push({
+                    "1": accountItemID,
+                    "2": content,
+                    "3": applyingDate,
+                    "4": currencyDetailsID,
+                    "5": unitPrice,
+                    "6": quantity,
+                    "7": paymentMethodID,
+                    "8": receiptID,
+                    "9": remark
+                });
+            }
+            console.log(rowDetailsData);
+        }
+
         function allowances() {
 
             allowanceMove();
             allowanceSpecialCase();
+            allowanceSpecial();
+            allowanceWork();
+            allowanceLodgment();
+            allowanceCalendar();
 
             let = [moveEvents, moveDays, moveIDs, movePrices, earliestDate, oldestDate] = allowanceMove();
             let = [eventExeptionDatesStr, exeptionAllowanceUnitPrice_Int, exeptionAllowanceDays_Int] = allowanceSpecialCase();
-
-
-
-            // let moveEvents1 = [];
-
-            // let earliestDate1;
-            // let oldestDate1;
-
-            // calendar.getEvents().forEach(function (event) {
-
-            //     if (event.title === 'Movement') {
-
-            //         moveEvents1.push(event.startStr);
-
-            //         let datesMove = moveEvents1.map(item => new Date(item));
-
-            //         earliestDate1 = new Date(Math.min(...datesMove));
-            //         oldestDate1 = new Date(Math.max(...datesMove));
-
-            //         earliestDate1 = earliestDate1.toISOString().split('T')[0];
-            //         oldestDate1 = oldestDate1.toISOString().split('T')[0];
-
-            //     }
-            // });
-
-            // if (oldestDate1 === earliestDate1) {
-            //     oldestDate1 = $('#end-date').val();
-            // }
-
-            // if (moveEvents1.length === 0) {
-            //     earliestDate1 = $('#start-date').val();
-            //     oldestDate1 = $('#end-date').val();
-            // }
+            let = [eventSpecialDates, unitSpecialPrice, specialDays] = allowanceSpecial();
+            let = [workDates, unitWorkPrice, workDays] = allowanceWork();
+            let = [accomodationDays, accomodationSumDays, accomodationAllowanceCheck, accomodationUnitPrice] = allowanceLodgment();
+            let = [calendarDates] = allowanceCalendar();
 
             let [startYear, startMonth, startDay] = earliestDate.split('/');
             let [endYear, endMonth, endDay] = oldestDate.split('/');
@@ -1193,7 +1230,18 @@ document.addEventListener('DOMContentLoaded', function () {
                     movePrices: movePrices,
                     eventExeptionDates: eventExeptionDatesStr,
                     exeptionAllowanceUnitPrice_Int: exeptionAllowanceUnitPrice_Int,
-                    exeptionAllowanceDays_Int: exeptionAllowanceDays_Int
+                    exeptionAllowanceDays_Int: exeptionAllowanceDays_Int,
+                    eventSpecialDates: eventSpecialDates,
+                    unitSpecialPrice: unitSpecialPrice,
+                    specialDays: specialDays,
+                    workDates: workDates,
+                    unitWorkPrice: unitWorkPrice,
+                    workDays: workDays,
+                    accomodationDays: accomodationDays,
+                    accomodationSumDays: accomodationSumDays,
+                    accomodationAllowanceCheck: accomodationAllowanceCheck,
+                    accomodationUnitPrice: accomodationUnitPrice,
+                    calendarDates: calendarDates
                 })
             })
                 .then(response => response.json())
@@ -1209,7 +1257,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         $('.btn-submit').click(function () {
-
+            // allowances();
         })
 
         $('#test').click(function () {
@@ -1218,8 +1266,13 @@ document.addEventListener('DOMContentLoaded', function () {
             // allowanceSpecial();
             // allowanceSpecialCase();
             // allowanceMove();
-            allowances();
+            // allowanceCalendar();
+            // allowances();
+            // tripForm();
+            // currencyForm();
+            detailsForm();
         })
-    });
+    })
 });
+
 

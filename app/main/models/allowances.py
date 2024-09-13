@@ -35,9 +35,7 @@ class Allowances(db.Model):
     allowance_special_case_id: so.Mapped[int] = so.mapped_column(
         sa.Integer, db.ForeignKey("allowance_special_cases.id"), nullable=False, default=0
     )
-    calendars: so.Mapped[list[Dict[str, list[int]]]] = so.mapped_column(
-        sa.JSON, nullable=False, default=dict
-    )
+    calendars: so.Mapped[Dict[str, str]] = so.mapped_column(sa.JSON, nullable=False, default=dict)
 
     order = db.relationship("Order", back_populates="allowances")
     allowance_move = db.relationship("AllowanceMoves", back_populates="allowances")
