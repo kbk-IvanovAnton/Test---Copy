@@ -20,10 +20,13 @@ from app.main.models.rates import Rates
 @bp.route("/create_order", methods=["GET", "POST"])
 @login_required
 def create_order():
+
     form = CompleteOrderForm(request.form)
-    # data = request.get_json()
-    # print("Form data before validation:", form.data)
+    print("Form data before validation:", form.data)
     if form.validate_on_submit():
+        # data = request.get_json()
+
+        # print(data)
         order = Order(
             name_id=form.order.name_id.data,
             order=form.order.order.data,

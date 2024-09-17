@@ -1,6 +1,6 @@
 import datetime
 
-from flask import jsonify, request
+from flask import jsonify, redirect, request, url_for
 
 from app import db
 from app.admin import bp
@@ -10,12 +10,44 @@ from app.main.models.allowance_special_cases import AllowanceSpecialCases
 from app.main.models.allowance_specials import AllowanceSpecials
 from app.main.models.allowance_works import AllowanceWorks
 from app.main.models.allowances import Allowances
+from app.main.models.details import Details
+from app.main.models.order import Order
+from app.main.models.rates import Rates
+
+
+def safe_int_convert(value):
+    try:
+        return int(value) if value != "" else 0
+    except ValueError:
+        return 0
+
+
+def safe_float_convert(value):
+    try:
+        return float(value.replace(",", "")) if value != "" else 0.0
+    except ValueError:
+        return 0.0
 
 
 @bp.route("/admin_menu/allowances", methods=["POST"])
 def allowances():
     data = request.get_json()
     print(data)
+
+    name_id = data.get("personName")
+    order = data.get("orderName")
+    order_number = data.get("orderNumber")
+    detail_number = data.get("detailNumber")
+    service_number = data.get("serviceNumber")
+    service_card_number = data.get("serviceCardNumber")
+    quote_number = data.get("quoteNumber")
+    purchase_order_number = data.get("purchaseOrderNumber")
+    travel_id = data.get("travelID")
+    support_type_id = data.get("supportTypeID")
+
+    row_rate_data = data.get("rowRateData")
+
+    row_datails_data = data.get("rowDetailsData")
 
     accomodation_unit_price = data.get("accomodationUnitPrice")
     accomodation_days = data.get("accomodationDays")
@@ -84,13 +116,54 @@ def allowances():
             validity=bool(accomodation_allowance_check),
             applying_date=accomodation_sum_days,
         )
-
-        db.session.add(
-            new_allowance,
+        new_allowance.order = Order(
+            name_id=name_id,
+            order=order,
+            order_number=order_number,
+            detail_number=detail_number,
+            service_number=service_number,
+            service_card_number=service_card_number,
+            quote_number=quote_number,
+            purchase_order_number=purchase_order_number,
+            travel_id=travel_id,
+            support_type_id=support_type_id,
         )
+
+        rates_list = []
+        for item in row_rate_data:
+            new_rate = Rates(
+                currency_id=safe_int_convert(item.get("1", " ")),
+                foreign_currency=safe_float_convert(item.get("2", " ")),
+                temporary_payment=safe_float_convert(item.get("3", " ")),
+                remaining_payment=safe_float_convert(item.get("4", " ")),
+            )
+            rates_list.append(new_rate)
+
+        new_allowance.order.rates = rates_list
+
+        details_list = []
+        for index, item in enumerate(row_datails_data, start=1):
+            new_detail = Details(
+                row=index,
+                account_item_id=safe_int_convert(item.get("1", " ")),
+                content=item.get("2", " "),
+                applying_date=item.get("3", " "),
+                currency_id=safe_int_convert(item.get("4", " ")),
+                unit_price=safe_float_convert(item.get("5", " ")),
+                quantity=safe_int_convert(item.get("6", " ")),
+                payment_method_id=safe_int_convert(item.get("7", " ")),
+                receipt_id=safe_int_convert(item.get("8", " ")),
+                remarks=item.get("9", " "),
+            )
+            details_list.append(new_detail)
+
+        new_allowance.order.details = details_list
+
+        # db.session.add(new_allowance.order)
+        db.session.add(new_allowance)
         # print(new_allowance)
         db.session.commit()
 
-        return jsonify({"success": True, "message": "Данные успешно обработаны!"})
+        return jsonify({"success": True, "redirect_url": url_for("main.index")})
     else:
         return jsonify({"success": False, "message": "Некоторые данные отсутствуют."}), 400

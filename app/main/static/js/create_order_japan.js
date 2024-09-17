@@ -2,79 +2,23 @@ document.addEventListener('DOMContentLoaded', function () {
     let calendarEl = document.getElementById('calendar');
     let selectedEventType = 'Work'; // Значение по умолчанию
 
-    // Обновляем выбранный тип события при изменении радио-кнопки
-    document.querySelector('#eventTypeSelection').addEventListener('change', function (e) {
-        if (e.target.name === "eventType") {
-            selectedEventType = e.target.value;
-        }
-    });
-    const radioButtons = document.querySelectorAll('.btn-check');
-    const formSelects = document.querySelectorAll('.location-select-trip , .location-select-return-trip');
+    let events = [];
 
-    // Функция для активации/деактивации форм
-    function toggleForms(disabled) {
-        formSelects.forEach(function (select) {
-            select.disabled = disabled;
-        });
-    }
+    const currentYear = new Date().getFullYear();
+    const pastYear = currentYear - 1;
+    const futureYear = currentYear + 1;
+    let targetDates = ["08-13", "08-14", "08-15", "12-30", "12-31", "01-01", "01-02", "01-03"];
+    currentDates = targetDates.map(date => currentYear + "-" + date);
+    pastDates = targetDates.map(date => pastYear + "-" + date);
+    futureDates = targetDates.map(date => futureYear + "-" + date);
+    targetDates = currentDates.concat(pastDates, futureDates);
 
-    function updateMoveButtons() {
-        let rows = $('#detailsTable tbody tr');
-        rows.each(function (index) {
-            let upButton = $(this).find('.move-up');
-            let downButton = $(this).find('.move-down');
+    let workTargetCount = 0;
+    let sellsTargetCount = 0;
 
-            if (index === 0) {
-                upButton.prop('disabled', true).addClass('disabled');
-            } else {
-                upButton.prop('disabled', false).removeClass('disabled');
-            }
+    let naritaTripPrice = 1170;
+    let hanedaTripPrice = 810;
 
-            if (index === rows.length - 1) {
-                downButton.prop('disabled', true).addClass('disabled');
-            } else {
-                downButton.prop('disabled', false).removeClass('disabled');
-            }
-        });
-    }
-
-    function swapRows(row1, row2) {
-        let order1 = parseInt(row1.data('order'), 10);
-        let order2 = parseInt(row2.data('order'), 10);
-
-        // Меняем местами значения order
-        row1.data('order', order2);
-        row2.data('order', order1);
-
-        // Меняем местами строки в DOM
-        row2.insertBefore(row1);
-
-        // Обновляем порядок на сервере
-        // updateOrder(row1.data('id'), order2);
-        // updateOrder(row2.data('id'), order1);
-
-        updateMoveButtons();
-    }
-
-    // Обработчик для кнопки "вверх"
-    $(document).on('click', '.move-up:not(.disabled)', function () {
-        let currentRow = $(this).closest('tr');
-        let previousRow = currentRow.prev();
-        if (previousRow.length) {
-            swapRows(previousRow, currentRow);
-        }
-    });
-
-    // Обработчик для кнопки "вниз"
-    $(document).on('click', '.move-down:not(.disabled)', function () {
-        let currentRow = $(this).closest('tr');
-        let nextRow = currentRow.next();
-        if (nextRow.length) {
-            swapRows(currentRow, nextRow);
-        }
-    });
-
-    toggleForms(true);
     let calendar = new FullCalendar.Calendar(calendarEl, {
         initialView: 'dayGridMonth',
         headerToolbar: {
@@ -171,22 +115,85 @@ document.addEventListener('DOMContentLoaded', function () {
 
     calendar.render();
 
-    let events = [];
-
-    const currentYear = new Date().getFullYear();
-    const pastYear = currentYear - 1;
-    const futureYear = currentYear + 1;
-    let targetDates = ["08-13", "08-14", "08-15", "12-30", "12-31", "01-01", "01-02", "01-03"];
-    currentDates = targetDates.map(date => currentYear + "-" + date);
-    pastDates = targetDates.map(date => pastYear + "-" + date);
-    futureDates = targetDates.map(date => futureYear + "-" + date);
-    targetDates = currentDates.concat(pastDates, futureDates);
-
-    let workTargetCount = 0;
-    let sellsTargetCount = 0;
-
     document.getElementById('rates-0-currency_id').value = '1';
 
+    for (let i = 0; i < 20; i++) {
+        document.getElementById('details-' + i + '-currency_id').value = '1';
+    }
+
+    // Обновляем выбранный тип события при изменении радио-кнопки
+    document.querySelector('#eventTypeSelection').addEventListener('change', function (e) {
+        if (e.target.name === "eventType") {
+            selectedEventType = e.target.value;
+        }
+    });
+    const radioButtons = document.querySelectorAll('.btn-check');
+    const formSelects = document.querySelectorAll('.location-select-trip , .location-select-return-trip');
+
+    // Функция для активации/деактивации форм
+    function toggleForms(disabled) {
+        formSelects.forEach(function (select) {
+            select.disabled = disabled;
+        });
+    }
+
+    function updateMoveButtons() {
+        let rows = $('#detailsTable tbody tr');
+        rows.each(function (index) {
+            let upButton = $(this).find('.move-up');
+            let downButton = $(this).find('.move-down');
+
+            if (index === 0) {
+                upButton.prop('disabled', true).addClass('disabled');
+            } else {
+                upButton.prop('disabled', false).removeClass('disabled');
+            }
+
+            if (index === rows.length - 1) {
+                downButton.prop('disabled', true).addClass('disabled');
+            } else {
+                downButton.prop('disabled', false).removeClass('disabled');
+            }
+        });
+    }
+
+    function swapRows(row1, row2) {
+        let order1 = parseInt(row1.data('order'), 10);
+        let order2 = parseInt(row2.data('order'), 10);
+
+        // Меняем местами значения order
+        row1.data('order', order2);
+        row2.data('order', order1);
+
+        // Меняем местами строки в DOM
+        row2.insertBefore(row1);
+
+        // Обновляем порядок на сервере
+        // updateOrder(row1.data('id'), order2);
+        // updateOrder(row2.data('id'), order1);
+
+        updateMoveButtons();
+    }
+
+    // Обработчик для кнопки "вверх"
+    $(document).on('click', '.move-up:not(.disabled)', function () {
+        let currentRow = $(this).closest('tr');
+        let previousRow = currentRow.prev();
+        if (previousRow.length) {
+            swapRows(previousRow, currentRow);
+        }
+    });
+
+    // Обработчик для кнопки "вниз"
+    $(document).on('click', '.move-down:not(.disabled)', function () {
+        let currentRow = $(this).closest('tr');
+        let nextRow = currentRow.next();
+        if (nextRow.length) {
+            swapRows(currentRow, nextRow);
+        }
+    });
+
+    toggleForms(true);
 
     function exeptionUnitPriceFormat() {
         let exeptionAllowanceUnitPrice = document.getElementById('ExeptionAllowanceUnitPrice');
@@ -210,10 +217,6 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     exeptionUnitPriceFormat();
-
-    for (let i = 0; i < 20; i++) {
-        document.getElementById('details-' + i + '-currency_id').value = '1';
-    }
 
     document.getElementById('add-event').addEventListener('click', function () {
         let startDateInput = document.getElementById('start-date');
@@ -472,7 +475,7 @@ document.addEventListener('DOMContentLoaded', function () {
             } else {
                 currentContentElement.value = '市川 ⇔ 成田空港(片道)';
                 currentAccountItemElement.value = '1';
-                currentUnitPriceElement.value = Number('1170').toLocaleString();
+                currentUnitPriceElement.value = Number(naritaTripPrice).toLocaleString();
                 return; // Останавливаем выполнение, чтобы не продолжать цикл
             }
         }
@@ -500,7 +503,7 @@ document.addEventListener('DOMContentLoaded', function () {
             } else {
                 currentContentElement.value = '市川 ⇔ 羽田空港(片道)';
                 currentAccountItemElement.value = '1';
-                currentUnitPriceElement.value = Number('810').toLocaleString();
+                currentUnitPriceElement.value = Number(hanedaTripPrice).toLocaleString();
                 return; // Останавливаем выполнение, чтобы не продолжать цикл
             }
         }
@@ -1135,7 +1138,7 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         function tripForm() {
-            let tripName = $('#name_id').val();
+            let personName = $('#name_id').val();
             let orderName = $('#order').val();
             let orderNumber = $('#order_number').val();
             let detailNumber = $('#detail_number').val();
@@ -1146,7 +1149,19 @@ document.addEventListener('DOMContentLoaded', function () {
             let supportTypeID = $('#support_type_id').val();
             let travelID = $('#travel_id').val();
 
-            console.log(tripName, orderName, orderNumber, detailNumber, serviceNumber, serviceCardNumber, quoteNumber, purchaseOrderNumber, supportTypeID, travelID);
+            // console.log(
+            //     personName,
+            //     orderName,
+            //     orderNumber,
+            //     detailNumber,
+            //     serviceNumber,
+            //     serviceCardNumber,
+            //     quoteNumber,
+            //     purchaseOrderNumber,
+            //     supportTypeID,
+            //     travelID);
+
+            return [personName, orderName, orderNumber, detailNumber, serviceNumber, serviceCardNumber, quoteNumber, purchaseOrderNumber, supportTypeID, travelID];
         }
 
         function currencyForm() {
@@ -1161,6 +1176,8 @@ document.addEventListener('DOMContentLoaded', function () {
             }
 
             console.log(rowRateData);
+
+            return [rowRateData];
         }
 
         function detailsForm() {
@@ -1188,10 +1205,16 @@ document.addEventListener('DOMContentLoaded', function () {
                     "9": remark
                 });
             }
-            console.log(rowDetailsData);
+            // console.log(rowDetailsData);
+
+            return [rowDetailsData];
         }
 
         function allowances() {
+
+            tripForm();
+            currencyForm();
+            detailsForm();
 
             allowanceMove();
             allowanceSpecialCase();
@@ -1207,6 +1230,22 @@ document.addEventListener('DOMContentLoaded', function () {
             let = [accomodationDays, accomodationSumDays, accomodationAllowanceCheck, accomodationUnitPrice] = allowanceLodgment();
             let = [calendarDates] = allowanceCalendar();
 
+            let = [rowRateData] = currencyForm();
+            let = [rowDetailsData] = detailsForm();
+            let = [
+                personName,
+                orderName,
+                orderNumber,
+                detailNumber,
+                serviceNumber,
+                serviceCardNumber,
+                quoteNumber,
+                purchaseOrderNumber,
+                supportTypeID,
+                travelID
+            ] = tripForm();
+
+
             let [startYear, startMonth, startDay] = earliestDate.split('/');
             let [endYear, endMonth, endDay] = oldestDate.split('/');
 
@@ -1218,6 +1257,18 @@ document.addEventListener('DOMContentLoaded', function () {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
+                    personName: personName,
+                    orderName: orderName,
+                    orderNumber: orderNumber,
+                    detailNumber: detailNumber,
+                    serviceNumber: serviceNumber,
+                    serviceCardNumber: serviceCardNumber,
+                    quoteNumber: quoteNumber,
+                    purchaseOrderNumber: purchaseOrderNumber,
+                    supportTypeID: supportTypeID,
+                    travelID: travelID,
+                    rowRateData: rowRateData,
+                    rowDetailsData: rowDetailsData,
                     startYear: startYear,
                     startMonth: startMonth,
                     startDay: startDay,
@@ -1245,9 +1296,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 })
             })
                 .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        console.log('Success:', data);
+                .then(result => {
+                    if (result.success) {
+                        window.location.href = result.redirect_url;
+                    } else {
+                        console.error(result.message);
                     }
                 })
                 .catch(error => {
@@ -1267,10 +1320,10 @@ document.addEventListener('DOMContentLoaded', function () {
             // allowanceSpecialCase();
             // allowanceMove();
             // allowanceCalendar();
-            // allowances();
+            allowances();
             // tripForm();
             // currencyForm();
-            detailsForm();
+            // detailsForm();
         })
     })
 });
