@@ -1,5 +1,6 @@
 import datetime
 
+import pandas as pd
 from flask import jsonify, redirect, request, url_for
 
 from app import db
@@ -159,9 +160,7 @@ def allowances():
 
         new_allowance.order.details = details_list
 
-        # db.session.add(new_allowance.order)
         db.session.add(new_allowance)
-        # print(new_allowance)
         db.session.commit()
 
         return jsonify({"success": True, "redirect_url": url_for("main.index")})
