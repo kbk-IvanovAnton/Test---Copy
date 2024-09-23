@@ -188,3 +188,21 @@
 #eventTypeSelection label {
     margin-right: 10px;
 }
+
+/* Скрыть всё, что не нужно при печати */
+/* @media print {
+    body * {
+        visibility: hidden;
+    }
+
+    #printableArea,
+    #printableArea * {
+        visibility: visible;
+    }
+
+    #printableArea {
+        position: absolute;
+        left: 0;
+        top: 0;
+    }
+} */

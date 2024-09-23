@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const currentYear = new Date().getFullYear();
     const pastYear = currentYear - 1;
     const futureYear = currentYear + 1;
+
     let targetDates = ["08-13", "08-14", "08-15", "12-30", "12-31", "01-01", "01-02", "01-03"];
     currentDates = targetDates.map(date => currentYear + "-" + date);
     pastDates = targetDates.map(date => pastYear + "-" + date);
@@ -16,8 +17,8 @@ document.addEventListener('DOMContentLoaded', function () {
     let workTargetCount = 0;
     let sellsTargetCount = 0;
 
-    let naritaTripPrice = 1170;
-    let hanedaTripPrice = 810;
+    const naritaTripPrice = 1170;
+    const hanedaTripPrice = 810;
 
     let calendar = new FullCalendar.Calendar(calendarEl, {
         initialView: 'dayGridMonth',
@@ -1308,6 +1309,19 @@ document.addEventListener('DOMContentLoaded', function () {
                 });
 
         }
+
+        function printDiv(divId) {
+            var printContents = document.getElementById(divId).innerHTML;
+            var originalContents = document.body.innerHTML;
+
+            document.body.innerHTML = printContents;
+            window.print();
+            document.body.innerHTML = originalContents;
+        }
+
+        $('.btn-danger').click(function () {
+            printDiv('printableArea')
+        })
 
         $('.btn-submit').click(function () {
             // allowances();

@@ -13,9 +13,9 @@
 
 
 <div class="container-fluid p-0">
-    <!-- {% from 'main/formhelpers.html' import render_field %} -->
-    <form method="POST">
-        <!-- {{ form.hidden_tag() }} -->
+    {% from 'main/formhelpers.html' import render_field %}
+    <form id="orderJapanForm">
+        {{ form.hidden_tag() }}
         <div class="row equal-height">
             <div class="col-12 col-lg-6">
                 <div class="card">
@@ -26,82 +26,96 @@
                         <div class="row g-3">
                             <div class="col-md-12">
                                 <div class="form-floating">
-                                    <!-- {{render_field(form.order.name_id, class="form-select needs-validation",
+                                    {{render_field(form.order.name_id, class="form-select needs-validation",
                                     id="name_id",
-                                    placeholder="User")}} -->
+                                    placeholder="User")}}
+                                    <!-- <select class="form-control" id="name_id" name="name_id"
+                                        placeholder="User"></select> -->
                                     <label for="name_id">User</label>
                                 </div>
                             </div>
                             <div class="col-md-12">
                                 <div class="form-floating">
-                                    <!-- {{ render_field(form.order.order, class="form-control needs-validation", id="order",
-                                    placeholder="Order") }} -->
+                                    {{ render_field(form.order.order, class="form-control needs-validation", id="order",
+                                    placeholder="Order") }}
+                                    <!-- <input type="text" class="form-control" id="order" name="order"> -->
                                     <label for="order">Order</label>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-floating">
-                                    <!-- {{render_field(form.order.order_number, class="form-control", id="order_number",
+                                    {{render_field(form.order.order_number, class="form-control", id="order_number",
                                     placeholder="Order
-                                    Number")}} -->
+                                    Number")}}
+                                    <!-- <input type="text" class="form-control" id="order_number" name="order_number"> -->
                                     <label for="order_number">Order Number</label>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-floating">
-                                    <!-- {{render_field(form.order.detail_number, class="form-control", id="detail_number",
+                                    {{render_field(form.order.detail_number, class="form-control", id="detail_number",
                                     placeholder="Detail
-                                    Number")}} -->
+                                    Number")}}
+                                    <!-- <input type="text" class="form-control" id="detail_number" name="detail_number"> -->
                                     <label for="detail_number">Detail Number</label>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-floating">
-                                    <!-- {{render_field(form.order.service_number, class="form-control", id="service_number",
+                                    {{render_field(form.order.service_number, class="form-control", id="service_number",
                                     placeholder="Service
-                                    Number")}} -->
+                                    Number")}}
+                                    <!-- <input type="text" class="form-control" id="service_number" name="service_number"> -->
                                     <label for="service_number">Service No.</label>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-floating">
-                                    <!-- {{render_field(form.order.service_card_number, class="form-control",
+                                    {{render_field(form.order.service_card_number, class="form-control",
                                     id="service_card_number",
                                     placeholder="Service Card
-                                    Number")}} -->
+                                    Number")}}
+                                    <!-- <input type="text" class="form-control" id="service_card_number"
+                                        name="service_card_number"> -->
                                     <label for="service_card_number">Service Card No.</label>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-floating">
-                                    <!-- {{render_field(form.order.quote_number, class="form-control", id="quote_number",
+                                    {{render_field(form.order.quote_number, class="form-control", id="quote_number",
                                     placeholder="Quote
-                                    Number")}} -->
+                                    Number")}}
+                                    <!-- <input type="text" class="form-control" id="quote_number" name="quote_number"> -->
                                     <label for="quote_number">Estimation</label>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-floating">
-                                    <!-- {{render_field(form.order.purchase_order_number, class="form-control",
+                                    {{render_field(form.order.purchase_order_number, class="form-control",
                                     id="purchase_order_number",
                                     placeholder="Purchase Order
-                                    Number")}} -->
+                                    Number")}}
+                                    <!-- <input type="text" class="form-control" id="purchase_order_number"
+                                        name="service_number"> -->
                                     <label for="purchase_order_number">Customer Ordering Doc.</label>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-floating">
-                                    <!-- {{render_field(form.order.support_type_id, class="form-select",
+                                    {{render_field(form.order.support_type_id, class="form-select",
                                     id="support_type_id",
                                     placeholder="Supported
-                                    Type")}} -->
+                                    Type")}}
+                                    <!-- <input type="select" class="form-control" id="support_type_id"
+                                        name="support_type_id"> -->
                                     <label for="support_type_id">Supported Type</label>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-floating">
-                                    <!-- {{render_field(form.order.travel_id, class="form-select", id="travel_id",
-                                    placeholder="Travel")}} -->
+                                    {{render_field(form.order.travel_id, class="form-select", id="travel_id",
+                                    placeholder="Travel")}}
+                                    <!-- <input type="select" class="form-control" id="travel_id" name="travel_id"> -->
                                     <label for="travel_id">Travel</label>
                                 </div>
                             </div>
@@ -192,7 +206,7 @@
                             <button class="btn btn-primary" type="button" id="hanedaButton">Ichikawa - Haneda</button>
                         </div>
                     </div>
-                    <div class="card-body">
+                    <div class="card-body" id="printableArea">
                         <table class="display cell-border" id="detailsTable" style="width: 100%;">
                             <thead>
                                 <tr style="text-align:center">
@@ -415,6 +429,7 @@
                             <div class="card-body">
                                 <div class="d-grid">
                                     <button type="submit" class="btn btn-primary">Submit</button>
+                                    <button type="button" class="btn btn-danger">Распечатать область</button>
                                 </div>
                             </div>
                         </div>
