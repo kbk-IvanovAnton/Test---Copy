@@ -17,6 +17,7 @@ from app.main.routes import (
     get_alllowance_prices_japan,
     hide_order,
     index,
+    print_japan,
     return_trip_unit_price,
     trip_unit_price,
     update_order,

@@ -1,0 +1,158 @@
+.header {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+}
+
+.title {
+    grid-column: 2;
+    text-align: center;
+}
+
+.num {
+    grid-column: 3;
+    text-align: right;
+}
+
+.pdn-75 {
+    margin-left: 67px;
+}
+
+
+tr.gray-btm td {
+    border-bottom: 1px solid gainsboro;
+}
+
+.wd-50 {
+    width: 50px;
+}
+
+.wd-70 {
+    width: 70px;
+}
+
+.wd-100 {
+    width: 100px;
+}
+
+.wd-120 {
+    width: 120px;
+}
+
+.wd-150 {
+    width: 150px;
+}
+
+.wd-200 {
+    width: 200px;
+}
+
+.wd-250 {
+    width: 250px;
+}
+
+.wd-350 {
+    width: 350px;
+}
+
+.wd-450 {
+    width: 450px;
+}
+
+.wd-550 {
+    width: 550px;
+}
+
+.wd-650 {
+    width: 650px;
+}
+
+.hd {
+    text-align: center;
+    border-bottom: 3px solid black !important;
+}
+
+.ft10 {
+    font-size: 10px;
+}
+
+.ft11 {
+    font-size: 11px;
+}
+
+.ft16 {
+    font-size: 22px;
+}
+
+.f-t {
+    border: 1px solid;
+    border-color: black;
+    border-collapse: collapse;
+}
+
+
+.f-t td {
+    border: 1px solid black;
+    /* border-bottom: 1px solid gainsboro; */
+    height: 15px;
+}
+
+.f-t th {
+    border: 1px solid black;
+    height: 15px;
+}
+
+.brd-bold {
+    border: 3px solid black;
+}
+
+.brd-btm {
+    border-bottom: 1px solid black;
+}
+
+.brd-btm-bold {
+    border-bottom: 3px solid black;
+}
+
+.undrln {
+    text-decoration: underline;
+    text-decoration-style: double;
+}
+
+.aln-ctr {
+    text-align: center;
+}
+
+.aln-end {
+    text-align: end;
+}
+
+.ht-40 td {
+    height: 40px;
+}
+
+.ht-50 td {
+    height: 50px;
+}
+
+.ht-20 td {
+    height: 20px;
+}
+
+.buttons {
+    display: grid;
+    place-items: end;
+}
+
+.card-body {
+    /* display: grid;
+    place-items: center; */
+    margin-left: 40px;
+    margin-right: 40px;
+    margin-bottom: 20px;
+    border: black solid 1px;
+}
+
+.pdg-btm-10 {
+    padding-bottom: 10px;
+}

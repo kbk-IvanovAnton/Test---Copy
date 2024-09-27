@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<link rel="stylesheet" href="{{ url_for('main.static', filename='css/print_japan.css') }}">
+
+<style>
+    @media print {
+
+        @page {
+            size: A4 landscape;
+            margin-left: 2cm;
+            margin-bottom: 0;
+            padding: 0;
+
+        }
+
+        body {
+            width: 370mm;
+            height: 210mm;
+            margin: 0;
+            padding: 0;
+        }
+    }
+</style>
+
+{% extends "main/base.html" %}
+
+{% block content %}
+<div class="container-fluid p-0">
+    <div class="row">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Print Form</h5>
+                <div class="buttons">
+                    <button class="btn btn-primary btn-print">Print</button>
+                    <a class="btn btn-primary" type="button" href="{{ url_for('main.index') }}">Home</a>
+                </div>
+            </div>
+            <div class="card-body" id="printableArea">
+                <div class="header">
+                    <h4 class="title">国　内　用　出　張　精　算　書</h4>
+                    <span class="num">No.</span>
+                </div>
+                <div class="row g-3">
+                    <div class="col-sm-9">
+                        <table class="f-t">
+                            <tr class="ft11 hd">
+                                <th colspan="2" class="wd-200">名　前</th>
+                                <th colspan="4" class="wd-650">案件名</th>
+                                <th class="wd-100">出発日</th>
+                                <th class="wd-100">帰社日</th>
+                            </tr>
+                            <tr class="ft11">
+                                <td colspan="2">Data</td>
+                                <td colspan="4"></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                            <tr class="ft11 hd">
+                                <th class="wd-100">サービスNo.</th>
+                                <th>サービスカードNo.</th>
+                                <th class="wd-150">見積りNo.</th>
+                                <th>受注番号</th>
+                                <th>製品番号</th>
+                                <th class="wd-150">客先発注書No.</th>
+                                <th>対応種別</th>
+                                <th class="wd-100">出張種別</th>
+                            </tr>
+                            <tr class="ft11">
+                                <td>Data</td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="col-sm-1" style="width: 90px;"></div>
+                    <div class="col-sm-2">
+                        <table class="ft11">
+                            <tr>
+                                <th>作成日</th>
+                                <th colspan="2" class="aln-end">Time</th>
+                            </tr>
+                            <tr class="f-t brd-bold">
+                                <th class="wd-50 aln-ctr">承認</th>
+                                <th class="wd-50 aln-ctr">承認</th>
+                                <th class="wd-50 aln-ctr">担当</th>
+                            </tr>
+                            <tr class="f-t brd-bold ht-40">
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                <div class="ft11">【領　収　書】</div>
+                <div class="row g-3">
+                    <div class="col-sm-12 d-flex align-items-stretch">
+                        <table class="f-t" id="orderFormTable">
+                            <thead class="ft11 hd">
+                                <tr>
+                                    <th class="wd-100">勘定項目</th>
+                                    <th class="wd-450">適用（内容／経由／人数etc）</th>
+                                    <th class="wd-200">適用日</th>
+                                    <th class="wd-100">単価</th>
+                                    <th class="wd-100">数量</th>
+                                    <th class="wd-100">小計</th>
+                                    <th class="wd-50">決済方法</th>
+                                    <th class="wd-50">領収書</th>
+                                    <th class="wd-150">備考</th>
+                                </tr>
+                            </thead>
+                            <tbody class="ft10">
+                                <!-- Contents -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="ft11">【手　当(ホテル代を含む)】</div>
+                <div class="row g-3 pdg-btm-10">
+                    <div class="col-sm-10">
+                        <table class="f-t" id="orderFormTable2">
+                            <thead class="ft11 hd">
+                                <tr>
+                                    <th class="wd-100" colspan="2">手当</th>
+                                    <th class="wd-650" colspan="2">地域、適用日</th>
+                                    <th class="wd-100">単価</th>
+                                    <th class="wd-100">日数</th>
+                                    <th class="wd-100">小計</th>
+                                    <th class="wd-100">備考</th>
+                                </tr>
+                            </thead>
+                            <tbody class="ft10">
+                                <tr class="gray-btm">
+                                    <td rowspan="2" style="border: 1px solid black;">移動手当</td>
+                                    <td class="aln-ctr">往路</td>
+                                    <td class="wd-450"></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td class="aln-end">¥0</td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td class="aln-ctr">復路</td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td class="aln-end">¥0</td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2">宿泊手当</td>
+                                    <td colspan="2"></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td class="aln-end">¥0</td>
+                                    <td></td>
+                                </tr>
+                                <tr class="gray-btm">
+                                    <td rowspan="2" style="border: 1px solid black;">外勤手当</td>
+                                    <td class="aln-ctr">A</td>
+                                    <td colspan="2"></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td class="aln-end">¥0</td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td class="aln-ctr">B</td>
+                                    <td colspan="2"></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td class="aln-end">¥0</td>
+                                    <td></td>
+                                </tr>
+                                <tr class="gray-btm">
+                                    <td rowspan="2" style="border: 1px solid black;">特別手当</td>
+                                    <td class="aln-ctr">A</td>
+                                    <td colspan="2"></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td class="aln-end">¥0</td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td class="aln-ctr">B</td>
+                                    <td colspan="2"></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td class="aln-end">¥0</td>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2">特例手当</td>
+                                    <td colspan="2"></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td class="aln-end">¥0</td>
+                                    <td></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="col-sm-2">
+                        <div class="ft10"> ※　A　=　営業活動日/他</div>
+                        <div class="ft10"> 　　B　=　作業日</div>
+                    </div>
+                </div>
+                <div class="row g-3 pdg-btm-10">
+                    <div class="col-sm-12">
+                        <table>
+                            <thead class="ft11">
+                                <tr>
+                                    <th class="wd-250">【小　　計】</th>
+                                    <th class="wd-200 f-t hd">A)　手当　小計</th>
+                                    <th class="wd-150 f-t hd">B)　領収書
+                                        (Corp.ｶｰﾄﾞ)</th>
+                                    <th class="wd-200 f-t hd">C)　領収書
+                                        （電子ﾏﾈｰ&現金）</th>
+                                    <th class="wd-200 f-t hd">D)　請求書　小計</th>
+                                    <th class="wd-150 f-t hd brd-bold">出張経費
+                                        合計</th>
+                                </tr>
+                            </thead>
+                            <tbody class="ft16">
+                                <tr>
+                                    <td></td>
+                                    <td class="f-t aln-end"></td>
+                                    <td class="f-t aln-end"></td>
+                                    <td class="f-t aln-end"></td>
+                                    <td class="f-t aln-end">¥0</td>
+                                    <td class="f-t brd-bold aln-ctr undrln">¥0</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="row g-3 pdg-btm-10">
+                    <div class="col-sm-12">
+                        <table>
+                            <thead class="ft11">
+                                <tr>
+                                    <th class="wd-100">【精算　1】　</th>
+                                    <th class="wd-150 f-t hd">A) 仮払金</th>
+                                    <th class="wd-200 f-t hd">B)　手当　小計</th>
+                                    <th class="wd-150 f-t hd">C) 残金</th>
+                                    <th class="wd-200 f-t hd">E) ｶｰﾄﾞで支払ったﾎﾃﾙ代の
+                                        補正額</th>
+                                    <th class="wd-200 f-t hd">D)　請求書　小計</th>
+                                    <th class="wd-150 f-t hd brd-bold">精算金額</th>
+                                </tr>
+                            </thead>
+                            <tbody class="ft16">
+                                <tr>
+                                    <td></td>
+                                    <td class="f-t aln-end"></td>
+                                    <td class="f-t aln-end"></td>
+                                    <td class="f-t aln-end"></td>
+                                    <td class="f-t aln-end"></td>
+                                    <td class="f-t aln-end">¥0</td>
+                                    <td class="f-t brd-bold aln-ctr undrln">¥0</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class="row g-3">
+                    <div class="col-sm-10 d-flex align-items-stretch">
+                        <table>
+                            <thead class="ft11">
+                                <tr>
+                                    <th class="wd-450">【精算　2】　</th>
+                                    <th class="wd-150 f-t hd">A) 仮払金-残金</th>
+                                    <th class="wd-200 f-t hd">B)　領収書＆手当</th>
+                                    <th class="wd-200 f-t hd">C) ｶｰﾄﾞで支払ったﾎﾃﾙ代の
+                                        補正額</th>
+                                    <th class="wd-150 f-t hd brd-bold">精算金額(A+C-B)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="ft11">式：仮払金+ホテル代の補正額-領収書及び手当</td>
+                                    <td class="f-t ft16 aln-end"></td>
+                                    <td class="f-t ft16 aln-end"></td>
+                                    <td class="f-t ft16 aln-end">¥0</td>
+                                    <td class="f-t ft16 brd-bold aln-ctr undrln">¥0</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- <div class="col-sm-1" style="width: 20px;"></div> -->
+                    <div class="col-sm-2 d-flex align-items-stretch">
+                        <table class="ft11 f-t brd-bold wd-120">
+                            <thead class="hd">
+                                <tr>
+                                    <th class="aln-end" colspan="2">年 　月 　日</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="ht-50 aln-ctr">
+                                    <td>受<br>領</td>
+                                    <td class="wd-70"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block script %}
+<script src="{{ url_for('main.static', filename='js/print_japan.js') }}"></script>
+{% endblock %}

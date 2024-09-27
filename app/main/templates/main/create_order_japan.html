@@ -5,6 +5,7 @@
 {% block head %}
 
 <link rel="stylesheet" href="{{ url_for('main.static', filename='css/create_order_style.css') }}">
+<!-- <link rel="stylesheet" href="{{ url_for('main.static', filename='css/print_japan.css') }}"> -->
 
 {% endblock %}
 
@@ -206,7 +207,7 @@
                             <button class="btn btn-primary" type="button" id="hanedaButton">Ichikawa - Haneda</button>
                         </div>
                     </div>
-                    <div class="card-body" id="printableArea">
+                    <div class="card-body">
                         <table class="display cell-border" id="detailsTable" style="width: 100%;">
                             <thead>
                                 <tr style="text-align:center">
@@ -429,7 +430,8 @@
                             <div class="card-body">
                                 <div class="d-grid">
                                     <button type="submit" class="btn btn-primary">Submit</button>
-                                    <button type="button" class="btn btn-danger">Распечатать область</button>
+                                    <a type="button" class="btn btn-danger"
+                                        href="{{ url_for('main.print_japan') }}">Распечатать область</a>
                                 </div>
                             </div>
                         </div>
