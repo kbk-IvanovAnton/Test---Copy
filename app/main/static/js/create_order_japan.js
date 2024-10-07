@@ -720,27 +720,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
             return [accomodationDays, accomodationSumDays, accomodationAllowanceCheck, accomodationUnitPrice];
 
-            fetch('/admin_menu/allowance_lodgment', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    accomodationUnitPrice: accomodationUnitPrice,
-                    accomodationDays: accomodationDays,
-                    accomodationAllowanceCheck: accomodationAllowanceCheck,
-                    accomodationSumDays: accomodationSumDays
-                })
-            })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        console.log('Success:', data);
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                });
         }
 
         function allowanceWork() {
@@ -753,15 +732,15 @@ document.addEventListener('DOMContentLoaded', function () {
             let workingAwayUnitPrice_B = document.querySelector('#WorkingAwayUnitPrice_B').dataset.workingAwayAllowanceB;
             let workingAwayUnitPrice_B_Int = parseInt(workingAwayUnitPrice_B);
 
-            let unitWorkPrice = [];
-            let workDays = [];
+            let unitWorkPrice = { "A": workingAwayUnitPrice_A_Int, "B": workingAwayUnitPrice_B_Int };
+            let workDays = { "A": workingAwayDays_A_Int, "B": workingAwayDays_B_Int };
             let eventWorkDates = [];
             let eventSellsDates = [];
 
-            unitWorkPrice.push({ "A": workingAwayUnitPrice_A_Int });
-            unitWorkPrice.push({ "B": workingAwayUnitPrice_B_Int });
-            workDays.push({ "A": workingAwayDays_A_Int });
-            workDays.push({ "B": workingAwayDays_B_Int });
+            // unitWorkPrice.push({ "A": workingAwayUnitPrice_A_Int, "B": workingAwayUnitPrice_B_Int });
+            // unitWorkPrice.push({ "B": workingAwayUnitPrice_B_Int });
+            // workDays.push({ "A": workingAwayDays_A_Int });
+            // workDays.push({ "B": workingAwayDays_B_Int });
 
             // console.log(unitPrice, days);
 
@@ -786,8 +765,6 @@ document.addEventListener('DOMContentLoaded', function () {
                     break;
             }
 
-            // console.log(eventWorkDates);
-
             calendar.getEvents().forEach(function (event) {
                 // Получаем даты начала и окончания события
 
@@ -809,34 +786,9 @@ document.addEventListener('DOMContentLoaded', function () {
                     break;
             }
 
-            // console.log(eventSellsDates);
-
-            let workDates = [{ ...eventSellsDates[0], ...eventWorkDates[0] }];
-
-            // console.log(workDates);
-
+            let workDates = { ...eventSellsDates[0], ...eventWorkDates[0] };
             return [workDates, unitWorkPrice, workDays];
 
-            // fetch('/admin_menu/allowance_work', {
-            //     method: 'POST',
-            //     headers: {
-            //         'Content-Type': 'application/json'
-            //     },
-            //     body: JSON.stringify({
-            //         eventDates: eventDates,
-            //         unitPrice: unitPrice,
-            //         days: days
-            //     })
-            // })
-            //     .then(response => response.json())
-            //     .then(data => {
-            //         if (data.success) {
-            //             console.log('Success:', data);
-            //         }
-            //     })
-            //     .catch(error => {
-            //         console.error('Error:', error);
-            //     });
         }
 
         function allowanceSpecial() {
@@ -849,15 +801,15 @@ document.addEventListener('DOMContentLoaded', function () {
             let specialAllowanceUnitPrice_B = document.querySelector('#SpecialAllowanceUnitPrice_B').dataset.specialAllowanceB;
             let specialAllowanceUnitPrice_B_Int = parseInt(specialAllowanceUnitPrice_B);
 
-            let unitSpecialPrice = [];
-            let specialDays = [];
+            let unitSpecialPrice = { "A": specialAllowanceUnitPrice_A_Int, "B": specialAllowanceUnitPrice_B_Int };
+            let specialDays = { "A": specialAllowanceDays_A_Int, "B": specialAllowanceDays_B_Int };
             let eventWorkDates = [];
             let eventSellsDates = [];
 
-            unitSpecialPrice.push({ "A": specialAllowanceUnitPrice_A_Int });
-            unitSpecialPrice.push({ "B": specialAllowanceUnitPrice_B_Int });
-            specialDays.push({ "A": specialAllowanceDays_A_Int });
-            specialDays.push({ "B": specialAllowanceDays_B_Int });
+            // unitSpecialPrice.push({ "A": specialAllowanceUnitPrice_A_Int });
+            // unitSpecialPrice.push({ "B": specialAllowanceUnitPrice_B_Int });
+            // specialDays.push({ "A": specialAllowanceDays_A_Int });
+            // specialDays.push({ "B": specialAllowanceDays_B_Int });
 
             calendar.getEvents().forEach(function (event) {
                 // Получаем даты начала и окончания события
@@ -883,8 +835,6 @@ document.addEventListener('DOMContentLoaded', function () {
                     break;
             }
 
-            // console.log(eventWorkDates);
-
             calendar.getEvents().forEach(function (event) {
                 // Получаем даты начала и окончания события
 
@@ -909,34 +859,9 @@ document.addEventListener('DOMContentLoaded', function () {
                     break;
             }
 
-            // console.log(eventSellsDates);
-
-            let eventSpecialDates = [{ ...eventSellsDates[0], ...eventWorkDates[0] }];
-
-            // console.log(eventSpecialDates);
-
+            let eventSpecialDates = { ...eventSellsDates[0], ...eventWorkDates[0] };
             return [eventSpecialDates, unitSpecialPrice, specialDays];
 
-            fetch('/admin_menu/allowance_special', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    eventSpecialDates: eventSpecialDates,
-                    unitSpecialPrice: unitSpecialPrice,
-                    specialDays: specialDays
-                })
-            })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        console.log('Success:', data);
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                });
         }
 
         function allowanceSpecialCase() {
@@ -965,29 +890,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 eventExeptionDatesStr = formatDateSequence(eventExeptionDates);
             }
 
-            // console.log(eventExeptionDatesStr);
-
-            // fetch('/admin_menu/allowance_special_case', {
-            //     method: 'POST',
-            //     headers: {
-            //         'Content-Type': 'application/json'
-            //     },
-            //     body: JSON.stringify({
-            //         eventExeptionDates: eventExeptionDatesStr,
-            //         exeptionAllowanceUnitPrice_Int: exeptionAllowanceUnitPrice_Int,
-            //         exeptionAllowanceDays_Int: exeptionAllowanceDays_Int
-            //     })
-            // })
-            //     .then(response => response.json())
-            //     .then(data => {
-            //         if (data.success) {
-            //             console.log('Success:', data);
-            //         }
-            //     })
-            //     .catch(error => {
-            //         console.error('Error:', error);
-            //     });
-
             return [eventExeptionDatesStr, exeptionAllowanceUnitPrice_Int, exeptionAllowanceDays_Int];
         }
 
@@ -1005,8 +907,6 @@ document.addEventListener('DOMContentLoaded', function () {
             let returnTripUnitPrice_Int = parseInt(returnTripUnitPrice.replace(/,/g, ''), 10);
             let returnTripID = document.querySelector('.location-select-return-trip').value;
             let returnTripID_Int = parseInt(returnTripID);
-
-            // console.log(tripDays_Int, tripUnitPrice_Int, tripID_Int, returnTripDays, returnTripUnitPrice_Int, returnTripID_Int);
 
             let moveEvents = [];
             let moveIDs = [];
@@ -1045,12 +945,16 @@ document.addEventListener('DOMContentLoaded', function () {
                 oldestDate = oldestDate.replace(/-/g, '/');
             }
 
-            moveEvents = [];
+            // moveEvents = [];
 
-            moveEvents.push({ "1": earliestDate, "2": oldestDate });
-            moveDays.push({ "1": tripDays_Int, "2": returnTripDays_Int });
-            moveIDs.push({ "1": tripID_Int, "2": returnTripID_Int });
-            movePrices.push({ "1": tripUnitPrice_Int, "2": returnTripUnitPrice_Int });
+            moveEvents = { "1": earliestDate, "2": oldestDate };
+            moveDays = { "1": tripDays_Int, "2": returnTripDays_Int };
+            moveIDs = { "1": tripID_Int, "2": returnTripID_Int };
+            movePrices = { "1": tripUnitPrice_Int, "2": returnTripUnitPrice_Int };
+            // moveEvents.push({ "1": earliestDate, "2": oldestDate });
+            // moveDays.push({ "1": tripDays_Int, "2": returnTripDays_Int });
+            // moveIDs.push({ "1": tripID_Int, "2": returnTripID_Int });
+            // movePrices.push({ "1": tripUnitPrice_Int, "2": returnTripUnitPrice_Int });
 
             return [moveEvents, moveDays, moveIDs, movePrices, earliestDate, oldestDate];
 
@@ -1132,8 +1036,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 calendarOtherDatesStr = formatDateSequence(calendarOtherDates);
             }
 
-            let allCalendarDates = [];
-            allCalendarDates.push({ "1": calendarWorkDatesStr, "2": calendarSellsDatesStr, "3": calendarMovementDatesStr, "4": calendarExeptionDatesStr, "5": calendarOtherDatesStr });
+            let allCalendarDates;
+            allCalendarDates = { "1": calendarWorkDatesStr, "2": calendarSellsDatesStr, "3": calendarMovementDatesStr, "4": calendarExeptionDatesStr, "5": calendarOtherDatesStr }
+            // allCalendarDates.push({ "1": calendarWorkDatesStr, "2": calendarSellsDatesStr, "3": calendarMovementDatesStr, "4": calendarExeptionDatesStr, "5": calendarOtherDatesStr });
 
             return [allCalendarDates];
         }
@@ -1150,18 +1055,6 @@ document.addEventListener('DOMContentLoaded', function () {
             let supportTypeID = $('#support_type_id').val();
             let travelID = $('#travel_id').val();
 
-            // console.log(
-            //     personName,
-            //     orderName,
-            //     orderNumber,
-            //     detailNumber,
-            //     serviceNumber,
-            //     serviceCardNumber,
-            //     quoteNumber,
-            //     purchaseOrderNumber,
-            //     supportTypeID,
-            //     travelID);
-
             return [personName, orderName, orderNumber, detailNumber, serviceNumber, serviceCardNumber, quoteNumber, purchaseOrderNumber, supportTypeID, travelID];
         }
 
@@ -1173,7 +1066,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 let correlation = $('#rates-' + i + '-foreign_currency').val();
                 let advance = $('#rates-' + i + '-temporary_payment').val();
                 let balance = $('#rates-' + i + '-remaining_payment').val();
-                rowRateData.push({ "1": currencyRateID, "2": correlation, "3": advance, "4": balance });
+                rowRateData = { "1": currencyRateID, "2": correlation, "3": advance, "4": balance };
+                // rowRateData.push({ "1": currencyRateID, "2": correlation, "3": advance, "4": balance });
             }
 
             console.log(rowRateData);
@@ -1194,7 +1088,18 @@ document.addEventListener('DOMContentLoaded', function () {
                 let paymentMethodID = $('#details-' + i + '-payment_method_id').val();
                 let receiptID = $('#details-' + i + '-receipt_id').val();
                 let remark = $('#details-' + i + '-remarks').val();
-                rowDetailsData.push({
+                // rowDetailsData.push({
+                //     "1": accountItemID,
+                //     "2": content,
+                //     "3": applyingDate,
+                //     "4": currencyDetailsID,
+                //     "5": unitPrice,
+                //     "6": quantity,
+                //     "7": paymentMethodID,
+                //     "8": receiptID,
+                //     "9": remark
+                // });
+                rowDetailsData = {
                     "1": accountItemID,
                     "2": content,
                     "3": applyingDate,
@@ -1204,7 +1109,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     "7": paymentMethodID,
                     "8": receiptID,
                     "9": remark
-                });
+                };
             }
             // console.log(rowDetailsData);
 
@@ -1310,8 +1215,113 @@ document.addEventListener('DOMContentLoaded', function () {
 
         }
 
+        function allowancesPrint() {
+
+            tripForm();
+            currencyForm();
+            detailsForm();
+
+            allowanceMove();
+            allowanceSpecialCase();
+            allowanceSpecial();
+            allowanceWork();
+            allowanceLodgment();
+            allowanceCalendar();
+
+            let = [moveEvents, moveDays, moveIDs, movePrices, earliestDate, oldestDate] = allowanceMove();
+            let = [eventExeptionDatesStr, exeptionAllowanceUnitPrice_Int, exeptionAllowanceDays_Int] = allowanceSpecialCase();
+            let = [eventSpecialDates, unitSpecialPrice, specialDays] = allowanceSpecial();
+            let = [workDates, unitWorkPrice, workDays] = allowanceWork();
+            let = [accomodationDays, accomodationSumDays, accomodationAllowanceCheck, accomodationUnitPrice] = allowanceLodgment();
+            let = [calendarDates] = allowanceCalendar();
+
+            let = [rowRateData] = currencyForm();
+            let = [rowDetailsData] = detailsForm();
+            let = [
+                personName,
+                orderName,
+                orderNumber,
+                detailNumber,
+                serviceNumber,
+                serviceCardNumber,
+                quoteNumber,
+                purchaseOrderNumber,
+                supportTypeID,
+                travelID
+            ] = tripForm();
+
+
+            let [startYear, startMonth, startDay] = earliestDate.split('/');
+            let [endYear, endMonth, endDay] = oldestDate.split('/');
+
+            // console.log(startYear, startMonth, startDay, endYear, endMonth, endDay);
+
+            fetch('/admin_menu/allowances_print', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    personName: personName,
+                    orderName: orderName,
+                    orderNumber: orderNumber,
+                    detailNumber: detailNumber,
+                    serviceNumber: serviceNumber,
+                    serviceCardNumber: serviceCardNumber,
+                    quoteNumber: quoteNumber,
+                    purchaseOrderNumber: purchaseOrderNumber,
+                    supportTypeID: supportTypeID,
+                    travelID: travelID,
+                    rowRateData: rowRateData,
+                    rowDetailsData: rowDetailsData,
+                    startYear: startYear,
+                    startMonth: startMonth,
+                    startDay: startDay,
+                    endYear: endYear,
+                    endMonth: endMonth,
+                    endDay: endDay,
+                    moveEvents: moveEvents,
+                    moveDays: moveDays,
+                    moveIDs: moveIDs,
+                    movePrices: movePrices,
+                    eventExeptionDates: eventExeptionDatesStr,
+                    exeptionAllowanceUnitPrice_Int: exeptionAllowanceUnitPrice_Int,
+                    exeptionAllowanceDays_Int: exeptionAllowanceDays_Int,
+                    eventSpecialDates: eventSpecialDates,
+                    unitSpecialPrice: unitSpecialPrice,
+                    specialDays: specialDays,
+                    workDates: workDates,
+                    unitWorkPrice: unitWorkPrice,
+                    workDays: workDays,
+                    accomodationDays: accomodationDays,
+                    accomodationSumDays: accomodationSumDays,
+                    accomodationAllowanceCheck: accomodationAllowanceCheck,
+                    accomodationUnitPrice: accomodationUnitPrice,
+                    calendarDates: calendarDates
+                })
+            })
+                .then(response => response.json())
+                .then(result => {
+                    if (result.success) {
+                        const orderID = result.order_id;
+                        window.location.href = '/print_japan/' + orderID;
+                        window.location.href = '/get_rate_data/' + orderID;
+                    } else {
+                        console.error(result.message);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+
+        }
+
         $('.btn-submit').click(function () {
             // allowances();
+        })
+
+        $('.btn-danger').click(function () {
+            allowancesPrint();
         })
 
         $('#test').click(function () {

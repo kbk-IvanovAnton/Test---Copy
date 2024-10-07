@@ -106,10 +106,158 @@ $(document).ready(function () {
         }
     }
 
+    function subTotal1(className) {
+        let cells = document.querySelectorAll(`.${className}`);
+        let sum = 0;
 
-    initTablePrint();
-    borderColorBtm();
+        // Перебираем все выбранные элементы
+        cells.forEach(cell => {
+            let cellValue = cell.innerHTML;
+            intValue = parseInt(cellValue.replace(/\D/g, ''));
+            if (!isNaN(intValue)) {
+                sum += intValue;
+            }
+        });
 
+        return sum;
+    }
+
+    function subTotalA_BInsert(result) {
+        let totalA = document.getElementById('totalA');
+        let totalB = document.getElementById('totalB');
+        totalA.textContent = '¥' + result;
+        totalB.textContent = '¥' + result;
+    }
+
+    function cardPayment(paymentMethod) {
+        let cellsPayment = document.querySelectorAll(`.${paymentMethod}`);
+        let sum = 0;
+
+        // Перебираем все выбранные элементы
+        cellsPayment.forEach(cell => {
+            let cellPaymentValue = cell.innerHTML;
+            if (cellPaymentValue === "カード") {
+                // console.log(cellPaymentValue);
+                let cellPaymentValueId = cell.id;
+                let cellPaymentValueIdNum = parseInt(cellPaymentValueId.replace(/[^0-9]/g, ''));
+                let subTotalValue = document.getElementById('subtotal_id_' + cellPaymentValueIdNum);
+                let subTotalValueInnerHTML = subTotalValue.innerHTML;
+                let subTotalValueInt = parseInt(subTotalValueInnerHTML.replace(/\D/g, ''));
+                sum += subTotalValueInt;
+                // console.log(cellPaymentValueIdNum, subTotalValueInt);
+            }
+        });
+
+        return sum;
+    }
+
+    function cashAndICPayment(paymentMethod) {
+        let cellsPayment = document.querySelectorAll(`.${paymentMethod}`);
+        let sum = 0;
+
+        // Перебираем все выбранные элементы
+        cellsPayment.forEach(cell => {
+            let cellPaymentValue = cell.innerHTML;
+            if (cellPaymentValue === "現金" || cellPaymentValue === "電子マネー") {
+                // console.log(cellPaymentValue);
+                let cellPaymentValueId = cell.id;
+                let cellPaymentValueIdNum = parseInt(cellPaymentValueId.replace(/[^0-9]/g, ''));
+                let subTotalValue = document.getElementById('subtotal_id_' + cellPaymentValueIdNum);
+                let subTotalValueInnerHTML = subTotalValue.innerHTML;
+                let subTotalValueInt = parseInt(subTotalValueInnerHTML.replace(/\D/g, ''));
+                sum += subTotalValueInt;
+                // console.log(cellPaymentValueIdNum, subTotalValueInt);
+            }
+        });
+
+        return sum;
+    }
+
+    function invoicePayment(paymentMethod) {
+        let cellsPayment = document.querySelectorAll(`.${paymentMethod}`);
+        let sum = 0;
+
+        // Перебираем все выбранные элементы
+        cellsPayment.forEach(cell => {
+            let cellPaymentValue = cell.innerHTML;
+            if (cellPaymentValue === "請求書") {
+                // console.log(cellPaymentValue);
+                let cellPaymentValueId = cell.id;
+                let cellPaymentValueIdNum = parseInt(cellPaymentValueId.replace(/[^0-9]/g, ''));
+                let subTotalValue = document.getElementById('subtotal_id_' + cellPaymentValueIdNum);
+                let subTotalValueInnerHTML = subTotalValue.innerHTML;
+                let subTotalValueInt = parseInt(subTotalValueInnerHTML.replace(/\D/g, ''));
+                sum += subTotalValueInt;
+                // console.log(cellPaymentValueIdNum, subTotalValueInt);
+            }
+        });
+
+        return sum;
+    }
+
+    function cardHotelCompensation(accountItem) {
+        let cellsItem = document.querySelectorAll(`.${accountItem}`);
+        let sum = 0;
+
+        // Перебираем все выбранные элементы
+        cellsItem.forEach(cell => {
+            let cellItemValue = cell.innerHTML;
+            if (cellItemValue === "ホテル代") {
+                // console.log(cellPaymentValue);
+                let cellItemValueId = cell.id;
+                let cellItemValueIdNum = parseInt(cellItemValueId.replace(/[^0-9]/g, ''));
+                let paymentValue = document.getElementById('payment_method_id_' + cellItemValueIdNum);
+                let paymentValueInnerHTML = paymentValue.innerHTML;
+                if (paymentValueInnerHTML === "カード") {
+                    let subTotalValue = document.getElementById('subtotal_id_' + cellItemValueIdNum);
+                    let subTotalValueInnerHTML = subTotalValue.innerHTML;
+                    let subTotalValueInt = parseInt(subTotalValueInnerHTML.replace(/\D/g, ''));
+                    sum += subTotalValueInt;
+                }
+            }
+        });
+
+        return sum;
+    }
+
+    function getRateValues() {
+        let temporaryPayment = document.getElementById('temporaryPayment').innerHTML;
+        let remainingPayment = document.getElementById('remainingPayment').innerHTML;
+        let temporaryPaymentInt = parseInt(temporaryPayment.replace(/\D/g, ''));
+        let remainingPaymentInt = parseInt(remainingPayment.replace(/\D/g, ''));
+
+        return [temporaryPaymentInt, remainingPaymentInt];
+    }
+
+    function totalCalc() {
+        let result = subTotal1('total');
+        subTotalA_BInsert(result);
+        let card = cardPayment('payment_method');
+        document.getElementById('card').textContent = '¥' + card;
+        let cashAndIC = cashAndICPayment('payment_method');
+        document.getElementById('cashAndIC').textContent = '¥' + cashAndIC;
+        document.getElementById('cashAndIC-1').textContent = '¥' + cashAndIC;
+        let invoice = invoicePayment('payment_method');
+        document.getElementById('invoice').textContent = '¥' + invoice;
+        let travelTotal = card + cashAndIC + invoice + result;
+        document.getElementById('travelTotal').textContent = '¥' + travelTotal;
+        let hotelCompensation = cardHotelCompensation('account_item');
+        document.getElementById('cardHotelComp').textContent = '¥' + hotelCompensation;
+        document.getElementById('cardHotelComp2').textContent = '¥' + hotelCompensation;
+
+        let [temporaryPaymentInt, remainingPaymentInt] = getRateValues();
+        let calc1 = (result + cashAndIC) - (temporaryPaymentInt - remainingPaymentInt) - hotelCompensation;
+        document.getElementById('calc1').textContent = '¥' + calc1;
+
+        let paymentCalc = temporaryPaymentInt - remainingPaymentInt;
+        document.getElementById('paymentCalc').textContent = '¥' + paymentCalc;
+        let resultCalc = result + cashAndIC;
+        document.getElementById('resultCalc').textContent = '¥' + resultCalc;
+        let amountCalc = paymentCalc + hotelCompensation - resultCalc;
+        document.getElementById('amountCalc').textContent = '¥' + amountCalc;
+    }
+
+    totalCalc();
 
     $('.btn-print').click(function () {
         printDiv('printableArea')

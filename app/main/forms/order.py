@@ -33,12 +33,12 @@ class OrderForm(FlaskForm):
 
     name_id = SelectField("User", coerce=int, validators=[DataRequired()])
     order = StringField("Order", validators=[my_length_check])
-    order_number = StringField("Order Number", validators=[my_length_check])
-    detail_number = StringField("Detail Number", validators=[my_length_check])
-    service_number = StringField("Service Number", validators=[my_length_check])
-    service_card_number = StringField("Service Card Number", validators=[my_length_check])
-    quote_number = StringField("Quote Number", validators=[my_length_check])
-    purchase_order_number = StringField("Purchase Order Number", validators=[my_length_check])
+    order_number = StringField("Order Number")
+    detail_number = StringField("Detail Number")
+    service_number = StringField("Service Number")
+    service_card_number = StringField("Service Card Number")
+    quote_number = StringField("Quote Number")
+    purchase_order_number = StringField("Purchase Order Number")
     travel_id = SelectField("Travel", coerce=int, validators=[DataRequired()])
     support_type_id = SelectField("Support Type", coerce=int, validators=[DataRequired()])
 

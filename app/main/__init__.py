@@ -8,8 +8,9 @@ bp = Blueprint(
     static_url_path="/main/static",
 )
 
-from app.main.routes import (
+from app.main.routes import (  # get_rate_data,
     allowances,
+    allowances_print,
     copy_order,
     create_order,
     create_task,

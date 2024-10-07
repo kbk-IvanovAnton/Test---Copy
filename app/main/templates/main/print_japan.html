@@ -37,7 +37,7 @@
             <div class="card-body" id="printableArea">
                 <div class="header">
                     <h4 class="title">国　内　用　出　張　精　算　書</h4>
-                    <span class="num">No.</span>
+                    <span class="num">No.{{order.id}}</span>
                 </div>
                 <div class="row g-3">
                     <div class="col-sm-9">
@@ -49,10 +49,10 @@
                                 <th class="wd-100">帰社日</th>
                             </tr>
                             <tr class="ft11">
-                                <td colspan="2">Data</td>
-                                <td colspan="4"></td>
-                                <td></td>
-                                <td></td>
+                                <td colspan="2">{{user.name}}</td>
+                                <td colspan="4">{{order.order}}</td>
+                                <td>{{allowances.departure_date.strftime('%Y-%m-%d')}}</td>
+                                <td>{{allowances.return_date.strftime('%Y-%m-%d')}}</td>
                             </tr>
                             <tr class="ft11 hd">
                                 <th class="wd-100">サービスNo.</th>
@@ -65,13 +65,16 @@
                                 <th class="wd-100">出張種別</th>
                             </tr>
                             <tr class="ft11">
-                                <td>Data</td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
+                                <td>{{order.service_number}}</td>
+                                <td>{{order.service_card_number}}</td>
+                                <td>{{order.quote_number}}</td>
+                                <td>{{order.order_number}}</td>
+                                <td>{{order.detail_number}}</td>
+                                <td>{{order.purchase_order_number}}</td>
+                                <td>{%for type in types%}{%if type.id ==
+                                    order.support_type_id%}{{type.supportedTypeName}}{%endif%}{%endfor%}</td>
+                                <td>{%for trl in travel%}{%if trl.id ==
+                                    order.travel_id%}{{trl.travelName}}{%endif%}{%endfor%}</td>
                             </tr>
                         </table>
                     </div>
@@ -80,7 +83,7 @@
                         <table class="ft11">
                             <tr>
                                 <th>作成日</th>
-                                <th colspan="2" class="aln-end">Time</th>
+                                <th colspan="2" class="aln-end">{{ order.created_at.strftime('%Y-%m-%d') }}</th>
                             </tr>
                             <tr class="f-t brd-bold">
                                 <th class="wd-50 aln-ctr">承認</th>
@@ -113,7 +116,39 @@
                                 </tr>
                             </thead>
                             <tbody class="ft10">
-                                <!-- Contents -->
+                                {% for detail in details %}
+                                <tr class="{% if detail.row != 20 %}gray-btm{% endif %}">
+                                    <td class="account_item" id="account_item_id_{{ loop.index }}">{%for item in
+                                        account_items%}{%if
+                                        detail.account_item_id ==
+                                        item.id%}{{item.accountItemName}}{%endif%}{%endfor%}</td>
+                                    <td>{{detail.content}}</td>
+                                    <td>{{detail.applying_date}}</td>
+                                    {%if detail.unit_price == 0 %}
+                                    <td></td>
+                                    {%else%}
+                                    <td>¥{{"{:,.0f}".format(detail.unit_price)}}</td>
+                                    {%endif%}
+                                    {%if detail.quantity == 0 %}
+                                    <td></td>
+                                    {%else%}
+                                    <td>{{detail.quantity}}</td>
+                                    {%endif%}
+                                    {%if detail.unit_price != 0 and detail.quantity != 0 %}
+                                    <td class="subtotal" id="subtotal_id_{{ loop.index }}">
+                                        ¥{{"{:,.0f}".format(detail.unit_price * detail.quantity)}}</td>
+                                    {%else%}
+                                    <td></td>
+                                    {%endif%}
+                                    <td class="payment_method" id="payment_method_id_{{ loop.index }}">{%for method in
+                                        payment_methods%}{%if
+                                        detail.payment_method_id ==
+                                        method.id%}{{method.paymentMethodName}}{%endif%}{%endfor%}</td>
+                                    <td>{%for receipt in receipts%}{%if detail.receipt_id ==
+                                        receipt.id%}{{receipt.receiptName}}{%endif%}{%endfor%}</td>
+                                    <td>{{detail.remarks}}</td>
+                                </tr>
+                                {% endfor %}
                             </tbody>
                         </table>
                     </div>
@@ -136,70 +171,97 @@
                                 <tr class="gray-btm">
                                     <td rowspan="2" style="border: 1px solid black;">移動手当</td>
                                     <td class="aln-ctr">往路</td>
-                                    <td class="wd-450"></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td class="aln-end">¥0</td>
+                                    <td class="wd-450">{%for loc in locs%}{%for item in
+                                        allowances_moves.location_ids%}{%if loc.id ==
+                                        item['1']%}{{loc.name}}{%endif%}{%endfor%}{%endfor%}</td>
+                                    <td>{%for item in
+                                        allowances_moves.applying_dates%}{{item['1']}}{%endfor%}</td>
+                                    <td>¥{%for item in
+                                        allowances_moves.unit_prices%}{{"{:,.0f}".format(item['1'])}}{%endfor%}</td>
+                                    <td>{%for item in
+                                        allowances_moves.days%}{{item['1']}}{%endfor%}</td>
+                                    <td class="aln-end total">¥{{"{:,.0f}".format(allowances_moves.unit_prices[0]["1"] *
+                                        allowances_moves.days[0]["1"])
+                                        }}</td>
                                     <td></td>
                                 </tr>
                                 <tr>
                                     <td class="aln-ctr">復路</td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td class="aln-end">¥0</td>
+                                    <td>{%for loc in locs%}{%for item in
+                                        allowances_moves.location_ids%}{%if loc.id ==
+                                        item['2']%}{{loc.name}}{%endif%}{%endfor%}{%endfor%}</td>
+                                    <td>{%for item in
+                                        allowances_moves.applying_dates%}{{item['2']}}{%endfor%}</td>
+                                    <td>¥{%for item in
+                                        allowances_moves.unit_prices%}{{"{:,.0f}".format(item['2'])}}{%endfor%}</td>
+                                    <td>{%for item in
+                                        allowances_moves.days%}{{item['2']}}{%endfor%}</td>
+                                    <td class="aln-end total">¥{{ "{:,.0f}".format(allowances_moves.unit_prices[0]["2"]
+                                        *
+                                        allowances_moves.days[0]["2"]) }}</td>
                                     <td></td>
                                 </tr>
                                 <tr>
                                     <td colspan="2">宿泊手当</td>
-                                    <td colspan="2"></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td class="aln-end">¥0</td>
+                                    <td colspan="2">{{allowance_lodgments.applying_date}}</td>
+                                    <td>¥{{"{:,.0f}".format(allowance_lodgments.unit_price)}}</td>
+                                    <td>{{allowance_lodgments.days}}</td>
+                                    <td class="aln-end total">¥{%set value=allowance_lodgments.unit_price *
+                                        allowance_lodgments.days%}{{"{:,.0f}".format(value)}}
+                                    </td>
                                     <td></td>
                                 </tr>
                                 <tr class="gray-btm">
                                     <td rowspan="2" style="border: 1px solid black;">外勤手当</td>
                                     <td class="aln-ctr">A</td>
-                                    <td colspan="2"></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td class="aln-end">¥0</td>
+                                    <td colspan="2">{%for item in
+                                        allowance_works.applying_dates%}{{item['A']}}{%endfor%}</td>
+                                    <td>¥{{"{:,.0f}".format(allowance_works.unit_prices[0]["A"])}}</td>
+                                    <td>{%for item in
+                                        allowance_works.days%}{{item['A']}}{%endfor%}</td>
+                                    <td class="aln-end total">¥{{ "{:,.0f}".format(allowance_works.unit_prices[0]["A"] *
+                                        allowance_works.days[0]["A"]) }}
+                                    </td>
                                     <td></td>
                                 </tr>
                                 <tr>
                                     <td class="aln-ctr">B</td>
-                                    <td colspan="2"></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td class="aln-end">¥0</td>
+                                    <td colspan="2">{%for item in
+                                        allowance_works.applying_dates%}{{item['B']}}{%endfor%}</td>
+                                    <td>¥{{"{:,.0f}".format(allowance_works.unit_prices[1]["B"])}}</td>
+                                    <td>{%for item in
+                                        allowance_works.days%}{{item['B']}}{%endfor%}</td>
+                                    <td class="aln-end total">¥{{ "{:,.0f}".format(allowance_works.unit_prices[1]["B"] *
+                                        allowance_works.days[1]["B"]) }}
+                                    </td>
                                     <td></td>
                                 </tr>
                                 <tr class="gray-btm">
                                     <td rowspan="2" style="border: 1px solid black;">特別手当</td>
                                     <td class="aln-ctr">A</td>
-                                    <td colspan="2"></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td class="aln-end">¥0</td>
+                                    <td colspan="2">{{allowance_specials.applying_dates[0]['A']}}</td>
+                                    <td>¥{{allowance_specials.unit_prices[0]['A']}}</td>
+                                    <td>{{allowance_specials.days[0]['A']}}</td>
+                                    <td class="aln-end total">¥{{allowance_specials.unit_prices[0]['A'] *
+                                        allowance_specials.days[0]['A']}}</td>
                                     <td></td>
                                 </tr>
                                 <tr>
                                     <td class="aln-ctr">B</td>
-                                    <td colspan="2"></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td class="aln-end">¥0</td>
+                                    <td colspan="2">{{allowance_specials.applying_dates[0]['B']}}</td>
+                                    <td>¥{{allowance_specials.unit_prices[1]['B']}}</td>
+                                    <td>{{allowance_specials.days[1]['B']}}</td>
+                                    <td class="aln-end total">¥{{allowance_specials.unit_prices[1]['B'] *
+                                        allowance_specials.days[1]['B']}}</td>
                                     <td></td>
                                 </tr>
                                 <tr>
                                     <td colspan="2">特例手当</td>
-                                    <td colspan="2"></td>
-                                    <td></td>
-                                    <td></td>
-                                    <td class="aln-end">¥0</td>
+                                    <td colspan="2">{{allowance_special_cases.applying_date}}</td>
+                                    <td>¥{{allowance_special_cases.unit_price}}</td>
+                                    <td>{{allowance_special_cases.days}}</td>
+                                    <td class="aln-end total">¥{{allowance_special_cases.unit_price *
+                                        allowance_special_cases.days}}</td>
                                     <td></td>
                                 </tr>
                             </tbody>
@@ -229,11 +291,11 @@
                             <tbody class="ft16">
                                 <tr>
                                     <td></td>
-                                    <td class="f-t aln-end"></td>
-                                    <td class="f-t aln-end"></td>
-                                    <td class="f-t aln-end"></td>
-                                    <td class="f-t aln-end">¥0</td>
-                                    <td class="f-t brd-bold aln-ctr undrln">¥0</td>
+                                    <td class="f-t aln-end" id="totalA"></td>
+                                    <td class="f-t aln-end" id="card"></td>
+                                    <td class="f-t aln-end" id="cashAndIC"></td>
+                                    <td class="f-t aln-end" id="invoice"></td>
+                                    <td class="f-t brd-bold aln-ctr undrln" id="travelTotal"></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -248,21 +310,21 @@
                                     <th class="wd-150 f-t hd">A) 仮払金</th>
                                     <th class="wd-200 f-t hd">B)　手当　小計</th>
                                     <th class="wd-150 f-t hd">C) 残金</th>
+                                    <th class="wd-200 f-t hd">D)　請求書　小計</th>
                                     <th class="wd-200 f-t hd">E) ｶｰﾄﾞで支払ったﾎﾃﾙ代の
                                         補正額</th>
-                                    <th class="wd-200 f-t hd">D)　請求書　小計</th>
                                     <th class="wd-150 f-t hd brd-bold">精算金額</th>
                                 </tr>
                             </thead>
                             <tbody class="ft16">
                                 <tr>
                                     <td></td>
-                                    <td class="f-t aln-end"></td>
-                                    <td class="f-t aln-end"></td>
-                                    <td class="f-t aln-end"></td>
-                                    <td class="f-t aln-end"></td>
-                                    <td class="f-t aln-end">¥0</td>
-                                    <td class="f-t brd-bold aln-ctr undrln">¥0</td>
+                                    <td class="f-t aln-end" id="temporaryPayment">¥{{rate.temporary_payment|int}}</td>
+                                    <td class="f-t aln-end" id="totalB"></td>
+                                    <td class="f-t aln-end" id="remainingPayment">¥{{rate.remaining_payment|int}}</td>
+                                    <td class="f-t aln-end" id="cashAndIC-1"></td>
+                                    <td class="f-t aln-end" id="cardHotelComp"></td>
+                                    <td class="f-t brd-bold aln-ctr undrln" id="calc1"></td>
                                 </tr>
                             </tbody>
                         </table>
@@ -284,10 +346,10 @@
                             <tbody>
                                 <tr>
                                     <td class="ft11">式：仮払金+ホテル代の補正額-領収書及び手当</td>
-                                    <td class="f-t ft16 aln-end"></td>
-                                    <td class="f-t ft16 aln-end"></td>
-                                    <td class="f-t ft16 aln-end">¥0</td>
-                                    <td class="f-t ft16 brd-bold aln-ctr undrln">¥0</td>
+                                    <td class="f-t ft16 aln-end" id="paymentCalc"></td>
+                                    <td class="f-t ft16 aln-end" id="resultCalc"></td>
+                                    <td class="f-t ft16 aln-end" id="cardHotelComp2"></td>
+                                    <td class="f-t ft16 brd-bold aln-ctr undrln" id="amountCalc"></td>
                                 </tr>
                             </tbody>
                         </table>

@@ -1,6 +1,6 @@
 import datetime
 
-from flask import jsonify, redirect, request, url_for
+from flask import jsonify, redirect, request, session, url_for
 
 from app import db
 from app.admin import bp
@@ -29,10 +29,10 @@ def safe_float_convert(value):
         return 0.0
 
 
-@bp.route("/admin_menu/allowances", methods=["POST"])
-def allowances():
+@bp.route("/admin_menu/allowances_print", methods=["POST"])
+def allowances_print():
     data = request.get_json()
-    print(data)
+    # print(data)
 
     name_id = data.get("personName")
     order = data.get("orderName")
@@ -162,6 +162,16 @@ def allowances():
         db.session.add(new_allowance)
         db.session.commit()
 
-        return jsonify({"success": True, "redirect_url": url_for("main.index")})
+        return (
+            jsonify(
+                {
+                    "success": True,
+                    "message": "Данные успешно добавлены.",
+                    "order_id": new_allowance.id,
+                    # "redirect_url": url_for("main.print_japan"),
+                }
+            ),
+            200,
+        )
     else:
         return jsonify({"success": False, "message": "Некоторые данные отсутствуют."}), 400
