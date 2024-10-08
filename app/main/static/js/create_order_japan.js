@@ -657,7 +657,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (!isConsecutive(previous, dates[i])) {
                     // Если диапазон (минимум две даты), записываем его в формате 'start - end'
                     if (rangeStart.getTime() !== previous.getTime()) {
-                        result.push(`${formatDate(rangeStart)} -- ${formatDate(previous)}`);
+                        result.push(`${formatDate(rangeStart)}～${formatDate(previous)}`);
                     } else {
                         result.push(`${formatDate(rangeStart)}`);
                     }
@@ -668,7 +668,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             // Добавляем последний диапазон или дату
             if (rangeStart.getTime() !== previous.getTime()) {
-                result.push(`${formatDate(rangeStart)} -- ${formatDate(previous)}`);
+                result.push(`${formatDate(rangeStart)}～${formatDate(previous)}`);
             } else {
                 result.push(`${formatDate(rangeStart)}`);
             }
@@ -696,7 +696,7 @@ document.addEventListener('DOMContentLoaded', function () {
             let formattedEndDate = new Date(endDate);
 
             // Добавляем 1 день к начальной дате
-            formattedStartDate.setDate(formattedStartDate.getDate() + 1);
+            formattedStartDate.setDate(formattedStartDate.getDate());
             let accomodationStartDay = formattedStartDate.toISOString().split('T')[0].replace(/-/g, '/');
 
             // Вычитаем 1 день из конечной даты
@@ -714,7 +714,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     accomodationSumDays = accomodationStartDay
                     break;
                 default:
-                    accomodationSumDays = accomodationStartDay + ' -- ' + accomodationEndDay;
+                    accomodationSumDays = accomodationStartDay + '～' + accomodationEndDay;
                     break;
             }
 
@@ -916,45 +916,27 @@ document.addEventListener('DOMContentLoaded', function () {
             let earliestDate;
             let oldestDate;
 
+            earliestDate = $('#start-date').val();
+            oldestDate = $('#end-date').val();
+
             calendar.getEvents().forEach(function (event) {
 
-                if (event.title === 'Movement') {
+                if (event.title === 'Movement' && event.startStr !== earliestDate) {
 
-                    moveEvents.push(event.startStr);
-
-                    let datesMove = moveEvents.map(item => new Date(item));
-
-                    earliestDate = new Date(Math.min(...datesMove));
-                    oldestDate = new Date(Math.max(...datesMove));
-
-                    earliestDate = earliestDate.toISOString().split('T')[0].replace(/-/g, '/');
-                    oldestDate = oldestDate.toISOString().split('T')[0].replace(/-/g, '/');
+                    oldestDate = event.startStr;
+                    // console.log(oldestDate);
 
                 }
             });
 
-            if (oldestDate === earliestDate) {
-                oldestDate = $('#end-date').val();
-                oldestDate = oldestDate.replace(/-/g, '/');
-            }
-
-            if (moveEvents.length === 0) {
-                earliestDate = $('#start-date').val();
-                earliestDate = earliestDate.replace(/-/g, '/');
-                oldestDate = $('#end-date').val();
-                oldestDate = oldestDate.replace(/-/g, '/');
-            }
-
-            // moveEvents = [];
+            earliestDate = earliestDate.replace(/-/g, '/');
+            oldestDate = oldestDate.replace(/-/g, '/');
 
             moveEvents = { "1": earliestDate, "2": oldestDate };
             moveDays = { "1": tripDays_Int, "2": returnTripDays_Int };
             moveIDs = { "1": tripID_Int, "2": returnTripID_Int };
             movePrices = { "1": tripUnitPrice_Int, "2": returnTripUnitPrice_Int };
-            // moveEvents.push({ "1": earliestDate, "2": oldestDate });
-            // moveDays.push({ "1": tripDays_Int, "2": returnTripDays_Int });
-            // moveIDs.push({ "1": tripID_Int, "2": returnTripID_Int });
-            // movePrices.push({ "1": tripUnitPrice_Int, "2": returnTripUnitPrice_Int });
+            // console.log(moveEvents, moveDays, moveIDs, movePrices, earliestDate, oldestDate);
 
             return [moveEvents, moveDays, moveIDs, movePrices, earliestDate, oldestDate];
 
@@ -1066,11 +1048,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 let correlation = $('#rates-' + i + '-foreign_currency').val();
                 let advance = $('#rates-' + i + '-temporary_payment').val();
                 let balance = $('#rates-' + i + '-remaining_payment').val();
-                rowRateData = { "1": currencyRateID, "2": correlation, "3": advance, "4": balance };
-                // rowRateData.push({ "1": currencyRateID, "2": correlation, "3": advance, "4": balance });
+                rowRateData.push({ "1": currencyRateID, "2": correlation, "3": advance, "4": balance });
             }
-
-            console.log(rowRateData);
 
             return [rowRateData];
         }
@@ -1088,18 +1067,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 let paymentMethodID = $('#details-' + i + '-payment_method_id').val();
                 let receiptID = $('#details-' + i + '-receipt_id').val();
                 let remark = $('#details-' + i + '-remarks').val();
-                // rowDetailsData.push({
-                //     "1": accountItemID,
-                //     "2": content,
-                //     "3": applyingDate,
-                //     "4": currencyDetailsID,
-                //     "5": unitPrice,
-                //     "6": quantity,
-                //     "7": paymentMethodID,
-                //     "8": receiptID,
-                //     "9": remark
-                // });
-                rowDetailsData = {
+                rowDetailsData.push({
                     "1": accountItemID,
                     "2": content,
                     "3": applyingDate,
@@ -1109,9 +1077,8 @@ document.addEventListener('DOMContentLoaded', function () {
                     "7": paymentMethodID,
                     "8": receiptID,
                     "9": remark
-                };
+                });
             }
-            // console.log(rowDetailsData);
 
             return [rowDetailsData];
         }
@@ -1254,8 +1221,6 @@ document.addEventListener('DOMContentLoaded', function () {
             let [startYear, startMonth, startDay] = earliestDate.split('/');
             let [endYear, endMonth, endDay] = oldestDate.split('/');
 
-            // console.log(startYear, startMonth, startDay, endYear, endMonth, endDay);
-
             fetch('/admin_menu/allowances_print', {
                 method: 'POST',
                 headers: {
@@ -1305,7 +1270,6 @@ document.addEventListener('DOMContentLoaded', function () {
                     if (result.success) {
                         const orderID = result.order_id;
                         window.location.href = '/print_japan/' + orderID;
-                        window.location.href = '/get_rate_data/' + orderID;
                     } else {
                         console.error(result.message);
                     }
@@ -1317,21 +1281,21 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         $('.btn-submit').click(function () {
-            // allowances();
+            allowances();
         })
 
         $('.btn-danger').click(function () {
             allowancesPrint();
         })
 
-        $('#test').click(function () {
+        $('#test1').click(function () {
             // allowanceLodgment();
             // allowanceWork();
             // allowanceSpecial();
             // allowanceSpecialCase();
-            // allowanceMove();
+            allowanceMove();
             // allowanceCalendar();
-            allowances();
+            // allowances();
             // tripForm();
             // currencyForm();
             // detailsForm();

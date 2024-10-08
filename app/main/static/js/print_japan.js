@@ -125,8 +125,8 @@ $(document).ready(function () {
     function subTotalA_BInsert(result) {
         let totalA = document.getElementById('totalA');
         let totalB = document.getElementById('totalB');
-        totalA.textContent = '¥' + result;
-        totalB.textContent = '¥' + result;
+        totalA.textContent = '¥' + result.toLocaleString();
+        totalB.textContent = '¥' + result.toLocaleString();
     }
 
     function cardPayment(paymentMethod) {
@@ -220,6 +220,27 @@ $(document).ready(function () {
         return sum;
     }
 
+    function trainRemark(accountItem) {
+        let cellsItem = document.querySelectorAll(`.${accountItem}`);
+
+        // Перебираем все выбранные элементы
+        cellsItem.forEach(cell => {
+            let cellItemValue = cell.innerHTML;
+            if (cellItemValue === "電車代") {
+                let tripValue = document.getElementById('tripSubtotal').innerHTML;
+                let tripInt = parseInt(tripValue.replace(/\D/g, ''));
+                let returnTripValue = document.getElementById('returnTripSubtotal').innerHTML;
+                let returnTripInt = parseInt(returnTripValue.replace(/\D/g, ''));
+                if (tripInt === 0) {
+                    document.getElementById('tripRemark').textContent = "電車";
+                }
+                if (returnTripInt === 0) {
+                    document.getElementById('returnTripRemark').textContent = "電車";
+                }
+            }
+        });
+    }
+
     function getRateValues() {
         let temporaryPayment = document.getElementById('temporaryPayment').innerHTML;
         let remainingPayment = document.getElementById('remainingPayment').innerHTML;
@@ -233,33 +254,35 @@ $(document).ready(function () {
         let result = subTotal1('total');
         subTotalA_BInsert(result);
         let card = cardPayment('payment_method');
-        document.getElementById('card').textContent = '¥' + card;
+        document.getElementById('card').textContent = '¥' + card.toLocaleString();
         let cashAndIC = cashAndICPayment('payment_method');
-        document.getElementById('cashAndIC').textContent = '¥' + cashAndIC;
-        document.getElementById('cashAndIC-1').textContent = '¥' + cashAndIC;
+        document.getElementById('cashAndIC').textContent = '¥' + cashAndIC.toLocaleString();
+        document.getElementById('cashAndIC-1').textContent = '¥' + cashAndIC.toLocaleString();
         let invoice = invoicePayment('payment_method');
-        document.getElementById('invoice').textContent = '¥' + invoice;
+        document.getElementById('invoice').textContent = '¥' + invoice.toLocaleString();
         let travelTotal = card + cashAndIC + invoice + result;
-        document.getElementById('travelTotal').textContent = '¥' + travelTotal;
+        document.getElementById('travelTotal').textContent = '¥' + travelTotal.toLocaleString();
         let hotelCompensation = cardHotelCompensation('account_item');
-        document.getElementById('cardHotelComp').textContent = '¥' + hotelCompensation;
-        document.getElementById('cardHotelComp2').textContent = '¥' + hotelCompensation;
+        document.getElementById('cardHotelComp').textContent = '¥' + hotelCompensation.toLocaleString();
+        document.getElementById('cardHotelComp2').textContent = '¥' + hotelCompensation.toLocaleString();
 
         let [temporaryPaymentInt, remainingPaymentInt] = getRateValues();
         let calc1 = (result + cashAndIC) - (temporaryPaymentInt - remainingPaymentInt) - hotelCompensation;
-        document.getElementById('calc1').textContent = '¥' + calc1;
+        document.getElementById('calc1').textContent = '¥' + calc1.toLocaleString();
 
         let paymentCalc = temporaryPaymentInt - remainingPaymentInt;
-        document.getElementById('paymentCalc').textContent = '¥' + paymentCalc;
+        document.getElementById('paymentCalc').textContent = '¥' + paymentCalc.toLocaleString();
         let resultCalc = result + cashAndIC;
-        document.getElementById('resultCalc').textContent = '¥' + resultCalc;
+        document.getElementById('resultCalc').textContent = '¥' + resultCalc.toLocaleString();
         let amountCalc = paymentCalc + hotelCompensation - resultCalc;
-        document.getElementById('amountCalc').textContent = '¥' + amountCalc;
+        document.getElementById('amountCalc').textContent = '¥' + amountCalc.toLocaleString();
+
+        trainRemark('account_item');
     }
 
     totalCalc();
 
-    $('.btn-print').click(function () {
-        printDiv('printableArea')
-    })
+    $(document).on('click', '.btn-print', function () {
+        printDiv('printableArea');
+    });
 })

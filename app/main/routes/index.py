@@ -6,6 +6,7 @@ from flask_login import current_user, login_required
 from app import db
 from app.auth.models.user import User
 from app.main import bp
+from app.main.models.allowance_moves import AllowanceMoves
 from app.main.models.order import Order
 
 
@@ -15,11 +16,16 @@ from app.main.models.order import Order
 def index():
     if current_user.admin:
         orders = db.session.query(Order).join(User).filter(User.is_show.is_(True)).all()
+        allowance_moves = db.session.query(AllowanceMoves).all()
+
     else:
         orders = (
-            db.session.query(Order)
-            .join(User)
-            .filter(User.is_show.is_(True), Order.is_hidden.is_(False))
-            .all()
+            (
+                db.session.query(Order)
+                .join(User)
+                .filter(User.is_show.is_(True), Order.is_hidden.is_(False))
+                .all()
+            ),
         )
-    return render_template("main/index.html", orders=orders)
+        allowance_moves = db.session.query(AllowanceMoves).all()
+    return render_template("main/index.html", orders=orders, allowance_moves=allowance_moves)

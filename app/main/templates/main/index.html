@@ -22,6 +22,14 @@
         border-radius: 0.25rem;
         border: 1px solid #ced4da;
     }
+
+    .wh-15 {
+        width: 15%;
+    }
+
+    .wh-10 {
+        width: 10%;
+    }
 </style>
 
 <script src="{{ url_for('main.static', filename='js/index_table.js') }}"></script>
@@ -55,9 +63,10 @@
                                 <td style="text-align:center">{{order.id}}</td>
                                 <td>{{order.user.name}}</td>
                                 <td>{{order.order}}</td>
-                                <td style="text-align:center">{{" "}}</td>
-                                <td style="text-align:center">{{order.order_number}}</td>
-                                <td style="text-align:center">{{order.detail_number}}</td>
+                                <td style="text-align:center" class="wh-15">{{allowance_moves[order.id -
+                                    1].applying_dates["1"]}}～{{allowance_moves[order.id - 1].applying_dates["2"]}}</td>
+                                <td style="text-align:center" class="wh-10">{{order.order_number}}</td>
+                                <td style="text-align:center" class="wh-10">{{order.detail_number}}</td>
                                 <td style="text-align:center">
                                     <a class="btn btn-primary btn-sm"
                                         href="{{ url_for('main.update_order', order_id=order.id) }}"><i
