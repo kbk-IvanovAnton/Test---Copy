@@ -30,8 +30,6 @@
                                     {{render_field(form.order.name_id, class="form-select needs-validation",
                                     id="name_id",
                                     placeholder="User")}}
-                                    <!-- <select class="form-control" id="name_id" name="name_id"
-                                        placeholder="User"></select> -->
                                     <label for="name_id">User</label>
                                 </div>
                             </div>
@@ -39,7 +37,6 @@
                                 <div class="form-floating">
                                     {{ render_field(form.order.order, class="form-control needs-validation", id="order",
                                     placeholder="Order") }}
-                                    <!-- <input type="text" class="form-control" id="order" name="order"> -->
                                     <label for="order">Order</label>
                                 </div>
                             </div>
@@ -48,7 +45,6 @@
                                     {{render_field(form.order.order_number, class="form-control", id="order_number",
                                     placeholder="Order
                                     Number")}}
-                                    <!-- <input type="text" class="form-control" id="order_number" name="order_number"> -->
                                     <label for="order_number">Order Number</label>
                                 </div>
                             </div>
@@ -57,7 +53,6 @@
                                     {{render_field(form.order.detail_number, class="form-control", id="detail_number",
                                     placeholder="Detail
                                     Number")}}
-                                    <!-- <input type="text" class="form-control" id="detail_number" name="detail_number"> -->
                                     <label for="detail_number">Detail Number</label>
                                 </div>
                             </div>
@@ -66,7 +61,6 @@
                                     {{render_field(form.order.service_number, class="form-control", id="service_number",
                                     placeholder="Service
                                     Number")}}
-                                    <!-- <input type="text" class="form-control" id="service_number" name="service_number"> -->
                                     <label for="service_number">Service No.</label>
                                 </div>
                             </div>
@@ -76,8 +70,6 @@
                                     id="service_card_number",
                                     placeholder="Service Card
                                     Number")}}
-                                    <!-- <input type="text" class="form-control" id="service_card_number"
-                                        name="service_card_number"> -->
                                     <label for="service_card_number">Service Card No.</label>
                                 </div>
                             </div>
@@ -86,7 +78,6 @@
                                     {{render_field(form.order.quote_number, class="form-control", id="quote_number",
                                     placeholder="Quote
                                     Number")}}
-                                    <!-- <input type="text" class="form-control" id="quote_number" name="quote_number"> -->
                                     <label for="quote_number">Estimation</label>
                                 </div>
                             </div>
@@ -96,8 +87,6 @@
                                     id="purchase_order_number",
                                     placeholder="Purchase Order
                                     Number")}}
-                                    <!-- <input type="text" class="form-control" id="purchase_order_number"
-                                        name="service_number"> -->
                                     <label for="purchase_order_number">Customer Ordering Doc.</label>
                                 </div>
                             </div>
@@ -107,8 +96,6 @@
                                     id="support_type_id",
                                     placeholder="Supported
                                     Type")}}
-                                    <!-- <input type="select" class="form-control" id="support_type_id"
-                                        name="support_type_id"> -->
                                     <label for="support_type_id">Supported Type</label>
                                 </div>
                             </div>
@@ -116,7 +103,6 @@
                                 <div class="form-floating">
                                     {{render_field(form.order.travel_id, class="form-select", id="travel_id",
                                     placeholder="Travel")}}
-                                    <!-- <input type="select" class="form-control" id="travel_id" name="travel_id"> -->
                                     <label for="travel_id">Travel</label>
                                 </div>
                             </div>
@@ -133,13 +119,13 @@
                         <div class="row g-3">
                             <div class="col-md-6">
                                 <div class="form-floating">
-                                    <input type="text" class="form-control" id="no" name="no">
+                                    <input type="text" class="form-control" id="no" name="no" readonly>
                                     <label for="no">No.</label>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-floating">
-                                    <input type="date" class="form-control" id="date" name="date">
+                                    <div type="text" class="form-control" id="date" name="date"></div>
                                     <label for="date">Date</label>
                                 </div>
                             </div>
@@ -165,7 +151,7 @@
                                 <tr>
                                     <td id="currency_id_td_{{ loop.index }}">
                                         <div>
-                                            {{ rate.currency_id(class="form-select") }}
+                                            {{ rate.currency_id(class="form-select", disabled=true) }}
                                         </div>
                                     </td>
                                     <td>
@@ -176,7 +162,8 @@
                                     <td id="temporary_payment_id_td_{{ loop.index }}">
                                         <div>
                                             {% if loop.first %}
-                                            {{ rate.temporary_payment(class="form-control", placeholder="Imput Here",
+                                            {{ rate.temporary_payment(class="form-control aln-end", placeholder="Imput
+                                            Here",
                                             disabled=loop.index != 1) }}
                                             {% else %}
                                             {{ rate.temporary_payment(class="form-control", disabled=true) }}
@@ -202,6 +189,12 @@
                     <div class="card-header" id="detailsHeader">
                         <h5 class="card-title mb-0">Details</h5>
                         <div class="buttons">
+                            <div class="divider"></div>
+                            <button type="button" class="btn btn-sm btn-outline-secondary" id="up"><i
+                                    class="align-middle" data-feather="arrow-up-circle"></i></button>
+                            <button type="button" class="btn btn-sm btn-outline-secondary" id="down"><i
+                                    class="align-middle" data-feather="arrow-down-circle"></i></button>
+                            <div class="divider"></div>
                             <button class="btn btn-primary" type="button" id="test">Test</button>
                             <button class="btn btn-primary" type="button" id="naritaButton">Ichikawa - Narita</button>
                             <button class="btn btn-primary" type="button" id="hanedaButton">Ichikawa - Haneda</button>
@@ -227,8 +220,14 @@
                             </thead>
                             <tbody>
                                 {% for detail in form.details %}
-                                <tr>
-                                    <td>{{ loop.index }}</td>
+                                <tr id="row_id_{{ loop.index - 1 }}">
+                                    <!-- <td>{{ loop.index }}</td> -->
+                                    <td class="aln-ctr">
+                                        <input type="radio" class="btn-check select-row" id="btn-{{ loop.index - 1}}"
+                                            name="select-row" autocomplete="off">
+                                        <label class="btn btn-outline-primary btn-style"
+                                            for="btn-{{ loop.index - 1}}">{{loop.index}}</label>
+                                    </td>
                                     <td>{{ detail.account_item_id(class="form-select") }}</td>
                                     <td>{{ detail.content(class="form-control") }}</td>
                                     <td>{{ detail.applying_date(class="form-control") }}</td>
@@ -239,12 +238,8 @@
                                     <td>{{ detail.payment_method_id(class="form-select") }}</td>
                                     <td>{{ detail.receipt_id(class="form-select") }}</td>
                                     <td>{{ detail.remarks(class="form-control") }}</td>
-                                    <td><a class="btn btn-danger btn-sm"><i class="align-middle"
-                                                data-feather="trash-2"></i></a>
-                                        <button type="button" class="btn btn-sm btn-outline-secondary move-up"><i
-                                                class="align-middle" data-feather="arrow-up-circle"></i></button>
-                                        <button type="button" class="btn btn-sm btn-outline-secondary move-down"><i
-                                                class="align-middle" data-feather="arrow-down-circle"></i></button>
+                                    <td class="aln-ctr"><button type="button" class="btn btn-danger btn-sm delete"><i
+                                                class="align-middle" data-feather="trash-2"></i></button>
                                     </td>
                                 </tr>
                                 {% endfor %}
@@ -428,9 +423,9 @@
                     <div class="col-12">
                         <div class="card">
                             <div class="card-body">
-                                <div class="d-grid">
-                                    <button type="submit" class="btn btn-primary">Submit</button>
-                                    <button type="button" class="btn btn-danger">Распечатать область</button>
+                                <div class="btn-sbmt-blk">
+                                    <button type="button" class="btn btn-save">Only Save</button>
+                                    <button type="button" class="btn btn-print">Print and Save</button>
                                 </div>
                             </div>
                         </div>

@@ -97,6 +97,10 @@
     opacity: 0.5;
 }
 
+.fl-opct {
+    opacity: 1;
+}
+
 /* #currency_id_td_1 {
     background-color: #ffffff !important;
 } */
@@ -158,6 +162,21 @@
     margin-right: 10px;
 }
 
+.btn-style {
+    padding: 0px;
+    height: 30px;
+    width: 30px;
+    align-content: center;
+}
+
+.aln-end {
+    text-align: end;
+}
+
+.aln-ctr {
+    text-align: center;
+}
+
 #calendarHeader {
     display: grid;
     grid-template-columns: auto 1fr;
@@ -173,9 +192,27 @@
 }
 
 .buttons {
-    justify-self: end;
+    justify-self: start;
     display: flex;
     gap: 10px;
+}
+
+.buttons .divider {
+    border-left: 1px solid black;
+    height: 32px;
+    margin: 0 5px;
+}
+
+.btn-sbmt-blk {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.btn-sbmt-blk button {
+    flex-grow: 1;
+    margin: 5px;
+    padding: 10px;
 }
 
 

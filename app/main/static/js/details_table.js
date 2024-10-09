@@ -10,9 +10,14 @@ $(document).ready(function () {
         "searching": false,
 
         columnDefs: [
-            { width: '9%', targets: 11 },
+            { width: '9%', targets: 1 },
+            { width: '30%', targets: 2 },
+            { width: '6%', targets: 5 },
+            { width: '5%', targets: 6 },
+            { width: '5%', targets: 7 },
         ],
-        fixedColumns: true
+        // fixedColumns: true
     });
     $('#datatableSearch').html($('.dataTables_filter'));
+
 });

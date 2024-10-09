@@ -7,18 +7,25 @@ document.addEventListener('DOMContentLoaded', function () {
     const currentYear = new Date().getFullYear();
     const pastYear = currentYear - 1;
     const futureYear = currentYear + 1;
+    const naritaTripPrice = 1170;
+    const hanedaTripPrice = 810;
+    const radioButtons = document.querySelectorAll('.btn-check');
+    const formSelects = document.querySelectorAll('.location-select-trip , .location-select-return-trip');
 
     let targetDates = ["08-13", "08-14", "08-15", "12-30", "12-31", "01-01", "01-02", "01-03"];
-    currentDates = targetDates.map(date => currentYear + "-" + date);
-    pastDates = targetDates.map(date => pastYear + "-" + date);
-    futureDates = targetDates.map(date => futureYear + "-" + date);
+    let currentDates = targetDates.map(date => currentYear + "-" + date);
+    let pastDates = targetDates.map(date => pastYear + "-" + date);
+    let futureDates = targetDates.map(date => futureYear + "-" + date);
     targetDates = currentDates.concat(pastDates, futureDates);
 
     let workTargetCount = 0;
     let sellsTargetCount = 0;
 
-    const naritaTripPrice = 1170;
-    const hanedaTripPrice = 810;
+    document.getElementById('rates-0-currency_id').value = '1';
+
+    for (let i = 0; i < 20; i++) {
+        document.getElementById('details-' + i + '-currency_id').value = '1';
+    }
 
     let calendar = new FullCalendar.Calendar(calendarEl, {
         initialView: 'dayGridMonth',
@@ -116,20 +123,12 @@ document.addEventListener('DOMContentLoaded', function () {
 
     calendar.render();
 
-    document.getElementById('rates-0-currency_id').value = '1';
-
-    for (let i = 0; i < 20; i++) {
-        document.getElementById('details-' + i + '-currency_id').value = '1';
-    }
-
     // Обновляем выбранный тип события при изменении радио-кнопки
     document.querySelector('#eventTypeSelection').addEventListener('change', function (e) {
         if (e.target.name === "eventType") {
             selectedEventType = e.target.value;
         }
     });
-    const radioButtons = document.querySelectorAll('.btn-check');
-    const formSelects = document.querySelectorAll('.location-select-trip , .location-select-return-trip');
 
     // Функция для активации/деактивации форм
     function toggleForms(disabled) {
@@ -138,68 +137,12 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    function updateMoveButtons() {
-        let rows = $('#detailsTable tbody tr');
-        rows.each(function (index) {
-            let upButton = $(this).find('.move-up');
-            let downButton = $(this).find('.move-down');
-
-            if (index === 0) {
-                upButton.prop('disabled', true).addClass('disabled');
-            } else {
-                upButton.prop('disabled', false).removeClass('disabled');
-            }
-
-            if (index === rows.length - 1) {
-                downButton.prop('disabled', true).addClass('disabled');
-            } else {
-                downButton.prop('disabled', false).removeClass('disabled');
-            }
-        });
-    }
-
-    function swapRows(row1, row2) {
-        let order1 = parseInt(row1.data('order'), 10);
-        let order2 = parseInt(row2.data('order'), 10);
-
-        // Меняем местами значения order
-        row1.data('order', order2);
-        row2.data('order', order1);
-
-        // Меняем местами строки в DOM
-        row2.insertBefore(row1);
-
-        // Обновляем порядок на сервере
-        // updateOrder(row1.data('id'), order2);
-        // updateOrder(row2.data('id'), order1);
-
-        updateMoveButtons();
-    }
-
-    // Обработчик для кнопки "вверх"
-    $(document).on('click', '.move-up:not(.disabled)', function () {
-        let currentRow = $(this).closest('tr');
-        let previousRow = currentRow.prev();
-        if (previousRow.length) {
-            swapRows(previousRow, currentRow);
-        }
-    });
-
-    // Обработчик для кнопки "вниз"
-    $(document).on('click', '.move-down:not(.disabled)', function () {
-        let currentRow = $(this).closest('tr');
-        let nextRow = currentRow.next();
-        if (nextRow.length) {
-            swapRows(currentRow, nextRow);
-        }
-    });
-
     toggleForms(true);
 
-    function exeptionUnitPriceFormat() {
-        let exeptionAllowanceUnitPrice = document.getElementById('ExeptionAllowanceUnitPrice');
+    function commaFormat(idName) {
+        let formattedInput = document.getElementById(idName);
 
-        exeptionAllowanceUnitPrice.addEventListener('input', function () {
+        formattedInput.addEventListener('input', function () {
             // Убираем все нечисловые символы кроме точки
             let value = this.value.replace(/,/g, '').replace(/[^\d.]/g, '');
 
@@ -210,14 +153,12 @@ document.addEventListener('DOMContentLoaded', function () {
             }
 
             // Преобразуем строку в число и форматируем с разделением на тысячи
-            const formattedValue = Number(value).toLocaleString('en-US');
+            const formattedValue = '¥' + Number(value).toLocaleString('en-US');
 
             // Обновляем значение в input
             this.value = formattedValue;
         })
     }
-
-    exeptionUnitPriceFormat();
 
     document.getElementById('add-event').addEventListener('click', function () {
         let startDateInput = document.getElementById('start-date');
@@ -476,13 +417,11 @@ document.addEventListener('DOMContentLoaded', function () {
             } else {
                 currentContentElement.value = '市川 ⇔ 成田空港(片道)';
                 currentAccountItemElement.value = '1';
-                currentUnitPriceElement.value = Number(naritaTripPrice).toLocaleString();
+                currentUnitPriceElement.value = '¥' + Number(naritaTripPrice).toLocaleString();
                 return; // Останавливаем выполнение, чтобы не продолжать цикл
             }
         }
     }
-
-    // document.getElementById('naritaButton').addEventListener('click', naritaTrip);
 
     document.getElementById('naritaButton').addEventListener('click', function () {
         naritaTrip();
@@ -504,13 +443,11 @@ document.addEventListener('DOMContentLoaded', function () {
             } else {
                 currentContentElement.value = '市川 ⇔ 羽田空港(片道)';
                 currentAccountItemElement.value = '1';
-                currentUnitPriceElement.value = Number(hanedaTripPrice).toLocaleString();
+                currentUnitPriceElement.value = '¥' + Number(hanedaTripPrice).toLocaleString();
                 return; // Останавливаем выполнение, чтобы не продолжать цикл
             }
         }
     }
-
-    // document.getElementById('hanedaButton').addEventListener('click', hanedaTrip);
 
     document.getElementById('hanedaButton').addEventListener('click', function () {
         hanedaTrip();
@@ -536,15 +473,15 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
 
                 // Преобразуем строку в число и форматируем с разделением на тысячи
-                const formattedValue = Number(value).toLocaleString('en-US');
+                const formattedValue = '¥' + Number(value).toLocaleString('en-US');
 
                 // Обновляем значение в input
                 this.value = formattedValue;
             })
 
             if (currentUnitPriceElement.value !== '' && currentQuantityElement.value !== '') {
-                const subtotal = currentUnitPriceElement.value.replace(/,/g, '') * Number(currentQuantityElement.value);
-                currentSubtotalElement.innerHTML = Number(subtotal).toLocaleString();
+                const subtotal = currentUnitPriceElement.value.replace(/[^\d.]/g, '') * Number(currentQuantityElement.value);
+                currentSubtotalElement.innerHTML = '¥' + Number(subtotal).toLocaleString();
             } else {
                 currentSubtotalElement.innerHTML = '';
             }
@@ -868,7 +805,7 @@ document.addEventListener('DOMContentLoaded', function () {
             let exeptionAllowanceDays = document.getElementById('ExeptionAllowanceDays').innerText;
             let exeptionAllowanceDays_Int = parseInt(exeptionAllowanceDays);
             let exeptionAllowanceUnitPrice = document.getElementById('ExeptionAllowanceUnitPrice').value;
-            let exeptionAllowanceUnitPrice_Int = parseInt(exeptionAllowanceUnitPrice.replace(/,/g, ''), 10);
+            let exeptionAllowanceUnitPrice_Int = parseInt(exeptionAllowanceUnitPrice.replace(/[^\d.]/g, ''), 10);
 
             let eventDates = [];
             let eventExeptionDates = [];
@@ -1048,9 +985,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 let correlation = $('#rates-' + i + '-foreign_currency').val();
                 let advance = $('#rates-' + i + '-temporary_payment').val();
                 let balance = $('#rates-' + i + '-remaining_payment').val();
+
+                advance = advance.replace(/[^\d.]/g, '')
                 rowRateData.push({ "1": currencyRateID, "2": correlation, "3": advance, "4": balance });
             }
-
+            console.log(rowRateData);
             return [rowRateData];
         }
 
@@ -1067,6 +1006,8 @@ document.addEventListener('DOMContentLoaded', function () {
                 let paymentMethodID = $('#details-' + i + '-payment_method_id').val();
                 let receiptID = $('#details-' + i + '-receipt_id').val();
                 let remark = $('#details-' + i + '-remarks').val();
+
+                unitPrice = unitPrice.replace(/[^\d.]/g, '')
                 rowDetailsData.push({
                     "1": accountItemID,
                     "2": content,
@@ -1081,6 +1022,141 @@ document.addEventListener('DOMContentLoaded', function () {
             }
 
             return [rowDetailsData];
+        }
+
+        function insertTodayDate() {
+            // Получаем текущую дату
+            const today = new Date();
+
+            // Форматируем дату в виде ДД.ММ.ГГГГ
+            const formattedDate = today.getFullYear() + '/' +
+                (today.getMonth() + 1).toString().padStart(2, '0') + '/' +
+                today.getDate().toString().padStart(2, '0');
+
+            // Вставляем дату на страницу
+            document.getElementById('date').textContent = formattedDate;
+        }
+
+        function moveRowDown(rowId) {
+            const fields = [
+                'account_item_id', 'content', 'applying_date', 'unit_price',
+                'quantity', 'payment_method_id', 'receipt_id', 'remarks'
+            ];
+
+            // Проходим по каждому полю и меняем значения
+            fields.forEach(field => {
+                // Находим элементы для текущей строки и следующей строки
+                const midElement = document.getElementById(`details-${rowId}-${field}`);
+                const downElement = document.getElementById(`details-${rowId + 1}-${field}`);
+
+                // Меняем их значения
+                [midElement.value, downElement.value] = [downElement.value, midElement.value];
+            });
+
+            // Обрабатываем отдельно поля с id subtotal_id
+            const midSubtotal = document.getElementById(`subtotal_id_${rowId}`);
+            const downSubtotal = document.getElementById(`subtotal_id_${rowId + 1}`);
+
+            [midSubtotal.value, downSubtotal.value] = [downSubtotal.value, midSubtotal.value];
+        }
+
+        function moveRowUp(rowId) {
+            const fields = [
+                'account_item_id', 'content', 'applying_date', 'unit_price',
+                'quantity', 'payment_method_id', 'receipt_id', 'remarks'
+            ];
+
+            // Проходим по каждому полю и меняем значения
+            fields.forEach(field => {
+                // Находим элементы для текущей строки и следующей строки
+                const midElement = document.getElementById(`details-${rowId}-${field}`);
+                const upElement = document.getElementById(`details-${rowId - 1}-${field}`);
+
+                // Меняем их значения
+                [midElement.value, upElement.value] = [upElement.value, midElement.value];
+            });
+
+            // Обрабатываем отдельно поля с id subtotal_id
+            const midSubtotal = document.getElementById(`subtotal_id_${rowId}`);
+            const upSubtotal = document.getElementById(`subtotal_id_${rowId - 1}`);
+
+            [midSubtotal.value, upSubtotal.value] = [upSubtotal.value, midSubtotal.value];
+        }
+
+        function moveRows() {
+            document.getElementById('down').addEventListener('click', function () {
+                // Находим выбранную радиокнопку
+                const selectedRadio = document.querySelector('.select-row:checked');
+
+                if (selectedRadio) {
+                    // Получаем строку таблицы, в которой находится радиокнопка
+                    const row = selectedRadio.closest('tr');
+                    const rowId = parseInt(row.getAttribute('id').replace('row_id_', ''), 10);
+
+                    const midRow = document.getElementById('btn-' + rowId);
+                    const downRow = document.getElementById('btn-' + (rowId + 1));
+
+                    midRow.checked = false;
+                    downRow.checked = true;
+
+                    moveRowDown(rowId);
+
+                } else {
+                    alert("Строка не выбрана.");
+                }
+            });
+
+            document.getElementById('up').addEventListener('click', function () {
+                // Находим выбранную радиокнопку
+                const selectedRadio = document.querySelector('.select-row:checked');
+
+                if (selectedRadio) {
+                    // Получаем строку таблицы, в которой находится радиокнопка
+                    const row = selectedRadio.closest('tr');
+                    const rowId = parseInt(row.getAttribute('id').replace('row_id_', ''), 10);
+
+                    const midRow = document.getElementById('btn-' + rowId);
+                    const upRow = document.getElementById('btn-' + (rowId - 1));
+
+                    midRow.checked = false;
+                    upRow.checked = true;
+
+                    moveRowUp(rowId);
+
+                } else {
+                    alert("Строка не выбрана.");
+                }
+            });
+        }
+
+        function deleteRow() {
+
+            const buttons = document.querySelectorAll('.delete');
+            buttons.forEach(button => {
+                button.addEventListener('click', function () {
+
+                    const row = this.closest('tr');
+                    const rowId = parseInt(row.getAttribute('id').replace('row_id_', ''), 10);
+
+                    const fields = [
+                        'account_item_id', 'content', 'applying_date', 'unit_price',
+                        'quantity', 'payment_method_id', 'receipt_id', 'remarks'
+                    ];
+
+                    // Проходим по каждому полю и меняем значения
+                    fields.forEach(field => {
+                        // Находим элементы для текущей строки и следующей строки
+                        const midElement = document.getElementById(`details-${rowId}-${field}`);
+                        // Меняем их значения
+                        midElement.value = "";
+                    });
+
+                    // Обрабатываем отдельно поля с id subtotal_id
+                    const midSubtotal = document.getElementById(`subtotal_id_${rowId}`);
+                    midSubtotal.value = "";
+
+                });
+            });
         }
 
         function allowances() {
@@ -1280,25 +1356,32 @@ document.addEventListener('DOMContentLoaded', function () {
 
         }
 
-        $('.btn-submit').click(function () {
+        moveRows();
+        deleteRow();
+        insertTodayDate();
+        commaFormat('ExeptionAllowanceUnitPrice');
+        commaFormat('rates-0-temporary_payment');
+
+        $('.btn-save').click(function () {
             allowances();
         })
 
-        $('.btn-danger').click(function () {
+        $('.btn-print').click(function () {
             allowancesPrint();
         })
 
-        $('#test1').click(function () {
+        $('#test').click(function () {
             // allowanceLodgment();
             // allowanceWork();
             // allowanceSpecial();
             // allowanceSpecialCase();
-            allowanceMove();
+            // allowanceMove();
             // allowanceCalendar();
             // allowances();
             // tripForm();
             // currencyForm();
             // detailsForm();
+            // moveRows();
         })
     })
 });

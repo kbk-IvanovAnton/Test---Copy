@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Пример с выпадающим списком</title>
+</head>
+
+<body>
+
+    <label for="my-select">Выберите опцию:</label>
+    <select id="my-select">
+        <option value="option1">Опция 1</option>
+        <option value="option2">Опция 2</option>
+        <option value="option3">Опция 3</option>
+    </select>
+
+    <button id="get-selected-btn">Получить выбранное значение</button>
+
+    <script>
+        document.getElementById('get-selected-btn').addEventListener('click', function () {
+            // Получаем элемент select
+            const selectElement = document.getElementById('my-select');
+
+            // Получаем выбранное значение
+            const selectedValue = selectElement.value;
+
+            console.log('Выбранное значение:', selectedValue);
+        });
+    </script>
+
+</body>
+
+</html>
