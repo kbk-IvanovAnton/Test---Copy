@@ -5,7 +5,6 @@
 {% block head %}
 
 <link rel="stylesheet" href="{{ url_for('main.static', filename='css/create_order_style.css') }}">
-<!-- <link rel="stylesheet" href="{{ url_for('main.static', filename='css/print_japan.css') }}"> -->
 
 {% endblock %}
 
@@ -15,425 +14,435 @@
 
 <div class="container-fluid p-0">
     {% from 'main/formhelpers.html' import render_field %}
-    <form id="orderJapanForm">
-        {{ form.hidden_tag() }}
-        <div class="row equal-height">
-            <div class="col-12 col-lg-6">
-                <div class="card">
-                    <div class="card-header">
-                        <h5 class="card-title mb-0">Trip Form</h5>
-                    </div>
-                    <div class="card-body">
+    {{ form.hidden_tag() }}
+    <div class="row equal-height">
+        <div class="col-12 col-lg-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">出張フォーム</h5>
+                </div>
+                <div class="card-body">
+                    <form id="orderJapanForm" class="needs-validation" novalidate>
                         <div class="row g-3">
                             <div class="col-md-12">
                                 <div class="form-floating">
-                                    {{render_field(form.order.name_id, class="form-select needs-validation",
+                                    {{form.order.name_id(class="form-select",
                                     id="name_id",
-                                    placeholder="User")}}
-                                    <label for="name_id">User</label>
+                                    placeholder="社員名", required=true )}}
+                                    <label for="name_id">社員名</label>
+                                    <div class="invalid-feedback">
+                                        社員名を選択してください
+                                    </div>
                                 </div>
                             </div>
                             <div class="col-md-12">
                                 <div class="form-floating">
-                                    {{ render_field(form.order.order, class="form-control needs-validation", id="order",
-                                    placeholder="Order") }}
-                                    <label for="order">Order</label>
+                                    {{form.order.order(class="form-control", id="order",
+                                    placeholder="Order", required=true)}}
+                                    <label for="order">案件名</label>
+                                    <div class="invalid-feedback">
+                                        案件名を選択してください
+                                    </div>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-floating">
-                                    {{render_field(form.order.order_number, class="form-control", id="order_number",
-                                    placeholder="Order
-                                    Number")}}
-                                    <label for="order_number">Order Number</label>
+                                    {{form.order.order_number(class="form-control", id="order_number",
+                                    placeholder="受注番号")}}
+                                    <label for="order_number">受注番号</label>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-floating">
-                                    {{render_field(form.order.detail_number, class="form-control", id="detail_number",
-                                    placeholder="Detail
-                                    Number")}}
-                                    <label for="detail_number">Detail Number</label>
+                                    {{form.order.detail_number(class="form-control", id="detail_number",
+                                    placeholder="製品番号")}}
+                                    <label for="detail_number">製品番号</label>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-floating">
-                                    {{render_field(form.order.service_number, class="form-control", id="service_number",
-                                    placeholder="Service
-                                    Number")}}
-                                    <label for="service_number">Service No.</label>
+                                    {{form.order.service_number(class="form-control", id="service_number",
+                                    placeholder="サービスNo.")}}
+                                    <label for="service_number">サービスNo.</label>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-floating">
-                                    {{render_field(form.order.service_card_number, class="form-control",
+                                    {{form.order.service_card_number(class="form-control",
                                     id="service_card_number",
-                                    placeholder="Service Card
-                                    Number")}}
-                                    <label for="service_card_number">Service Card No.</label>
+                                    placeholder="サービスカードNo.")}}
+                                    <label for="service_card_number">サービスカードNo.</label>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-floating">
-                                    {{render_field(form.order.quote_number, class="form-control", id="quote_number",
-                                    placeholder="Quote
-                                    Number")}}
-                                    <label for="quote_number">Estimation</label>
+                                    {{form.order.quote_number(class="form-control", id="quote_number",
+                                    placeholder="見積りNo.")}}
+                                    <label for="quote_number">見積りNo.</label>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-floating">
-                                    {{render_field(form.order.purchase_order_number, class="form-control",
+                                    {{form.order.purchase_order_number(class="form-control",
                                     id="purchase_order_number",
-                                    placeholder="Purchase Order
-                                    Number")}}
-                                    <label for="purchase_order_number">Customer Ordering Doc.</label>
+                                    placeholder="客先発注書No.")}}
+                                    <label for="purchase_order_number">客先発注書No.</label>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-floating">
-                                    {{render_field(form.order.support_type_id, class="form-select",
+                                    {{form.order.support_type_id(class="form-select",
                                     id="support_type_id",
-                                    placeholder="Supported
-                                    Type")}}
-                                    <label for="support_type_id">Supported Type</label>
+                                    placeholder="対応種別", required=true )}}
+                                    <label for="support_type_id">対応種別</label>
+                                    <div class="invalid-feedback">
+                                        対応種別を選択してください
+                                    </div>
                                 </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-floating">
-                                    {{render_field(form.order.travel_id, class="form-select", id="travel_id",
-                                    placeholder="Travel")}}
-                                    <label for="travel_id">Travel</label>
+                                    {{form.order.travel_id(class="form-select", id="travel_id",
+                                    placeholder="出張種別")}}
+                                    <label for="travel_id">出張種別</label>
+                                    <div class="invalid-feedback">
+                                        出張種別を選択してください
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </div>
-            </div>
-            <div class="col-12 col-lg-6">
-                <div class="card">
-                    <div class="card-header">
-                        <h5 class="card-title mb-0">Form Details</h5>
-                    </div>
-                    <div class="card-body">
-                        <div class="row g-3">
-                            <div class="col-md-6">
-                                <div class="form-floating">
-                                    <input type="text" class="form-control" id="no" name="no" readonly>
-                                    <label for="no">No.</label>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-floating">
-                                    <div type="text" class="form-control" id="date" name="date"></div>
-                                    <label for="date">Date</label>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="card">
-                    <div class="card-header">
-                        <h5 class="card-title mb-0">Currency</h5>
-                    </div>
-                    <div class="card-body mb-5">
-                        <table class="display cell-border" id="currencyTable" style="width: 100%;">
-                            <thead>
-                                <tr style="text-align:center">
-                                    <th>Currency</th>
-                                    <th>Correlation</th>
-                                    <th>Temporary Advance</th>
-                                    <th>Cash Balance</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for rate in form.rates %}
-                                <tr>
-                                    <td id="currency_id_td_{{ loop.index }}">
-                                        <div>
-                                            {{ rate.currency_id(class="form-select", disabled=true) }}
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div>
-                                            {{ rate.foreign_currency(class="form-control", disabled=true) }}
-                                        </div>
-                                    </td>
-                                    <td id="temporary_payment_id_td_{{ loop.index }}">
-                                        <div>
-                                            {% if loop.first %}
-                                            {{ rate.temporary_payment(class="form-control aln-end", placeholder="Imput
-                                            Here",
-                                            disabled=loop.index != 1) }}
-                                            {% else %}
-                                            {{ rate.temporary_payment(class="form-control", disabled=true) }}
-                                            {% endif %}
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <div>
-                                            {{ rate.remaining_payment(class="form-control", disabled=true) }}
-                                        </div>
-                                    </td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
+                    </form>
                 </div>
             </div>
         </div>
-        <div class="row">
-            <div class="col-12 col-lg-12">
-                <div class="card">
-                    <div class="card-header" id="detailsHeader">
-                        <h5 class="card-title mb-0">Details</h5>
-                        <div class="buttons">
-                            <div class="divider"></div>
-                            <button type="button" class="btn btn-sm btn-outline-secondary" id="up"><i
-                                    class="align-middle" data-feather="arrow-up-circle"></i></button>
-                            <button type="button" class="btn btn-sm btn-outline-secondary" id="down"><i
-                                    class="align-middle" data-feather="arrow-down-circle"></i></button>
-                            <div class="divider"></div>
-                            <button class="btn btn-primary" type="button" id="test">Test</button>
-                            <button class="btn btn-primary" type="button" id="naritaButton">Ichikawa - Narita</button>
-                            <button class="btn btn-primary" type="button" id="hanedaButton">Ichikawa - Haneda</button>
+        <div class="col-12 col-lg-6">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">フォームの詳細</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <input type="text" class="form-control" id="no" name="no" readonly>
+                                <label for="no">No.</label>
+                            </div>
                         </div>
-                    </div>
-                    <div class="card-body">
-                        <table class="display cell-border" id="detailsTable" style="width: 100%;">
-                            <thead>
-                                <tr style="text-align:center">
-                                    <th>№</th>
-                                    <th>Survey Items</th>
-                                    <th>Application</th>
-                                    <th>Applying Days</th>
-                                    <th>Currency</th>
-                                    <th>Unit Price</th>
-                                    <th>Quantity</th>
-                                    <th>Subtotal</th>
-                                    <th>Payment Method</th>
-                                    <th>Receving Letter</th>
-                                    <th>Note</th>
-                                    <th>Del</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for detail in form.details %}
-                                <tr id="row_id_{{ loop.index - 1 }}">
-                                    <!-- <td>{{ loop.index }}</td> -->
-                                    <td class="aln-ctr">
-                                        <input type="radio" class="btn-check select-row" id="btn-{{ loop.index - 1}}"
-                                            name="select-row" autocomplete="off">
-                                        <label class="btn btn-outline-primary btn-style"
-                                            for="btn-{{ loop.index - 1}}">{{loop.index}}</label>
-                                    </td>
-                                    <td>{{ detail.account_item_id(class="form-select") }}</td>
-                                    <td>{{ detail.content(class="form-control") }}</td>
-                                    <td>{{ detail.applying_date(class="form-control") }}</td>
-                                    <td>{{ detail.currency_id(class="form-select", disabled=true) }}</td>
-                                    <td>{{ detail.unit_price(class="form-control", style="text-align:right") }}</td>
-                                    <td>{{ detail.quantity(class="form-control", style="text-align:right") }}</td>
-                                    <td style="text-align:right" id="subtotal_id_{{ loop.index - 1 }}"></td>
-                                    <td>{{ detail.payment_method_id(class="form-select") }}</td>
-                                    <td>{{ detail.receipt_id(class="form-select") }}</td>
-                                    <td>{{ detail.remarks(class="form-control") }}</td>
-                                    <td class="aln-ctr"><button type="button" class="btn btn-danger btn-sm delete"><i
-                                                class="align-middle" data-feather="trash-2"></i></button>
-                                    </td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <div type="text" class="form-control" id="date" name="date"></div>
+                                <label for="date">日付</label>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">通貨</h5>
+                </div>
+                <div class="card-body mb-5">
+                    <table class="display cell-border" id="currencyTable" style="width: 100%;">
+                        <thead>
+                            <tr style="text-align:center">
+                                <th>通貨</th>
+                                <th>現地通貨=?円</th>
+                                <th>仮払金</th>
+                                <th>残金</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for rate in form.rates %}
+                            <tr>
+                                <td id="currency_id_td_{{ loop.index }}">
+                                    <div>
+                                        {{ rate.currency_id(class="form-select", disabled=true) }}
+                                    </div>
+                                </td>
+                                <td>
+                                    <div>
+                                        {{ rate.foreign_currency(class="form-control", disabled=true) }}
+                                    </div>
+                                </td>
+                                <td id="temporary_payment_id_td_{{ loop.index }}">
+                                    <div>
+                                        {% if loop.first %}
+                                        {{ rate.temporary_payment(class="form-control aln-end", placeholder="Imput
+                                        Here",
+                                        disabled=loop.index != 1) }}
+                                        {% else %}
+                                        {{ rate.temporary_payment(class="form-control", disabled=true) }}
+                                        {% endif %}
+                                    </div>
+                                </td>
+                                <td>
+                                    <div>
+                                        {{ rate.remaining_payment(class="form-control", disabled=true) }}
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
-        <div class="row">
-            <div class="col-12 col-lg-6">
-                <div class="card">
-                    <div class="card-header" id="calendarHeader">
-                        <h5 class="card-title mb-0">Calendar</h5>
-                        <div class="buttons">
-                            <button class="btn btn-primary" type="button" id="test1">Test</button>
-                            <button class="btn btn-primary" type="button" id="add-event">Add</button>
-                            <button class="btn btn-primary" type="button" id="remove-event" disabled>Clear</button>
-                        </div>
+    </div>
+    <div class="row">
+        <div class="col-12 col-lg-12">
+            <div class="card">
+                <div class="card-header" id="detailsHeader">
+                    <h5 class="card-title mb-0">明細</h5>
+                    <div class="buttons">
+                        <div class="divider"></div>
+                        <button type="button" class="btn btn-sm btn-outline-secondary" id="up"><i class="align-middle"
+                                data-feather="arrow-up-circle"></i></button>
+                        <button type="button" class="btn btn-sm btn-outline-secondary" id="down"><i class="align-middle"
+                                data-feather="arrow-down-circle"></i></button>
+                        <div class="divider"></div>
+                        <!-- <button class="btn btn-primary" type="button" id="test">Test</button> -->
+                        <button class="btn btn-primary" type="button" id="naritaButton">市川ー成田空港（片道）¥1,170</button>
+                        <button class="btn btn-primary" type="button" id="hanedaButton">市川ー羽田空港（片道）¥870</button>
                     </div>
+                </div>
+                <div class="card-body">
+                    <table class="display cell-border" id="detailsTable" style="width: 100%;">
+                        <thead>
+                            <tr style="text-align:center">
+                                <th>№</th>
+                                <th>勘定項目</th>
+                                <th>適用（内容／経由／人数etc）</th>
+                                <th>適用日</th>
+                                <th>通貨</th>
+                                <th>単価</th>
+                                <th>数量</th>
+                                <th>小計</th>
+                                <th>決済方法</th>
+                                <th>領収書</th>
+                                <th>備考</th>
+                                <th>消</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for detail in form.details %}
+                            <tr id="row_id_{{ loop.index - 1 }}">
+                                <!-- <td>{{ loop.index }}</td> -->
+                                <td class="aln-ctr">
+                                    <input type="radio" class="btn-check select-row" id="btn-{{ loop.index - 1}}"
+                                        name="select-row" autocomplete="off">
+                                    <label class="btn btn-outline-primary btn-style"
+                                        for="btn-{{ loop.index - 1}}">{{loop.index}}</label>
+                                </td>
+                                <td>{{ detail.account_item_id(class="form-select") }}</td>
+                                <td>{{ detail.content(class="form-control") }}</td>
+                                <td>{{ detail.applying_date(class="form-control") }}</td>
+                                <td>{{ detail.currency_id(class="form-select", disabled=true) }}</td>
+                                <td>{{ detail.unit_price(class="form-control", style="text-align:right") }}</td>
+                                <td>{{ detail.quantity(class="form-control", style="text-align:right") }}</td>
+                                <td style="text-align:right" id="details-{{ loop.index - 1}}-subtotal"></td>
+                                <td>{{ detail.payment_method_id(class="form-select") }}</td>
+                                <td>{{ detail.receipt_id(class="form-select") }}</td>
+                                <td>{{ detail.remarks(class="form-control") }}</td>
+                                <td class="aln-ctr"><button type="button" class="btn btn-danger btn-sm delete"><i
+                                            class="align-middle" data-feather="trash-2"></i></button>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-12 col-lg-6">
+            <div class="card">
+                <div class="card-header" id="calendarHeader">
+                    <h5 class="card-title mb-0">手当</h5>
+                    <div class="buttons-end">
+                        <!-- <button class="btn btn-primary" type="button" id="test1">Test</button> -->
+                        <button class="btn btn-primary" type="button" id="add-event">作成</button>
+                        <button class="btn btn-primary" type="button" id="remove-event" disabled>クリア</button>
+                    </div>
+                </div>
+                <form id="calendarForm" class="needs-validation" novalidate>
                     <div class="row g-3 mx-3">
                         <div class="col-md-6">
                             <div class="form-floating">
                                 <input type="date" class="form-control" id="start-date" placeholder="Date" required>
-                                <label for="start-date">Start Date</label>
-                                <div class="invalid-feedback">Start date is required.</div>
+                                <label for="start-date">出発日</label>
+                                <div class="invalid-feedback">出発日を選択してください</div>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-floating">
                                 <input type="date" class="form-control" id="end-date" placeholder="Date" required>
-                                <label for="end-date">End Date</label>
-                                <div class="invalid-feedback">End date is required.</div>
+                                <label for="end-date">帰社日</label>
+                                <div class="invalid-feedback">帰社日を選択してください</div>
                             </div>
                         </div>
                         <div id="eventTypeSelection">
                             <input class="btn-check" type="radio" name="eventType" value="Work" id="inlineRadioWork"
                                 autocomplete="off" disabled>
-                            <label class="btn btn-outline-primary" for="inlineRadioWork">Work</label>
+                            <label class="btn btn-outline-primary" for="inlineRadioWork">作業</label>
 
                             <input class="btn-check" type="radio" name="eventType" value="Sells" id="inlineRadioSells"
                                 autocomplete="off" disabled>
-                            <label class="btn btn-outline-success" for="inlineRadioSells">Sells</label>
+                            <label class="btn btn-outline-success" for="inlineRadioSells">営業</label>
 
                             <input class="btn-check" type="radio" name="eventType" value="Movement"
                                 id="inlineRadioMovement" autocomplete="off" disabled>
-                            <label class="btn btn-outline-warning" for="inlineRadioMovement">Movement</label>
+                            <label class="btn btn-outline-warning" for="inlineRadioMovement">移動</label>
 
                             <input class="btn-check" type="radio" name="eventType" value="Exeption"
                                 id="inlineRadioExeption" autocomplete="off" disabled>
-                            <label class="btn btn-outline-danger" for="inlineRadioExeption">Exeption</label>
+                            <label class="btn btn-outline-danger" for="inlineRadioExeption">特例</label>
 
                             <input class="btn-check" type="radio" name="eventType" value="Other" id="inlineRadioOther"
                                 autocomplete="off" disabled>
-                            <label class="btn btn-outline-secondary" for="inlineRadioOther">Other</label>
+                            <label class="btn btn-outline-secondary" for="inlineRadioOther">他</label>
 
                         </div>
                     </div>
-                    <div class="card-body" id="calendar-container">
-                        <div id="calendar"></div>
+                </form>
+                <div class="card-body" id="calendar-container">
+                    <div id="calendar"></div>
+                </div>
+                <div class="m-3">
+                    <div class="form-floating mb-3">
+                        {{form.location.location_id(class="form-select location-select-trip", id="location_id",
+                        placeholder="Location")}}
+                        <label for="location_id">往路</label>
                     </div>
-                    <div class="m-3">
-                        <div class="form-floating mb-3">
-                            {{form.location.location_id(class="form-select location-select-trip", id="location_id",
-                            placeholder="Location")}}
-                            <label for="location_id">Trip</label>
-                        </div>
-                        <div class="form-floating">
-                            {{form.location.location_id(class="form-select location-select-return-trip",
-                            id="location1_id",
-                            placeholder="Location1")}}
-                            <label for="location1_id">Return Trip</label>
-                        </div>
+                    <div class="form-floating">
+                        {{form.location.location_id(class="form-select location-select-return-trip",
+                        id="location1_id",
+                        placeholder="Location1")}}
+                        <label for="location1_id">復路</label>
                     </div>
                 </div>
             </div>
-            <div class="col-12 col-lg-6">
-                <div class="row equal-height">
-                    <div class="col-12 col-lg-6">
-                        <div class="card">
-                            <div class="card-header">
-                                <h5 class="card-title mb-0">Allowance</h5>
-                            </div>
-                            <div class="card-body">
-                                <table class="display cell-border" id="allowanceTable" style="width: 100%;">
-                                    <thead>
-                                        <tr>
-                                            <th></th>
-                                            <th></th>
-                                            <th>Unit Price</th>
-                                            <th>Days</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>Transfer Allowance</td>
-                                            <td>Trip</td>
-                                            <td id="TripUnitPrice"></td>
-                                            <td id="TripDays"></td>
-                                        </tr>
-                                        <tr>
-                                            <td></td>
-                                            <td>Return Trip</td>
-                                            <td id="ReturnTripUnitPrice"></td>
-                                            <td id="ReturnTripDays"></td>
-                                        </tr>
-                                        <tr>
-                                            <td>Accomodation Allowance</td>
-                                            <td>
-                                                <input class="form-check-input" type="checkbox"
-                                                    id="AccomodationAllowanceCheck" value="" aria-label="..." checked
-                                                    disabled>
-                                            </td>
-                                            <td id="AccomodationUnitPrice">
-                                            </td>
-                                            <td id="AccomodationDays"></td>
-                                        </tr>
-                                        <tr>
-                                            <td>Working Away Allowance</td>
-                                            <td>A</td>
-                                            <td id="WorkingAwayUnitPrice_A">
-                                            </td>
-                                            <td id="WorkingAwayDays_A"></td>
-                                        </tr>
-                                        <tr>
-                                            <td></td>
-                                            <td>B</td>
-                                            <td id="WorkingAwayUnitPrice_B">
-                                            </td>
-                                            <td id="WorkingAwayDays_B"></td>
-                                        </tr>
-                                        <tr>
-                                            <td>Special Allowance</td>
-                                            <td>A</td>
-                                            <td id="SpecialAllowanceUnitPrice_A">
-                                            </td>
-                                            <td id="SpecialAllowanceDays_A">
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td></td>
-                                            <td>B</td>
-                                            <td id="SpecialAllowanceUnitPrice_B">
-                                            </td>
-                                            <td id="SpecialAllowanceDays_B">
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>Exeption Allowance</td>
-                                            <td></td>
-                                            <td>
-                                                <input type="text" class="form-control" id="ExeptionAllowanceUnitPrice"
-                                                    disabled>
-                                            </td>
-                                            <td id="ExeptionAllowanceDays">
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+        </div>
+        <div class="col-12 col-lg-6">
+            <div class="row equal-height">
+                <div class="col-12 col-lg-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">小計</h5>
+                        </div>
+                        <div class="card-body">
+                            <table class="display cell-border" id="allowanceTable" style="width: 100%;">
+                                <thead>
+                                    <tr>
+                                        <th></th>
+                                        <th></th>
+                                        <th>単価</th>
+                                        <th>日数</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>移動手当</td>
+                                        <td>往路</td>
+                                        <td id="TripUnitPrice"></td>
+                                        <td id="TripDays"></td>
+                                    </tr>
+                                    <tr>
+                                        <td></td>
+                                        <td>復路</td>
+                                        <td id="ReturnTripUnitPrice"></td>
+                                        <td id="ReturnTripDays"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>宿泊手当</td>
+                                        <td>
+                                            <input class="form-check-input" type="checkbox"
+                                                id="AccomodationAllowanceCheck" value="" aria-label="..." checked
+                                                disabled>
+                                        </td>
+                                        <td id="AccomodationUnitPrice">
+                                        </td>
+                                        <td id="AccomodationDays"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>外勤手当</td>
+                                        <td>A</td>
+                                        <td id="WorkingAwayUnitPrice_A">
+                                        </td>
+                                        <td id="WorkingAwayDays_A"></td>
+                                    </tr>
+                                    <tr>
+                                        <td></td>
+                                        <td>B</td>
+                                        <td id="WorkingAwayUnitPrice_B">
+                                        </td>
+                                        <td id="WorkingAwayDays_B"></td>
+                                    </tr>
+                                    <tr>
+                                        <td>特別手当</td>
+                                        <td>A</td>
+                                        <td id="SpecialAllowanceUnitPrice_A">
+                                        </td>
+                                        <td id="SpecialAllowanceDays_A">
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td></td>
+                                        <td>B</td>
+                                        <td id="SpecialAllowanceUnitPrice_B">
+                                        </td>
+                                        <td id="SpecialAllowanceDays_B">
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>とく手当</td>
+                                        <td></td>
+                                        <td>
+                                            <input type="text" class="form-control" id="ExeptionAllowanceUnitPrice"
+                                                disabled>
+                                        </td>
+                                        <td id="ExeptionAllowanceDays">
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-lg-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title mb-0">Info</h5>
+                        </div>
+                        <div class="card-body">
+                            <div>
+                                <p>※1: Sales activities, suppliers, various seminars, exhibitions.
+                                    Foreign travel allowance will not be paid on the day of travel or travel.</p>
+                                <p>※2: Only when traveling by car, select the outbound or return route.
+                                    If you have any questions, please feel free to contact us.(Domestic)</p>
+                                <p>※3: Special allowance: 8 month 13,14,15.
+                                    12 month: 30,31.
+                                    1 month: It is an allowance to be paid when traveling to 1,2,3.</p>
                             </div>
                         </div>
                     </div>
-                    <div class="col-12 col-lg-6">
-                        <div class="card">
-                            <div class="card-header">
-                                <h5 class="card-title mb-0">Info</h5>
-                            </div>
-                            <div class="card-body">
-                                <div>
-                                    <p>※1: Sales activities, suppliers, various seminars, exhibitions.
-                                        Foreign travel allowance will not be paid on the day of travel or travel.</p>
-                                    <p>※2: Only when traveling by car, select the outbound or return route.
-                                        If you have any questions, please feel free to contact us.(Domestic)</p>
-                                    <p>※3: Special allowance: 8 month 13,14,15.
-                                        12 month: 30,31.
-                                        1 month: It is an allowance to be paid when traveling to 1,2,3.</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-12">
-                        <div class="card">
-                            <div class="card-body">
-                                <div class="btn-sbmt-blk">
-                                    <button type="button" class="btn btn-save">Only Save</button>
-                                    <button type="button" class="btn btn-print">Print and Save</button>
-                                </div>
+                </div>
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="btn-sbmt-blk">
+                                <button id="save" type="button" class="btn btn-primary btn-save" disabled>Only
+                                    Save</button>
+                                <button id="print" type="button" class="btn btn-success btn-print" disabled>Print
+                                    and Save</button>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </form>
+    </div>
+
     <div class=" modal fade" id="dateErrorModal" tabindex="-1" role="dialog" aria-labelledby="dateErrorModalLabel"
         aria-hidden="true">
         <div class="modal-dialog" role="document">

@@ -22,6 +22,7 @@ document.addEventListener('DOMContentLoaded', function () {
     let sellsTargetCount = 0;
 
     document.getElementById('rates-0-currency_id').value = '1';
+    document.getElementById('rates-0-temporary_payment').value = '¥0';
 
     for (let i = 0; i < 20; i++) {
         document.getElementById('details-' + i + '-currency_id').value = '1';
@@ -165,6 +166,8 @@ document.addEventListener('DOMContentLoaded', function () {
         let endDateInput = document.getElementById('end-date');
         let addButton = document.getElementById('add-event');
         let removeButton = document.getElementById('remove-event');
+        let saveButton = document.getElementById('save');
+        let printButton = document.getElementById('print');
         let allowanceCheckBox = document.getElementById('AccomodationAllowanceCheck');
         let allowanceExeptionInput = document.getElementById('ExeptionAllowanceUnitPrice');
 
@@ -214,6 +217,8 @@ document.addEventListener('DOMContentLoaded', function () {
         endDateInput.disabled = true;
         addButton.disabled = true;
         removeButton.disabled = false;
+        saveButton.disabled = false;
+        printButton.disabled = false;
         allowanceCheckBox.disabled = false;
         allowanceExeptionInput.disabled = false;
 
@@ -350,6 +355,8 @@ document.addEventListener('DOMContentLoaded', function () {
         let endDateInput = document.getElementById('end-date');
         let addButton = document.getElementById('add-event');
         let removeButton = document.getElementById('remove-event');
+        let saveButton = document.getElementById('save');
+        let printButton = document.getElementById('print');
         let allowanceCheckBox = document.getElementById('AccomodationAllowanceCheck');
         let allowanceExeptionInput = document.getElementById('ExeptionAllowanceUnitPrice');
 
@@ -373,6 +380,8 @@ document.addEventListener('DOMContentLoaded', function () {
         endDateInput.disabled = false;
         addButton.disabled = false;
         removeButton.disabled = true;
+        saveButton.disabled = true;
+        printButton.disabled = true;
         allowanceCheckBox.disabled = true;
         allowanceExeptionInput.disabled = true;
 
@@ -460,7 +469,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             const currentUnitPriceElement = document.getElementById('details-' + i + '-unit_price');
             const currentQuantityElement = document.getElementById('details-' + i + '-quantity');
-            const currentSubtotalElement = document.getElementById('subtotal_id_' + i);
+            const currentSubtotalElement = document.getElementById('details-' + i + '-subtotal');
 
             currentUnitPriceElement.addEventListener('input', function () {
                 // Убираем все нечисловые символы кроме точки
@@ -1040,7 +1049,7 @@ document.addEventListener('DOMContentLoaded', function () {
         function moveRowDown(rowId) {
             const fields = [
                 'account_item_id', 'content', 'applying_date', 'unit_price',
-                'quantity', 'payment_method_id', 'receipt_id', 'remarks'
+                'quantity', 'subtotal', 'payment_method_id', 'receipt_id', 'remarks'
             ];
 
             // Проходим по каждому полю и меняем значения
@@ -1054,16 +1063,17 @@ document.addEventListener('DOMContentLoaded', function () {
             });
 
             // Обрабатываем отдельно поля с id subtotal_id
-            const midSubtotal = document.getElementById(`subtotal_id_${rowId}`);
-            const downSubtotal = document.getElementById(`subtotal_id_${rowId + 1}`);
+            const midSubtotal = document.getElementById(`details-${rowId}-subtotal`);
+            const downSubtotal = document.getElementById(`details-${rowId + 1}-subtotal`);
 
-            [midSubtotal.value, downSubtotal.value] = [downSubtotal.value, midSubtotal.value];
+            [midSubtotal.innerHTML, downSubtotal.innerHTML] = [downSubtotal.innerHTML, midSubtotal.innerHTML];
+
         }
 
         function moveRowUp(rowId) {
             const fields = [
                 'account_item_id', 'content', 'applying_date', 'unit_price',
-                'quantity', 'payment_method_id', 'receipt_id', 'remarks'
+                'quantity', 'subtotal', 'payment_method_id', 'receipt_id', 'remarks'
             ];
 
             // Проходим по каждому полю и меняем значения
@@ -1076,11 +1086,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 [midElement.value, upElement.value] = [upElement.value, midElement.value];
             });
 
-            // Обрабатываем отдельно поля с id subtotal_id
-            const midSubtotal = document.getElementById(`subtotal_id_${rowId}`);
-            const upSubtotal = document.getElementById(`subtotal_id_${rowId - 1}`);
+            const midSubtotal = document.getElementById(`details-${rowId}-subtotal`);
+            const upSubtotal = document.getElementById(`details-${rowId - 1}-subtotal`);
 
-            [midSubtotal.value, upSubtotal.value] = [upSubtotal.value, midSubtotal.value];
+            [midSubtotal.innerHTML, upSubtotal.innerHTML] = [upSubtotal.innerHTML, midSubtotal.innerHTML];
         }
 
         function moveRows() {
@@ -1139,24 +1148,132 @@ document.addEventListener('DOMContentLoaded', function () {
                     const rowId = parseInt(row.getAttribute('id').replace('row_id_', ''), 10);
 
                     const fields = [
-                        'account_item_id', 'content', 'applying_date', 'unit_price',
-                        'quantity', 'payment_method_id', 'receipt_id', 'remarks'
+                        'content', 'applying_date', 'unit_price',
+                        'quantity', 'remarks'
                     ];
 
-                    // Проходим по каждому полю и меняем значения
+                    const selectFields = ['account_item_id', 'payment_method_id', 'receipt_id'];
+
                     fields.forEach(field => {
-                        // Находим элементы для текущей строки и следующей строки
                         const midElement = document.getElementById(`details-${rowId}-${field}`);
-                        // Меняем их значения
                         midElement.value = "";
                     });
 
-                    // Обрабатываем отдельно поля с id subtotal_id
-                    const midSubtotal = document.getElementById(`subtotal_id_${rowId}`);
-                    midSubtotal.value = "";
+                    selectFields.forEach(field => {
+                        const midElement = document.getElementById(`details-${rowId}-${field}`);
+                        midElement.value = "0";
+                    });
+
+                    const midSubtotal = document.getElementById(`details-${rowId}-subtotal`);
+                    console.log(midSubtotal.innerHTML);
+                    midSubtotal.innerHTML = "";
 
                 });
             });
+        }
+
+        function validateForm() {
+            const validateBtn = document.getElementById('save');
+            const orderForm = document.getElementById('orderJapanForm');
+            const calendarForm = document.getElementById('calendarForm');
+
+            const nameSelect = document.getElementById('name_id');
+            const typeSelect = document.getElementById('support_type_id');
+            const travelSelect = document.getElementById('travel_id');
+
+            const startDate = document.getElementById('start-date');
+            const endDate = document.getElementById('end-date');
+
+            selects = [nameSelect, typeSelect, travelSelect];
+
+            validateBtn.addEventListener('click', function () {
+
+                let isValid = orderForm.checkValidity();
+                let isValidDate = calendarForm.checkValidity();
+
+                if (startDate.value === '' || endDate.value === '') {
+                    isValidDate = false;
+                    startDate.classList.add('is-invalid');
+                    endDate.classList.add('is-invalid');
+                } else {
+                    startDate.classList.remove('is-invalid');
+                    endDate.classList.remove('is-invalid');
+                    isValidDate = true;
+                }
+
+                selects.forEach(select => {
+                    if (select.value === '0') {
+                        select.classList.add('is-invalid');
+                        select.style.borderColor = 'red';
+                        isValid = false;
+
+                    } else {
+                        select.classList.remove('is-invalid');
+                        select.style.borderColor = '#dee2e6';
+                    }
+                });
+
+                if (isValid && isValidDate) {
+                    // console.log('Form is valid');
+                    orderForm.classList.remove('was-validated');
+                    allowances();
+                } else {
+                    orderForm.classList.add('was-validated');
+                }
+            });
+
+        }
+
+        function validateFormPrint() {
+            const validateBtn = document.getElementById('print');
+            const orderForm = document.getElementById('orderJapanForm');
+            const calendarForm = document.getElementById('calendarForm');
+
+            const nameSelect = document.getElementById('name_id');
+            const typeSelect = document.getElementById('support_type_id');
+            const travelSelect = document.getElementById('travel_id');
+
+            const startDate = document.getElementById('start-date');
+            const endDate = document.getElementById('end-date');
+
+            selects = [nameSelect, typeSelect, travelSelect];
+
+            validateBtn.addEventListener('click', function () {
+
+                let isValid = orderForm.checkValidity();
+                let isValidDate = calendarForm.checkValidity();
+
+                if (startDate.value === '' || endDate.value === '') {
+                    isValidDate = false;
+                    startDate.classList.add('is-invalid');
+                    endDate.classList.add('is-invalid');
+                } else {
+                    startDate.classList.remove('is-invalid');
+                    endDate.classList.remove('is-invalid');
+                    isValidDate = true;
+                }
+
+                selects.forEach(select => {
+                    if (select.value === '0') {
+                        select.classList.add('is-invalid');
+                        select.style.borderColor = 'red';
+                        isValid = false;
+
+                    } else {
+                        select.classList.remove('is-invalid');
+                        select.style.borderColor = '#dee2e6';
+                    }
+                });
+
+                if (isValid && isValidDate) {
+                    // console.log('Form is valid');
+                    orderForm.classList.remove('was-validated');
+                    allowancesPrint();
+                } else {
+                    orderForm.classList.add('was-validated');
+                }
+            });
+
         }
 
         function allowances() {
@@ -1356,6 +1473,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
         }
 
+        validateForm();
+        validateFormPrint();
         moveRows();
         deleteRow();
         insertTodayDate();
@@ -1363,11 +1482,11 @@ document.addEventListener('DOMContentLoaded', function () {
         commaFormat('rates-0-temporary_payment');
 
         $('.btn-save').click(function () {
-            allowances();
+            // allowances();
         })
 
         $('.btn-print').click(function () {
-            allowancesPrint();
+            // allowancesPrint();
         })
 
         $('#test').click(function () {
@@ -1382,6 +1501,7 @@ document.addEventListener('DOMContentLoaded', function () {
             // currencyForm();
             // detailsForm();
             // moveRows();
+            // validateForm();
         })
     })
 });

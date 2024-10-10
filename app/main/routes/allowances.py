@@ -32,7 +32,7 @@ def safe_float_convert(value):
 @bp.route("/admin_menu/allowances", methods=["POST"])
 def allowances():
     data = request.get_json()
-    print(data)
+    # print(data)
 
     name_id = data.get("personName")
     order = data.get("orderName")

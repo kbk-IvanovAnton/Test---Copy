@@ -197,6 +197,12 @@
     gap: 10px;
 }
 
+.buttons-end {
+    justify-self: end;
+    display: flex;
+    gap: 10px;
+}
+
 .buttons .divider {
     border-left: 1px solid black;
     height: 32px;
@@ -224,4 +230,22 @@
 
 #eventTypeSelection label {
     margin-right: 10px;
+}
+
+/* Отключение зеленой рамки и галочки для валидных input и select */
+.was-validated .form-control:valid,
+.form-control.is-valid,
+.was-validated .form-select:valid,
+.form-select.is-valid {
+    border-color: #dee2e6;
+    box-shadow: none;
+    background-image: none;
+}
+
+/* Отключение восклицательного знака для невалидных input и select */
+.was-validated .form-control:invalid,
+.form-control.is-invalid,
+.was-validated .form-select:invalid,
+.form-select.is-invalid {
+    background-image: none;
 }

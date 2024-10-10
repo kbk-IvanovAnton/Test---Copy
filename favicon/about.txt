@@ -1,0 +1,6 @@
+This favicon was generated using the following font:
+
+- Font Title: Noto Serif Toto
+- Font Author: Copyright 2022 The Noto Project Authors (https://github.com/notofonts/toto)
+- Font Source: https://fonts.gstatic.com/s/notoseriftoto/v5/Ktk6ALSMeZjqPnXk1rCkHYHNtwvtHItpjRP74dHhCy3Il-aj55vdNug.ttf
+- Font License: SIL Open Font License, 1.1 (http://scripts.sil.org/OFL))
